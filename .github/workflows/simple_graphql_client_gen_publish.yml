@@ -1,0 +1,13 @@
+name: Publish simple_graphql_client_gen to pub.dev
+
+on:
+  push:
+    tags: "simple_graphql_client_gen-v[0-9]+.[0-9]+.[0-9]+*"
+
+jobs:
+  publish:
+    permissions:
+      id-token: write
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: packages/simple_graphql_client_gen
