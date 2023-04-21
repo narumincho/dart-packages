@@ -1,6 +1,6 @@
 name: narumincho_util
 description: narumincho_util
-repository: https://github.com/narumincho/dart-packages
+repository: https://github.com/narumincho/dart-packages/packages/narumincho_util
 version: "0.0.3"
 environment:
   sdk: ">=2.17.0 <3.0.0"

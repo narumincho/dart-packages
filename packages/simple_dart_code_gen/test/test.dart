@@ -34,6 +34,7 @@ void main() {
 // ignore_for_file: camel_case_types, constant_identifier_names, prefer_interpolation_to_compose_strings, always_use_package_imports, unnecessary_parenthesis
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
+import 'package:narumincho_util/narumincho_util.dart';
 
 /// document
 @immutable
@@ -90,6 +91,18 @@ class SampleClass {
   ) {
     return (((other is SampleClass) && (name == other.name)) &&
         (age == other.age));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return [
+      'SampleClass',
+      '(',
+      (('name: ' + name.toString()) + ','),
+      (('age: ' + age.toString()) + ','),
+      ')',
+    ].safeJoin();
   }
 }
 ''');

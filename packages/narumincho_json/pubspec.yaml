@@ -1,6 +1,6 @@
 name: narumincho_json
 description: narumincho_json
-repository: https://github.com/narumincho/dart-packages
+repository: https://github.com/narumincho/dart-packages/packages/narumincho_json
 version: "0.0.1"
 environment:
   sdk: ">=2.17.0 <3.0.0"

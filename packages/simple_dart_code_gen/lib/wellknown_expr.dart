@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
-import 'package:fast_immutable_collections/fast_immutable_collections.dart' as ic;
+import 'package:fast_immutable_collections/fast_immutable_collections.dart'
+    as ic;
 import 'package:simple_dart_code_gen/simple_dart_code_gen.dart';
 
 Expr IList(Expr expr) {
@@ -34,4 +35,12 @@ Expr Exception(Expr expr) {
     isConst: false,
     positionalArguments: ic.IList([expr]),
   );
+}
+
+Expr toStringMethod(Expr value) {
+  return ExprMethodCall(variable: value, methodName: 'toString');
+}
+
+Expr safeJoinMethod(Expr stringListExpr) {
+  return ExprMethodCall(variable: stringListExpr, methodName: 'safeJoin');
 }
