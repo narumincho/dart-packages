@@ -1,0 +1,5 @@
+name: dart_package_root
+publish_to: none
+
+environment:
+  sdk: ">=2.17.0"
