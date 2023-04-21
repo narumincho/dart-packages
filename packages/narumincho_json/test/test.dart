@@ -1,6 +1,6 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:narumincho_json/narumincho_json.dart';
 import 'package:test/test.dart';
-import 'package:typed_json/typed_json.dart';
 
 void main() {
   test('encode string', () {

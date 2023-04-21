@@ -1,5 +1,5 @@
-name: typed_json
-description: typed_json
+name: narumincho_json
+description: narumincho_json
 repository: https://github.com/narumincho/dart-packages
 version: "0.0.1"
 environment:
