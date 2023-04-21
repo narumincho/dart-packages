@@ -1,0 +1,22 @@
+name: test
+
+on:
+  pull_request:
+    branches-ignore:
+      - main
+
+jobs:
+  flutter-test:
+    name: Flutter Test
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - uses: dart-lang/setup-dart@v1
+      - run: dart pub get
+      - run: dart test
+      - name: Analyze Flutter
+        uses: ValentinVignal/action-dart-analyze@v0.15
+        with:
+          fail-on: warning
