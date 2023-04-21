@@ -1,11 +1,10 @@
-name: narumincho_util
-description: narumincho_util
+name: typed_json
+description: typed_json
 repository: https://github.com/narumincho/dart-packages
-version: "0.0.3"
+version: "0.0.1"
 environment:
   sdk: ">=2.17.0 <3.0.0"
 dependencies:
-  collection: ^1.17.0
   fast_immutable_collections: ^9.0.0
   meta: ^1.8.0
 dev_dependencies:
