@@ -3,6 +3,7 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
 extension MoreImmutableCollection<T> on IList<T> {
+  //  先頭から関数を適用し, null だった場合は破棄する
   @useResult
   IList<Output> mapAndRemoveNull<Output>(Output? Function(T) func) {
     final List<Output> result = [];
@@ -31,7 +32,8 @@ extension MoreImmutableCollection<T> on IList<T> {
 extension FlatMapRemoveNull<T> on Iterable<T> {
   /// `expanded` とは違い `null` を取り除く [flatMap]
   @useResult
-  Iterable<Output> flatMapAndRemoveNull<Output>(Iterable<Output?> Function(T) func) {
+  Iterable<Output> flatMapAndRemoveNull<Output>(
+      Iterable<Output?> Function(T) func) {
     return this.expand((item) {
       final List<Output> result = [];
       final itemOutput = func(item);
