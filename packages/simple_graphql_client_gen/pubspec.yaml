@@ -7,7 +7,7 @@ environment:
 dependencies:
   fast_immutable_collections: ^9.0.0
   http: ^0.13.5
-  meta: ^1.8.0
+  meta: ">=1.8.0 <2.0.0"
   narumincho_json: ^0.0.1
   narumincho_util: ^0.0.3
   simple_dart_code_gen: ^0.0.1

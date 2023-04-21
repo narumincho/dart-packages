@@ -1,5 +1,7 @@
 # simple_dart_code_gen
 
+[![pub package](https://img.shields.io/pub/v/simple_dart_code_gen.svg)](https://pub.dev/packages/simple_dart_code_gen)
+
 Unlike [code_builder](https://pub.dev/packages/code_builder), immutable Dart
 code generation library
 

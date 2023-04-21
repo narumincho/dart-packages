@@ -98,7 +98,7 @@ packages:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "1.9.1"
   narumincho_json:
     dependency: "direct main"
     description:

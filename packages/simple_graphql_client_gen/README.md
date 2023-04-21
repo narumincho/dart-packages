@@ -1,4 +1,6 @@
-# simple_dart_code_gen
+# simple_graphql_client_gen
+
+[![pub package](https://img.shields.io/pub/v/simple_graphql_client_gen.svg)](https://pub.dev/packages/simple_graphql_client_gen)
 
 GraphQL client dart code generator
 
