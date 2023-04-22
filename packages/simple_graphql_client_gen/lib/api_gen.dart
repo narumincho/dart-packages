@@ -30,7 +30,8 @@ SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
   return SimpleDartCode(
     importPackageAndFileNames: IList([
       const ImportPackageFileNameAndAsName(
-        packageAndFileName: 'package:simple_graphql_client_gen/graphql_post.dart',
+        packageAndFileName:
+            'package:simple_graphql_client_gen/graphql_post.dart',
         asName: 'graphql_post',
       ),
       const ImportPackageFileNameAndAsName(
@@ -68,23 +69,27 @@ SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
 
 IMap<String, GraphQLObjectType> collectObjectType(GraphQLObjectType object) {
   // フラットにする
-  final Map<String, GraphQLObjectType> children = Map.fromEntries(object.toFieldList().expand((fieldOrOn) => fieldOrOn.match<List<MapEntry<String, GraphQLObjectType>>>(
-        field: (field) {
-          return field.return_.type.match(
-            scalar: (_) => [],
-            boolean: (_) => [],
-            dateTime: (_) => [],
-            url: (_) => [],
-            string: (_) => [],
-            object: (object) => collectObjectType(object.objectType).toEntryList(),
-            float: (_) => [],
-            int: (_) => [],
-          );
-        },
-        on: (on) {
-          return collectObjectType(on.return_).toEntryList();
-        },
-      )));
+  final Map<String, GraphQLObjectType> children = Map.fromEntries(object
+      .toFieldList()
+      .expand((fieldOrOn) =>
+          fieldOrOn.match<List<MapEntry<String, GraphQLObjectType>>>(
+            field: (field) {
+              return field.return_.type.match(
+                scalar: (_) => [],
+                boolean: (_) => [],
+                dateTime: (_) => [],
+                url: (_) => [],
+                string: (_) => [],
+                object: (object) =>
+                    collectObjectType(object.objectType).toEntryList(),
+                float: (_) => [],
+                int: (_) => [],
+              );
+            },
+            on: (on) {
+              return collectObjectType(on.return_).toEntryList();
+            },
+          )));
   return IMap({object.getTypeName(): object, ...children});
 }
 
@@ -142,7 +147,8 @@ Method _createApiCallMethod(
                       IList(variableList.map(
                         (variable) => Tuple2(
                           ExprStringLiteral(variable.name),
-                          toJsonValueExpr(variable.type, ExprVariable(variable.name)),
+                          toJsonValueExpr(
+                              variable.type, ExprVariable(variable.name)),
                         ),
                       )),
                     )
@@ -161,7 +167,8 @@ Method _createApiCallMethod(
         ),
       ),
       StatementIf(
-        condition: const ExprOperator(ExprVariable('error'), Operator.notEqual, ExprNull()),
+        condition: const ExprOperator(
+            ExprVariable('error'), Operator.notEqual, ExprNull()),
         thenStatement: IList([
           StatementThrow(ExprVariable('error')),
         ]),
@@ -171,7 +178,8 @@ Method _createApiCallMethod(
         expr: ExprGet(expr: ExprVariable('response'), fieldName: 'data'),
       ),
       StatementIf(
-        condition: const ExprOperator(ExprVariable('data'), Operator.equal, ExprNull()),
+        condition: const ExprOperator(
+            ExprVariable('data'), Operator.equal, ExprNull()),
         thenStatement: IList([
           StatementThrow(wellknown_expr.Exception(
             ExprStringLiteral(apiName + ' response data empty'),
@@ -223,7 +231,8 @@ IList<ClassDeclaration> _objectTypeClassDeclaration(
           (field) => Field(
             name: field.fieldName,
             documentationComments: field.description,
-            type: _graphQLOutputTypeToStringToDartTypeConsiderListNull(field.return_),
+            type: _graphQLOutputTypeToStringToDartTypeConsiderListNull(
+                field.return_),
             parameterPattern: const ParameterPatternNamed(),
           ),
         )),
@@ -261,7 +270,8 @@ IList<QueryFieldOn> fieldOrListRemoveField(IList<QueryField> fieldOrOnList) {
   );
 }
 
-Method _fromJsonValueMethodObject(String typeName, IList<QueryFieldField> fieldList) {
+Method _fromJsonValueMethodObject(
+    String typeName, IList<QueryFieldField> fieldList) {
   return _fromJsonValueMethod(
     typeName,
     IList([
@@ -277,7 +287,8 @@ Method _fromJsonValueMethodObject(String typeName, IList<QueryFieldField> fieldL
                 ExprMethodCall(
                   variable: const ExprVariable('value'),
                   methodName: 'getObjectValueOrThrow',
-                  positionalArguments: IList([ExprStringLiteral(field.fieldName)]),
+                  positionalArguments:
+                      IList([ExprStringLiteral(field.fieldName)]),
                 ),
               ),
             ),
@@ -323,7 +334,8 @@ Method _fromJsonValueMethodUnion(String typeName, IList<QueryFieldOn> onList) {
       ),
       StatementThrow(wellknown_expr.Exception(
         ExprOperator(
-          ExprStringLiteral('invalid __typename in ' + typeName + '. __typename='),
+          ExprStringLiteral(
+              'invalid __typename in ' + typeName + '. __typename='),
           Operator.add,
           const ExprVariable('typeName'),
         ),
@@ -336,7 +348,8 @@ Method _fromJsonValueMethod(String typeName, IList<Statement> statementList) {
   return Method(
     name: 'fromJsonValue',
     methodType: MethodType.static,
-    documentationComments: 'JsonValue から ' + typeName + 'を生成する. 失敗した場合はエラーが発生する',
+    documentationComments:
+        'JsonValue から ' + typeName + 'を生成する. 失敗した場合はエラーが発生する',
     useResultAnnotation: false,
     parameters: const IListConst([
       Parameter(
@@ -366,10 +379,12 @@ Method _matchMethodAbstract(String typeName, IList<QueryFieldOn> onList) {
 Method _matchMethodImplement(String typeName, GraphQLObjectType objectType) {
   final fieldOnList = fieldOrListRemoveField(objectType.toFieldList());
   final originalTypeName = fieldOnList.mapFirstNotNull(
-    (fieldOn) => fieldOn.return_.getTypeName() == typeName ? fieldOn.typeName : null,
+    (fieldOn) =>
+        fieldOn.return_.getTypeName() == typeName ? fieldOn.typeName : null,
   );
   if (originalTypeName == null) {
-    throw Exception('oneOf で元の型の名前を取得できなかった $typeName in ${objectType.getTypeName()}');
+    throw Exception(
+        'oneOf で元の型の名前を取得できなかった $typeName in ${objectType.getTypeName()}');
   }
   return Method(
     name: 'match' + objectType.getTypeName(),
@@ -393,7 +408,12 @@ IList<Parameter> _matchMethodParameters(IList<QueryFieldOn> onList) {
     (pattern) => Parameter(
       name: toFirstLowercase(pattern.typeName),
       type: TypeFunction(
-        parameterTypes: IList([TypeNormal(name: pattern.return_.getTypeName())]),
+        parameters: IList([
+          Tuple2(
+            toFirstLowercase(pattern.return_.getTypeName()),
+            TypeNormal(name: pattern.return_.getTypeName()),
+          )
+        ]),
         returnType: const TypeNormal(name: 'T'),
       ),
       parameterPattern: const ParameterPatternNamed(),
