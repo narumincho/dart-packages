@@ -65,7 +65,7 @@ extension SafeISet<T> on ISet<T> {
   }
 }
 
-extension SaveJoin on Iterable<String> {
+extension SafeJoin on Iterable<String> {
   /// nullや String 以外の型が含まれていない iterable で [join] メソッドを呼ぶ
   @useResult
   String safeJoin([String separator = '']) {

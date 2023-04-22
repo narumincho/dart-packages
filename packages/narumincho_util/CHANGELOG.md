@@ -1,3 +1,7 @@
+## 
+
+fix typo SaveJoin → SafeJoin
+
 ## 0.0.4
 
 add toFirstUppercase
