@@ -1,3 +1,7 @@
+## 0.0.4
+
+add toFirstUppercase
+
 ## 0.0.3
 
 downgrade collection 1.17.1 → 1.17.0 for flutter_test
