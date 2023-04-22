@@ -209,7 +209,7 @@ class ClassDeclaration extends Declaration {
           type: field.type.getIsNullable()
               ? TypeFunction(
                   returnType: field.type,
-                  parameterTypes: const IListConst([]),
+                  parameters: const IListConst([]),
                   isNullable: true,
                 )
               : field.type.setIsNullable(true),
@@ -256,7 +256,8 @@ class ClassDeclaration extends Declaration {
           name: field.name,
           type: TypeFunction(
             returnType: field.type,
-            parameterTypes: IList([field.type]),
+            parameters: IList(
+                [Tuple2('prev' + toFirstUppercase(field.name), field.type)]),
             isNullable: true,
           ),
           parameterPattern: ParameterPatternNamedWithDefault(ExprNull()),
@@ -279,12 +280,12 @@ class ClassDeclaration extends Declaration {
             },
           )),
           positionalArguments: IList(fields.mapAndRemoveNull(
-            (field) {
-              if (field.parameterPattern is! ParameterPatternPositional) {
-                return null;
-              }
-              return updateFieldsFieldExpr(field.name, field.type);
-            },
+            (field) => field.parameterPattern.match(
+              positional: (positional) =>
+                  updateFieldsFieldExpr(field.name, field.type),
+              named: (named) => null,
+              namedWithDefault: (namedWithDefault) => null,
+            ),
           )),
         ))
       ]),
@@ -615,20 +616,24 @@ abstract class Type {
 
 @immutable
 class TypeFunction implements Type {
-  const TypeFunction(
-      {required this.returnType,
-      required this.parameterTypes,
-      this.isNullable = false});
+  const TypeFunction({
+    required this.returnType,
+    required this.parameters,
+    this.isNullable = false,
+  });
   final Type returnType;
-  final IList<Type> parameterTypes;
+
+  /// IList<(name, type)>
+  final IList<Tuple2<String, Type>> parameters;
   final bool isNullable;
 
   @override
   String toCodeString() {
     return returnType.toCodeString() +
         ' Function(' +
-        parameterTypes
-            .map((parameter) => parameter.toCodeString())
+        parameters
+            .map((parameter) =>
+                parameter.second.toCodeString() + ' ' + parameter.first)
             .safeJoin(',') +
         ')' +
         (isNullable ? '?' : '');
@@ -637,7 +642,7 @@ class TypeFunction implements Type {
   @override
   Type setIsNullable(bool isNullable) {
     return TypeFunction(
-      parameterTypes: parameterTypes,
+      parameters: parameters,
       returnType: returnType,
       isNullable: true,
     );

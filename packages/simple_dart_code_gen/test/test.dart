@@ -66,8 +66,8 @@ class SampleClass {
   /// `SampleClass` のフィールドを変更したものを新しく返す
   @useResult
   SampleClass updateFields({
-    String Function(String)? name,
-    double Function(double)? age,
+    String Function(String prevName)? name,
+    double Function(double prevAge)? age,
   }) {
     return SampleClass(
       name: ((name == null) ? this.name : name(this.name)),

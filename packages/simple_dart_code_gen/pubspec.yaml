@@ -8,6 +8,6 @@ dependencies:
   dart_style: ">=2.2.4 <3.0.0"
   fast_immutable_collections: ^9.0.0
   meta: ">=1.8.0 <2.0.0"
-  narumincho_util: ^0.0.3
+  narumincho_util: ^0.0.4
 dev_dependencies:
   test: ^1.24.2
