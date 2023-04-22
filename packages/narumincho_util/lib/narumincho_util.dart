@@ -82,6 +82,15 @@ String toFirstLowercase(String str) {
   return str[0].toLowerCase() + str.substring(1);
 }
 
+/// 文字列の最初の文字を大文字にしたものを返す
+@useResult
+String toFirstUppercase(String str) {
+  if (str.isEmpty) {
+    return '';
+  }
+  return str[0].toUpperCase() + str.substring(1);
+}
+
 /// 重複ありでリストを2つの要素ずつ取り出したリストを返す
 ///
 /// ```dart

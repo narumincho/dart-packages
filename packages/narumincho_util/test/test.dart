@@ -35,4 +35,12 @@ void main() {
       const IListConst([]),
     );
   });
+
+  test('toFirstUppercase', () {
+    expect(toFirstUppercase('name'), 'Name');
+  });
+
+  test('toFirstUppercase empty', () {
+    expect(toFirstUppercase(''), '');
+  });
 }
