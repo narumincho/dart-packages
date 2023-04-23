@@ -40,7 +40,3 @@ Expr Exception(Expr expr) {
 Expr toStringMethod(Expr value) {
   return ExprMethodCall(variable: value, methodName: 'toString');
 }
-
-Expr safeJoinMethod(Expr stringListExpr) {
-  return ExprMethodCall(variable: stringListExpr, methodName: 'safeJoin');
-}

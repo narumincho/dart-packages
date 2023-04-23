@@ -28,8 +28,6 @@ class SimpleDartCode {
       const ImportPackageFileNameAndAsName(
           packageAndFileName:
               'package:fast_immutable_collections/fast_immutable_collections.dart'),
-      const ImportPackageFileNameAndAsName(
-          packageAndFileName: 'package:narumincho_util/narumincho_util.dart'),
       ...importPackageAndFileNames,
     ])
         .sort((a, b) =>
@@ -362,27 +360,24 @@ class ClassDeclaration extends Declaration {
   }
 
   Method toStringMethod() {
-    final namedCode = fields.mapAndRemoveNull((field) {
-      final text = ExprOperator(
-        ExprOperator(
-          ExprStringLiteral(field.name + ': '),
-          Operator.add,
-          wellknown_expr.toStringMethod(ExprVariable(field.name)),
-        ),
-        Operator.add,
-        ExprStringLiteral(','),
-      );
+    final namedCodeList = fields.expand<StringLiteralItem>((field) {
+      final text = IListConst([
+        StringLiteralItemNormal(field.name + ': '),
+        StringLiteralItemInterpolation(ExprVariable(field.name)),
+        StringLiteralItemNormal(', '),
+      ]);
       return field.parameterPattern.match(
-        positional: (_) => null,
+        positional: (_) => const IListConst([]),
         named: (_) => text,
         namedWithDefault: (_) => text,
       );
     });
-    final positionalCodeList = fields.mapAndRemoveNull(
+    final positionalCodeList = fields.expand<StringLiteralItem>(
       (field) => field.parameterPattern.match(
-        positional: (positional) => ExprVariable(field.name),
-        named: (_) => null,
-        namedWithDefault: (_) => null,
+        positional: (positional) =>
+            [StringLiteralItemInterpolation(ExprVariable(field.name))],
+        named: (_) => [],
+        namedWithDefault: (_) => [],
       ),
     );
     return Method(
@@ -394,15 +389,12 @@ class ClassDeclaration extends Declaration {
       returnType: wellknown_type.String,
       statements: IList([
         StatementReturn(
-          wellknown_expr.safeJoinMethod(
-            ExprListLiteral(IList([
-              ExprStringLiteral(name),
-              ExprStringLiteral('('),
-              ...positionalCodeList,
-              ...namedCode,
-              ExprStringLiteral(')'),
-            ])),
-          ),
+          ExprStringLiteral(IList([
+            StringLiteralItemNormal(name + '('),
+            ...positionalCodeList,
+            ...namedCodeList,
+            StringLiteralItemNormal(')'),
+          ])),
         ),
       ]),
     );
@@ -931,29 +923,89 @@ class ExprIntLiteral implements Expr {
 
 @immutable
 class ExprStringLiteral implements Expr {
-  const ExprStringLiteral(this.value);
+  const ExprStringLiteral(this.items);
+  final IList<StringLiteralItem> items;
+
+  @override
+  CodeAndIsConst toCodeAndIsConst() {
+    final isDoubleQuote = items.any(
+      (element) => element.containSingleQuoteNotDabble,
+    );
+    final codeAndIsConstList =
+        IList(items.map((item) => item.toCodeAndIsConst()));
+    final isAllConst = codeAndIsConstList.every((item) => item.isConst());
+    return CodeAndIsConst(
+      isDoubleQuote
+          ? '"' + codeAndIsConstList.map((item) => item.code).safeJoin() + '"'
+          : "'" +
+              items
+                  .map((item) => item is StringLiteralItemNormal
+                      ? item.toCodeAndIsConst().code.replaceAll("'", r"\'")
+                      : item.toCodeAndIsConst().code)
+                  .safeJoin() +
+              "'",
+      isAllConst ? ConstType.implicit : ConstType.noConst,
+    );
+  }
+}
+
+@immutable
+abstract class StringLiteralItem {
+  const StringLiteralItem();
+
+  CodeAndIsConst toCodeAndIsConst();
+
+  bool get containSingleQuoteNotDabble;
+}
+
+@immutable
+class StringLiteralItemInterpolation extends StringLiteralItem {
+  const StringLiteralItemInterpolation(this.expr);
+
+  final Expr expr;
+
+  @override
+  CodeAndIsConst toCodeAndIsConst() {
+    final expr = this.expr;
+    final codeAndIsConst = expr.toCodeAndIsConst();
+    if (expr is ExprVariable) {
+      return CodeAndIsConst(
+        r'$' + expr.name,
+        codeAndIsConst.type,
+      );
+    }
+    return CodeAndIsConst(
+      r'${' + expr.toCodeAndIsConst().code + '}',
+      codeAndIsConst.type,
+    );
+  }
+
+  @override
+  bool get containSingleQuoteNotDabble {
+    return false;
+  }
+}
+
+@immutable
+class StringLiteralItemNormal extends StringLiteralItem {
+  const StringLiteralItemNormal(this.value);
+
   final String value;
 
   @override
   CodeAndIsConst toCodeAndIsConst() {
-    final isDoubleQuote = value.contains("'") && !value.contains('"');
-    final isNeedRaw = (value.contains(r'\') || value.contains(r'$')) &&
-        !value.contains('\n') &&
-        (!isDoubleQuote && !value.contains("'"));
-    final escapedCommon = isNeedRaw
-        ? value
-        : value
-            .replaceAll(r'\', r'\\')
-            .replaceAll(r'$', r'\$')
-            .replaceAll('\n', r'\n');
-
     return CodeAndIsConst(
-      (isNeedRaw ? 'r' : '') +
-          (isDoubleQuote
-              ? '"' + escapedCommon + '"'
-              : "'" + escapedCommon.replaceAll("'", r"\'") + "'"),
+      value
+          .replaceAll(r'\', r'\\')
+          .replaceAll(r'$', r'\$')
+          .replaceAll('\n', r'\n'),
       ConstType.implicit,
     );
+  }
+
+  @override
+  bool get containSingleQuoteNotDabble {
+    return value.contains("'") && !value.contains('"');
   }
 }
 
@@ -1297,10 +1349,10 @@ class CodeAndIsConst {
 enum ConstType {
   noConst,
 
-  /// 暗黙的const (constが出力されない) */
+  /// 暗黙的const (constが出力されない)
   implicit,
 
-  /// 明示的的な const */
+  /// 明示的的な const
   explicit,
 }
 
