@@ -95,7 +95,7 @@ class SampleClass {
   @override
   @useResult
   String toString() {
-    return 'SampleClass(name: $name, age: $age, )';
+    return 'SampleClass(name: ${name}, age: ${age}, )';
   }
 }
 """);
@@ -127,7 +127,46 @@ class SampleClass {
         StringLiteralItemInterpolation(
             ExprGet(expr: ExprVariable('obj'), fieldName: 'name')),
       ])).toCodeAndIsConst().code,
-      r"'テスト$test${obj.name}'",
+      r"'テスト${test}${obj.name}'",
     );
   });
+
+  test(
+    'class to string method',
+    () {
+      const sampleClass = ClassDeclaration(
+        name: 'SampleClass',
+        documentationComments: 'document',
+        fields: IListConst([
+          Field(
+            name: 'pos',
+            documentationComments: '位置引数',
+            type: String,
+            parameterPattern: ParameterPatternPositional(),
+          ),
+          Field(
+            name: 'name',
+            documentationComments: '名前',
+            type: String,
+            parameterPattern: ParameterPatternNamed(),
+          ),
+          Field(
+            name: 'age',
+            documentationComments: '年齢',
+            type: double,
+            parameterPattern: ParameterPatternNamed(),
+          ),
+        ]),
+        isAbstract: false,
+      );
+
+      expect(sampleClass.toStringMethod().toCodeString(), r'''
+@override
+@useResult
+String toString() {
+return 'SampleClass(${pos}, name: ${name}, age: ${age}, )';
+
+}''');
+    },
+  );
 }

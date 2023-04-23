@@ -1,3 +1,8 @@
+## 0.2.1
+
+- fix string literal interpolation (`'$varNameNotVarName'`) →
+  (`'${varName}NotVarName'`)
+
 ## 0.2.0
 
 - fix toString() method output

@@ -373,8 +373,10 @@ class ClassDeclaration extends Declaration {
     });
     final positionalCodeList = fields.expand<StringLiteralItem>(
       (field) => field.parameterPattern.match(
-        positional: (positional) =>
-            [StringLiteralItemInterpolation(ExprVariable(field.name))],
+        positional: (positional) => [
+          StringLiteralItemInterpolation(ExprVariable(field.name)),
+          StringLiteralItemNormal(', '),
+        ],
         named: (_) => [],
         namedWithDefault: (_) => [],
       ),
@@ -965,16 +967,9 @@ class StringLiteralItemInterpolation extends StringLiteralItem {
 
   @override
   CodeAndIsConst toCodeAndIsConst() {
-    final expr = this.expr;
     final codeAndIsConst = expr.toCodeAndIsConst();
-    if (expr is ExprVariable) {
-      return CodeAndIsConst(
-        r'$' + expr.name,
-        codeAndIsConst.type,
-      );
-    }
     return CodeAndIsConst(
-      r'${' + expr.toCodeAndIsConst().code + '}',
+      r'${' + codeAndIsConst.code + '}',
       codeAndIsConst.type,
     );
   }

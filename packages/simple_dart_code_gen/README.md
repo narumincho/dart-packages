@@ -111,7 +111,7 @@ class SampleClass {
   @override
   @useResult
   String toString() {
-    return 'SampleClass(name: $name, age: $age, )';
+    return 'SampleClass(name: ${name}, age: ${age}, )';
   }
 }
 ```
