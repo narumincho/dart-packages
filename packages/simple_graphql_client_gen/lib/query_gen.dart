@@ -11,11 +11,13 @@ SimpleDartCode generateQueryCode(IList<GraphQLTypeDeclaration> typeList) {
   return SimpleDartCode(
     importPackageAndFileNames: const IListConst([
       ImportPackageFileNameAndAsName(
-        packageAndFileName: 'package:simple_graphql_client_gen/query_string.dart',
+        packageAndFileName:
+            'package:simple_graphql_client_gen/query_string.dart',
         asName: 'query_string',
       ),
       ImportPackageFileNameAndAsName(
-        packageAndFileName: 'package:simple_graphql_client_gen/graphql_type.dart',
+        packageAndFileName:
+            'package:simple_graphql_client_gen/graphql_type.dart',
         asName: 'graphql_type',
       ),
       ImportPackageFileNameAndAsName(
@@ -30,14 +32,18 @@ SimpleDartCode generateQueryCode(IList<GraphQLTypeDeclaration> typeList) {
 IList<Declaration> _graphQLTypeListToQueryCode(
   IList<GraphQLTypeDeclaration> typeList,
 ) {
-  final typeMap = IMap.fromIterable<String, GraphQLTypeDeclaration, GraphQLTypeDeclaration>(
+  final typeMap =
+      IMap.fromIterable<String, GraphQLTypeDeclaration, GraphQLTypeDeclaration>(
     typeList,
     keyMapper: (t) => t.name,
     valueMapper: (t) => t,
   );
   return IList(typeList.expand((type) {
     final body = type.body;
-    if (type.name == 'String' || type.name == 'Boolean' || type.name == 'Float' || type.name == 'Int') {
+    if (type.name == 'String' ||
+        type.name == 'Boolean' ||
+        type.name == 'Float' ||
+        type.name == 'Int') {
       return [];
     }
     return body.match(
@@ -45,7 +51,8 @@ IList<Declaration> _graphQLTypeListToQueryCode(
       objectFunc: (object) => [
         _graphQLTypeQueryClass(type),
         _graphQLTypeAbstractFieldClass(type),
-        for (final field in object.fields) _graphQLTypeFieldClass(type, field, typeMap),
+        for (final field in object.fields)
+          _graphQLTypeFieldClass(type, field, typeMap),
       ],
       unionFunc: (union) => [_graphQLUnionTypeQueryClass(type, union, typeMap)],
       scalerFunc: (_) => [],
@@ -76,12 +83,17 @@ ClassDeclaration _graphQLTypeQueryClass(GraphQLTypeDeclaration type) {
         name: 'name',
         documentationComments: 'この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!',
         type: wellknown_type.String,
-        parameterPattern: ParameterPatternNamedWithDefault(ExprStringLiteral(typeName)),
+        parameterPattern: ParameterPatternNamedWithDefault(
+          ExprStringLiteral(IList([StringLiteralItemNormal(typeName)])),
+        ),
       ),
     ]),
     isAbstract: false,
     implementsClassList: IList([
-      if (type.type == null) 'query_string.GraphQLObjectType' else 'query_string.GraphQLRootObject',
+      if (type.type == null)
+        'query_string.GraphQLObjectType'
+      else
+        'query_string.GraphQLRootObject',
     ]),
     methods: IList([
       Method(
@@ -128,7 +140,7 @@ ClassDeclaration _graphQLTypeQueryClass(GraphQLTypeDeclaration type) {
         returnType: wellknown_type.String,
         statements: IList([
           StatementReturn(ExprStringLiteral(
-            type.documentationComments,
+            IList([StringLiteralItemNormal(type.documentationComments)]),
           ))
         ]),
       ),
@@ -138,13 +150,16 @@ ClassDeclaration _graphQLTypeQueryClass(GraphQLTypeDeclaration type) {
           name: 'getRootObjectType',
           documentationComments: '',
           useResultAnnotation: true,
-          returnType: const TypeNormal(name: 'graphql_type.GraphQLRootObjectType'),
+          returnType:
+              const TypeNormal(name: 'graphql_type.GraphQLRootObjectType'),
           parameters: const IListConst([]),
           statements: IList([
             StatementReturn(
               ExprEnumValue(
                 typeName: 'graphql_type.GraphQLRootObjectType',
-                valueName: type.type == GraphQLRootObjectType.query ? 'query' : 'mutation',
+                valueName: type.type == GraphQLRootObjectType.query
+                    ? 'query'
+                    : 'mutation',
               ),
             )
           ]),
@@ -164,14 +179,18 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
     fields: IList([
       Field(
         name: 'name',
-        documentationComments: 'この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意! ※Nameという名前の型が定義されていた場合は...想定外',
+        documentationComments:
+            'この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意! ※Nameという名前の型が定義されていた場合は...想定外',
         type: wellknown_type.String,
-        parameterPattern: ParameterPatternNamedWithDefault(ExprStringLiteral(type.name)),
+        parameterPattern: ParameterPatternNamedWithDefault(
+          ExprStringLiteral(IList([StringLiteralItemNormal(type.name)])),
+        ),
       ),
       ...union.possibleTypes.map(
         (possibleType) => Field(
           name: toFirstLowercase(possibleType),
-          documentationComments: typeMap.get(possibleType)?.documentationComments ?? '',
+          documentationComments:
+              typeMap.get(possibleType)?.documentationComments ?? '',
           type: TypeNormal(name: escapeFirstUnderLine(possibleType)),
           parameterPattern: const ParameterPatternNamed(),
         ),
@@ -207,7 +226,12 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
               (possibleType) => ExprCall(
                 functionName: 'query_string.QueryFieldOn',
                 namedArguments: IList([
-                  Tuple2('typeName', ExprStringLiteral(possibleType)),
+                  Tuple2(
+                    'typeName',
+                    ExprStringLiteral(
+                      IList([StringLiteralItemNormal(possibleType)]),
+                    ),
+                  ),
                   Tuple2(
                     'return_',
                     ExprVariable(toFirstLowercase(possibleType)),
@@ -236,7 +260,7 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
         returnType: wellknown_type.String,
         statements: IList([
           StatementReturn(ExprStringLiteral(
-            type.documentationComments,
+            IList([StringLiteralItemNormal(type.documentationComments)]),
           ))
         ]),
       ),
@@ -263,7 +287,8 @@ ClassDeclaration _graphQLTypeFieldClass(
   GraphQLField field,
   IMap<String, GraphQLTypeDeclaration> typeMap,
 ) {
-  final description = '${field.description}\n\ntype: `${field.type.toDartType(true).toCodeString()}`';
+  final description =
+      '${field.description}\n\ntype: `${field.type.toDartType(true).toCodeString()}`';
   final returnField = Field(
     name: 'return_',
     documentationComments: '',
@@ -342,10 +367,17 @@ Method _toFieldMethod(
                       className: 'query_string.QueryFieldArg',
                       isConst: false,
                       namedArguments: IList([
-                        Tuple2('name', ExprStringLiteral(arg.name)),
+                        Tuple2(
+                          'name',
+                          ExprStringLiteral(
+                            IList([StringLiteralItemNormal(arg.name)]),
+                          ),
+                        ),
                         Tuple2(
                           'input',
-                          ExprCall(functionName: _fieldQueryInputMethodName(arg.name)),
+                          ExprCall(
+                            functionName: _fieldQueryInputMethodName(arg.name),
+                          ),
                         ),
                       ]),
                     ),
@@ -368,10 +400,13 @@ Expr _queryFieldFieldExprConstructor(
   return ExprConstructor(
     className: 'query_string.QueryFieldField',
     isConst: true,
-    positionalArguments: IList([ExprStringLiteral(fieldName)]),
+    positionalArguments: IList([
+      ExprStringLiteral(IList([StringLiteralItemNormal(fieldName)]))
+    ]),
     namedArguments: IList([
       if (args != null) Tuple2('args', args),
-      Tuple2('description', ExprStringLiteral(description)),
+      Tuple2('description',
+          ExprStringLiteral(IList([StringLiteralItemNormal(description)]))),
       Tuple2('return_', return_),
     ]),
   );
@@ -383,7 +418,9 @@ Expr _toFieldMethodReturn(
 ) {
   final typeData = typeMap.get(type.name);
   if (typeData == null) {
-    return const ExprStringLiteral('<error> type not found');
+    return const ExprStringLiteral(
+      IListConst([StringLiteralItemNormal('<error> type not found')]),
+    );
   }
   final annotation = Annotation.fromDocumentationComments(
     typeData.documentationComments,
@@ -395,7 +432,11 @@ Expr _toFieldMethodReturn(
       enumFunc: (_) => ExprConstructor(
         className: 'query_string.GraphQLOutputTypeNotObject',
         isConst: true,
-        positionalArguments: IList([ExprStringLiteral(typeData.name)]),
+        positionalArguments: IList([
+          ExprStringLiteral(
+            IListConst([StringLiteralItemNormal(typeData.name)]),
+          )
+        ]),
       ),
       objectFunc: (_) => const ExprConstructor(
         className: 'query_string.GraphQLOutputTypeObject',
@@ -449,7 +490,9 @@ Expr _toFieldMethodReturn(
           ),
         );
       },
-      inputObjectFunc: (_) => const ExprStringLiteral('<error> return dose not support input object'),
+      inputObjectFunc: (_) => const ExprStringLiteral(IListConst([
+        StringLiteralItemNormal('<error> return dose not support input object')
+      ])),
     ),
   );
 }
@@ -458,7 +501,9 @@ Expr _exprGraphQLOutputTypeNotObject(String typeName) {
   return ExprConstructor(
     className: 'query_string.GraphQLOutputTypeNotObject',
     isConst: true,
-    positionalArguments: IList([ExprStringLiteral(typeName)]),
+    positionalArguments: IList([
+      ExprStringLiteral(IListConst([StringLiteralItemNormal(typeName)]))
+    ]),
   );
 }
 
@@ -472,7 +517,8 @@ Expr _fieldMethodReturnObject(
     isConst: true,
     positionalArguments: IList([
       graphQLOutputTypeObjectExpr,
-      ExprEnumValue(typeName: 'graphql_type.ListType', valueName: listType.name),
+      ExprEnumValue(
+          typeName: 'graphql_type.ListType', valueName: listType.name),
       ExprBool(isNullable),
     ]),
   );

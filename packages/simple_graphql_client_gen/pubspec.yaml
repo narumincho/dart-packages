@@ -1,7 +1,7 @@
 name: simple_graphql_client_gen
 description: simple_graphql_client_gen
 repository: https://github.com/narumincho/dart-packages/packages/simple_graphql_client_gen
-version: "0.0.2"
+version: "0.0.3"
 environment:
   sdk: ">=2.17.0 <3.0.0"
 dependencies:
@@ -10,4 +10,4 @@ dependencies:
   meta: ">=1.8.0 <2.0.0"
   narumincho_json: ^0.0.1
   narumincho_util: ^0.0.3
-  simple_dart_code_gen: ^0.1.0
+  simple_dart_code_gen: ^0.2.0

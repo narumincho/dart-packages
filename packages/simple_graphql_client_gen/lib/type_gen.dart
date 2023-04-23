@@ -11,7 +11,8 @@ SimpleDartCode generateTypeCode(IList<GraphQLTypeDeclaration> typeList) {
   return SimpleDartCode(
     importPackageAndFileNames: const IListConst([
       ImportPackageFileNameAndAsName(
-        packageAndFileName: 'package:simple_graphql_client_gen/query_string.dart',
+        packageAndFileName:
+            'package:simple_graphql_client_gen/query_string.dart',
         asName: 'query_string',
       ),
       ImportPackageFileNameAndAsName(
@@ -31,7 +32,10 @@ IList<Declaration> _generateDeclarationList(
   IList<GraphQLTypeDeclaration> typeList,
 ) {
   return typeList.mapAndRemoveNull((type) {
-    if (type.name == 'String' || type.name == 'Boolean' || type.name == 'Float' || type.name == 'Int') {
+    if (type.name == 'String' ||
+        type.name == 'Boolean' ||
+        type.name == 'Float' ||
+        type.name == 'Int') {
       return null;
     }
     return type.body.match(
@@ -115,7 +119,9 @@ EnumDeclaration _graphQLEnumToDartEnumDeclaration(
             ),
             IList(enumBody.enumValueList.map(
               (enumValue) => Tuple2(
-                ExprStringLiteral(enumValue.name),
+                ExprStringLiteral(
+                  IListConst([StringLiteralItemNormal(enumValue.name)]),
+                ),
                 IList([
                   StatementReturn(ExprEnumValue(
                     typeName: escapeFirstUnderLine(type.name),
@@ -125,8 +131,8 @@ EnumDeclaration _graphQLEnumToDartEnumDeclaration(
               ),
             )),
           ),
-          StatementThrow(wellknown_expr.Exception(ExprOperator(
-            ExprStringLiteral('unknown Enum Value. typeName ' +
+          StatementThrow(wellknown_expr.Exception(ExprStringLiteral(IList([
+            StringLiteralItemNormal('unknown Enum Value. typeName ' +
                 type.name +
                 '. expected ' +
                 enumBody.enumValueList
@@ -135,12 +141,11 @@ EnumDeclaration _graphQLEnumToDartEnumDeclaration(
                     )
                     .safeJoin(' or ') +
                 '. but got '),
-            Operator.add,
-            ExprMethodCall(
+            StringLiteralItemInterpolation(ExprMethodCall(
               variable: ExprVariable('jsonValue'),
               methodName: 'asStringOrThrow',
-            ),
-          )))
+            )),
+          ]))))
         ]),
       )
     ]),
@@ -271,10 +276,12 @@ ClassDeclaration _graphQLTypeInputObjectClass(
           (field) => ExprCall(
             functionName: 'Tuple2',
             positionalArguments: IList([
-              ExprStringLiteral(field.name),
+              ExprStringLiteral(IList([StringLiteralItemNormal(field.name)])),
               fieldQueryInputMethodFuncReturnExpr(
                 field.type,
-                ExprVariable(field.type.isNullable ? getValueName(field.name) : field.name),
+                ExprVariable(field.type.isNullable
+                    ? getValueName(field.name)
+                    : field.name),
               ),
             ]),
           ),
@@ -342,10 +349,14 @@ ClassDeclaration _graphQLTypeInputObjectClass(
                   ExprMapLiteral(IList(
                     inputObject.fields.map(
                       (field) => Tuple2(
-                        ExprStringLiteral(field.name),
+                        ExprStringLiteral(
+                          IList([StringLiteralItemNormal(field.name)]),
+                        ),
                         toJsonValueExpr(
                           field.type,
-                          ExprVariable(field.type.isNullable ? getValueName(field.name) : field.name),
+                          ExprVariable(field.type.isNullable
+                              ? getValueName(field.name)
+                              : field.name),
                         ),
                       ),
                     ),
@@ -385,7 +396,8 @@ ClassDeclaration _annotationTextClassDeclaration(
     methods: IList([
       Method(
         name: 'fromString',
-        documentationComments: 'String から 前後の空白と空白の連続を取り除き, 文字数 ${text.maxLength}文字以内の条件を満たすかバリデーションして変換する. 変換できない場合は null が返される',
+        documentationComments:
+            'String から 前後の空白と空白の連続を取り除き, 文字数 ${text.maxLength}文字以内の条件を満たすかバリデーションして変換する. 変換できない場合は null が返される',
         useResultAnnotation: true,
         methodType: MethodType.static,
         parameters: const IListConst([
@@ -395,7 +407,8 @@ ClassDeclaration _annotationTextClassDeclaration(
             parameterPattern: ParameterPatternPositional(),
           )
         ]),
-        returnType: TypeNormal(name: escapeFirstUnderLine(type.name), isNullable: true),
+        returnType:
+            TypeNormal(name: escapeFirstUnderLine(type.name), isNullable: true),
         statements: IList([
           StatementFinal(
             variableName: 'normalized',
@@ -498,7 +511,8 @@ ClassDeclaration _annotationTokenClassDeclaration(GraphQLTypeDeclaration type) {
     fields: const IListConst([
       Field(
         name: 'value',
-        documentationComments: '内部表現の文字列. 例: `c1f6dba3586d4fcbbbe2e3edb67667e10ccb03b9ade741478fe8d656bba9a79d`',
+        documentationComments:
+            '内部表現の文字列. 例: `c1f6dba3586d4fcbbbe2e3edb67667e10ccb03b9ade741478fe8d656bba9a79d`',
         type: wellknown_type.String,
         parameterPattern: ParameterPatternPositional(),
       ),
@@ -519,7 +533,8 @@ ClassDeclaration _annotationTokenClassDeclaration(GraphQLTypeDeclaration type) {
             parameterPattern: ParameterPatternPositional(),
           )
         ]),
-        returnType: TypeNormal(name: escapeFirstUnderLine(type.name), isNullable: true),
+        returnType:
+            TypeNormal(name: escapeFirstUnderLine(type.name), isNullable: true),
         statements: IList([
           const StatementFinal(
             variableName: 'normalized',
@@ -527,7 +542,11 @@ ClassDeclaration _annotationTokenClassDeclaration(GraphQLTypeDeclaration type) {
               variable: ExprConstructor(
                 className: 'RegExp',
                 isConst: false,
-                positionalArguments: IListConst([ExprStringLiteral(r'^[0-9a-f]{64}$')]),
+                positionalArguments: IListConst([
+                  ExprStringLiteral(
+                    IListConst([StringLiteralItemNormal(r'^[0-9a-f]{64}$')]),
+                  )
+                ]),
               ),
               methodName: 'stringMatch',
               positionalArguments: IListConst([ExprVariable('value')]),
@@ -619,7 +638,8 @@ ClassDeclaration _annotationUuidClassDeclaration(GraphQLTypeDeclaration type) {
     fields: const IListConst([
       Field(
         name: valueName,
-        documentationComments: '内部表現の文字列. 例: `25c8b0b108ad4c0f82be9a5b21ae985f`',
+        documentationComments:
+            '内部表現の文字列. 例: `25c8b0b108ad4c0f82be9a5b21ae985f`',
         type: wellknown_type.String,
         parameterPattern: ParameterPatternPositional(),
       ),
@@ -640,7 +660,8 @@ ClassDeclaration _annotationUuidClassDeclaration(GraphQLTypeDeclaration type) {
             parameterPattern: ParameterPatternPositional(),
           )
         ]),
-        returnType: TypeNormal(name: escapeFirstUnderLine(type.name), isNullable: true),
+        returnType:
+            TypeNormal(name: escapeFirstUnderLine(type.name), isNullable: true),
         statements: IList([
           const StatementFinal(
             variableName: 'normalized',
@@ -648,7 +669,11 @@ ClassDeclaration _annotationUuidClassDeclaration(GraphQLTypeDeclaration type) {
               variable: ExprConstructor(
                 className: 'RegExp',
                 isConst: false,
-                positionalArguments: IListConst([ExprStringLiteral(r'^[0-9a-f]{32}$')]),
+                positionalArguments: IListConst([
+                  ExprStringLiteral(
+                    IListConst([StringLiteralItemNormal(r'^[0-9a-f]{32}$')]),
+                  )
+                ]),
               ),
               methodName: 'stringMatch',
               positionalArguments: IListConst([ExprVariable('value')]),
@@ -745,7 +770,8 @@ Expr fieldQueryInputMethodFuncReturnExpr(
 }
 
 Expr _fieldQueryInputMethodNonNullValue(GraphQLType type, Expr variableExpr) {
-  if (type.listType == ListType.list || type.listType == ListType.listItemNullable) {
+  if (type.listType == ListType.list ||
+      type.listType == ListType.listItemNullable) {
     return ExprCall(
       functionName: 'query_string.QueryInputArray',
       positionalArguments: IList([
@@ -778,7 +804,8 @@ Expr _fieldQueryInputMethodNonNullValue(GraphQLType type, Expr variableExpr) {
       positionalArguments: IList([variableExpr]),
     );
   }
-  if ((type.name == 'Float' || type.name == 'Int') && type.listType == ListType.notList) {
+  if ((type.name == 'Float' || type.name == 'Int') &&
+      type.listType == ListType.notList) {
     return ExprCall(
       functionName: 'query_string.QueryInputNumber',
       positionalArguments: IList([variableExpr]),

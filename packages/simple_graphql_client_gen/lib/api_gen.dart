@@ -135,7 +135,10 @@ Method _createApiCallMethod(
           functionName: 'graphql_post.graphQLPost',
           namedArguments: IList([
             Tuple2('uri', ExprVariable('origin')),
-            Tuple2('query', ExprStringLiteral(queryCode)),
+            Tuple2(
+              'query',
+              ExprStringLiteral(IList([StringLiteralItemNormal(queryCode)])),
+            ),
             if (variableList.isNotEmpty)
               Tuple2(
                 'variables',
@@ -146,7 +149,9 @@ Method _createApiCallMethod(
                     ExprMapLiteral(
                       IList(variableList.map(
                         (variable) => Tuple2(
-                          ExprStringLiteral(variable.name),
+                          ExprStringLiteral(
+                            IList([StringLiteralItemNormal(variable.name)]),
+                          ),
                           toJsonValueExpr(
                               variable.type, ExprVariable(variable.name)),
                         ),
@@ -182,7 +187,10 @@ Method _createApiCallMethod(
             ExprVariable('data'), Operator.equal, ExprNull()),
         thenStatement: IList([
           StatementThrow(wellknown_expr.Exception(
-            ExprStringLiteral(apiName + ' response data empty'),
+            ExprStringLiteral(
+              IList(
+                  [StringLiteralItemNormal(apiName + ' response data empty')]),
+            ),
           )),
         ]),
       ),
@@ -287,8 +295,11 @@ Method _fromJsonValueMethodObject(
                 ExprMethodCall(
                   variable: const ExprVariable('value'),
                   methodName: 'getObjectValueOrThrow',
-                  positionalArguments:
-                      IList([ExprStringLiteral(field.fieldName)]),
+                  positionalArguments: IList([
+                    ExprStringLiteral(
+                      IList([StringLiteralItemNormal(field.fieldName)]),
+                    )
+                  ]),
                 ),
               ),
             ),
@@ -309,7 +320,11 @@ Method _fromJsonValueMethodUnion(String typeName, IList<QueryFieldOn> onList) {
           variable: ExprMethodCall(
             variable: ExprVariable('value'),
             methodName: 'getObjectValueOrThrow',
-            positionalArguments: IListConst([ExprStringLiteral('__typename')]),
+            positionalArguments: IListConst([
+              ExprStringLiteral(
+                IListConst([StringLiteralItemNormal('__typename')]),
+              )
+            ]),
           ),
           methodName: 'asStringOrThrow',
         ),
@@ -319,7 +334,9 @@ Method _fromJsonValueMethodUnion(String typeName, IList<QueryFieldOn> onList) {
         IList(
           onList.map(
             (pattern) => Tuple2(
-              ExprStringLiteral(pattern.typeName),
+              ExprStringLiteral(
+                IList([StringLiteralItemNormal(pattern.typeName)]),
+              ),
               IList([
                 StatementReturn(
                   _graphQLObjectTypeToFromJsonValueExpr(
@@ -333,12 +350,11 @@ Method _fromJsonValueMethodUnion(String typeName, IList<QueryFieldOn> onList) {
         ),
       ),
       StatementThrow(wellknown_expr.Exception(
-        ExprOperator(
-          ExprStringLiteral(
+        ExprStringLiteral(IList([
+          StringLiteralItemNormal(
               'invalid __typename in ' + typeName + '. __typename='),
-          Operator.add,
-          const ExprVariable('typeName'),
-        ),
+          const StringLiteralItemInterpolation(ExprVariable('typeName')),
+        ])),
       ))
     ]),
   );

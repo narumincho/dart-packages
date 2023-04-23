@@ -83,9 +83,13 @@ class GraphQLField {
   static GraphQLField fromJsonValue(JsonValue value) {
     return GraphQLField(
       name: value.getObjectValueOrThrow('name').asStringOrThrow(),
-      type: _graphQLTypeRefJsonToGraphQLType(value.getObjectValueOrThrow('type')),
-      args: value.getObjectValueOrThrow('args').asArrayOrThrow(GraphQLInputValue.fromJsonValue),
-      description: value.getObjectValueOrThrow('description').asStringOrNull() ?? '',
+      type:
+          _graphQLTypeRefJsonToGraphQLType(value.getObjectValueOrThrow('type')),
+      args: value
+          .getObjectValueOrThrow('args')
+          .asArrayOrThrow(GraphQLInputValue.fromJsonValue),
+      description:
+          value.getObjectValueOrThrow('description').asStringOrNull() ?? '',
     );
   }
 }
@@ -104,8 +108,10 @@ class GraphQLInputValue {
   static GraphQLInputValue fromJsonValue(JsonValue value) {
     return GraphQLInputValue(
       name: value.getObjectValueOrThrow('name').asStringOrThrow(),
-      description: value.getObjectValueOrThrow('description').asStringOrNull() ?? '',
-      type: _graphQLTypeRefJsonToGraphQLType(value.getObjectValueOrThrow('type')),
+      description:
+          value.getObjectValueOrThrow('description').asStringOrNull() ?? '',
+      type:
+          _graphQLTypeRefJsonToGraphQLType(value.getObjectValueOrThrow('type')),
     );
   }
 }
@@ -157,7 +163,7 @@ class GraphQLType {
       namedArguments: IList([
         Tuple2(
           'name',
-          ExprStringLiteral(name),
+          ExprStringLiteral(IList([StringLiteralItemNormal(name)])),
         ),
         Tuple2(
           'isNullable',
@@ -165,7 +171,8 @@ class GraphQLType {
         ),
         Tuple2(
           'listType',
-          ExprEnumValue(typeName: 'graphql_type.ListType', valueName: listType.name),
+          ExprEnumValue(
+              typeName: 'graphql_type.ListType', valueName: listType.name),
         ),
       ]),
     );
@@ -256,12 +263,15 @@ class GraphQLTypeBodyScaler extends GraphQLTypeBody {
 GraphQLType _graphQLTypeRefJsonToGraphQLType(JsonValue value) {
   final kind = value.getObjectValueOrThrow('kind').asStringOrThrow();
   if (kind == 'NON_NULL') {
-    final child = _graphQLTypeRefJsonToGraphQLType(value.getObjectValueOrThrow('ofType'));
+    final child =
+        _graphQLTypeRefJsonToGraphQLType(value.getObjectValueOrThrow('ofType'));
 
-    return GraphQLType(name: child.name, isNullable: false, listType: child.listType);
+    return GraphQLType(
+        name: child.name, isNullable: false, listType: child.listType);
   }
   if (kind == 'LIST') {
-    final child = _graphQLTypeRefJsonToGraphQLType(value.getObjectValueOrThrow('ofType'));
+    final child =
+        _graphQLTypeRefJsonToGraphQLType(value.getObjectValueOrThrow('ofType'));
 
     return GraphQLType(
       name: child.name,
