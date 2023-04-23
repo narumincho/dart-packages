@@ -4,7 +4,6 @@ import 'package:dart_style/dart_style.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 import 'package:narumincho_util/narumincho_util.dart';
-import 'package:simple_dart_code_gen/wellknown_expr.dart' as wellknown_expr;
 import 'package:simple_dart_code_gen/wellknown_type.dart' as wellknown_type;
 
 @immutable
