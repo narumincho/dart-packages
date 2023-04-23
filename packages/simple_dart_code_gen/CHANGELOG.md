@@ -1,3 +1,9 @@
+## 0.2.2
+
+- remove
+  `ignore_for_file: prefer_interpolation_to_compose_strings, always_use_package_imports, unnecessary_parenthesis`
+  (Have the user run dart fix --apply)
+
 ## 0.2.1
 
 - fix string literal interpolation (`'$varNameNotVarName'`) →

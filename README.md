@@ -33,3 +33,10 @@ click simple_dart_code_gen "https://github.com/narumincho/dart-packages/tree/mai
 click simple_graphql_client_gen "https://github.com/narumincho/dart-packages/tree/main/packages/simple_graphql_client_gen"
 ```
 
+## Development
+
+### lint
+
+```
+dart fix --apply
+```
