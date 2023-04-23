@@ -5,7 +5,7 @@ on:
 
 jobs:
   flutter-test:
-    name: Flutter Test
+    name: test and analyze
     runs-on: ubuntu-22.04
     steps:
       - name: checkout repository
@@ -13,7 +13,12 @@ jobs:
 
       - uses: dart-lang/setup-dart@v1
       - run: dart pub get
-      - run: dart test
+      - run: dart test ./test/test.dart
+        working-directory: packages/narumincho_json
+      - run: dart test ./test/test.dart
+        working-directory: packages/narumincho_util
+      - run: dart test ./test/test.dart
+        working-directory: packages/simple_dart_code_gen
       - name: Analyze Flutter
         uses: ValentinVignal/action-dart-analyze@v0.15
         with:
