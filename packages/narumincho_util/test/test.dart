@@ -43,4 +43,29 @@ void main() {
   test('toFirstUppercase empty', () {
     expect(toFirstUppercase(''), '');
   });
+
+  test('uriAbsolute top', () {
+    expect(uriAbsolute(pathSegments: []).toString(), '/');
+  });
+
+  test('uriAbsolute pathSegments', () {
+    expect(
+      uriAbsolute(pathSegments: ['project', '4e00952222a74177b2586bfb89cb5ca7'])
+          .toString(),
+      '/project/4e00952222a74177b2586bfb89cb5ca7',
+    );
+  });
+
+  test('uriAbsolute queryParameters', () {
+    expect(
+      uriAbsolute(
+          pathSegments: ['path'],
+          queryParameters: const IMapConst({
+            'position': 'left',
+            'empty': '',
+            '': 'emptyValue',
+          })).toString(),
+      '/path?position=left&empty&=emptyValue',
+    );
+  });
 }
