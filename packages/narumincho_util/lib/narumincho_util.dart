@@ -121,6 +121,8 @@ IList<Tuple2<T, T>> splitOverlappingTuple2<T>(Iterable<T> iterable) {
 /// uriAbsolute(pathSegments: ['project', '4e00952222a74177b2586bfb89cb5ca7']) // '/project/4e00952222a74177b2586bfb89cb5ca7'
 /// uriAbsolute(pathSegments: ['path'], queryParameters: IMap({'position': 'left', 'empty': '', '': 'emptyValue'})) // '/path?position=left&empty&=emptyValue'
 /// ```
+///
+/// see https://zenn.dev/koji_1009/articles/d86f1bcc775af3
 Uri uriAbsolute({
   required Iterable<String> pathSegments,
   IMap<String, String>? queryParameters,
