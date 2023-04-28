@@ -11,3 +11,5 @@ dependencies:
   narumincho_json: ^0.0.1
   narumincho_util: ^0.0.3
   simple_dart_code_gen: ^0.2.0
+dev_dependencies:
+  test: ^1.24.2

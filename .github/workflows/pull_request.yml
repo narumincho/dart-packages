@@ -19,6 +19,8 @@ jobs:
         working-directory: packages/narumincho_util
       - run: dart test ./test/test.dart
         working-directory: packages/simple_dart_code_gen
+      - run: dart test ./test/test.dart
+        working-directory: packages/simple_graphql_client_gen
       - name: Analyze Flutter
         uses: ValentinVignal/action-dart-analyze@v0.15
         with:
