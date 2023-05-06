@@ -8,12 +8,14 @@ import 'package:meta/meta.dart';
 abstract class JsonValue {
   const JsonValue();
 
-  /// JSON の文字列から変換する. JSONとして正常な文字列でない場合はおそらく実行時エラーを発生させる
+  /// JSON の文字列から変換する. JSONとして正常な文字列でない場合は[FormatException]を発生させる
+  @useResult
   static JsonValue decode(String jsonAsString) {
     return JsonValue.fromDynamic(json.decode(jsonAsString));
   }
 
   /// dart の値から変換する. 基本的に使わない
+  @useResult
   static JsonValue fromDynamic(dynamic value) {
     if (value is String) {
       return JsonString(value);
@@ -45,12 +47,14 @@ abstract class JsonValue {
   }
 
   /// JSON の文字列に変換する
+  @useResult
   String encode() {
     return json.encode(toDartObjectOrNull());
   }
 
   /// dart の オブジェクトに変換する. 基本的に使わない
   /// テストの比較のときに使うと便利かも
+  @useResult
   Object? toDartObjectOrNull() {
     final value = this;
     if (value is JsonString) {
@@ -79,6 +83,7 @@ abstract class JsonValue {
     return null;
   }
 
+  @useResult
   String? asStringOrNull() {
     final value = this;
     if (value is JsonString) {
@@ -87,6 +92,7 @@ abstract class JsonValue {
     return null;
   }
 
+  @useResult
   bool? asBoolOrNull() {
     final value = this;
     if (value is JsonBoolean) {
@@ -95,6 +101,7 @@ abstract class JsonValue {
     return null;
   }
 
+  @useResult
   double? asDoubleOrNull() {
     final value = this;
     if (value is Json64bitFloat) {
@@ -103,6 +110,7 @@ abstract class JsonValue {
     return null;
   }
 
+  @useResult
   JsonObject? asJsonObjectOrNull() {
     final value = this;
     if (value is JsonObject) {
@@ -111,58 +119,66 @@ abstract class JsonValue {
     return null;
   }
 
+  @useResult
   JsonValue getObjectValueOrThrow(String key) {
     return getObjectOrThrow().getValueByKeyOrThrow(key);
   }
 
+  @useResult
   JsonValue? getObjectValueOrNull(String key) {
     return asJsonObjectOrNull()?.getValueByKeyOrNull(key);
   }
 
+  @useResult
   String asStringOrThrow() {
     final value = asStringOrNull();
     if (value == null) {
       throw Exception(
-        'json error: expected string but got ${encode()}',
+        'json error: expected string but got ' + encode(),
       );
     }
     return value;
   }
 
+  @useResult
   bool asBoolOrThrow() {
     final value = asBoolOrNull();
     if (value == null) {
       throw Exception(
-        'json error: expected boolean but got ${encode()}',
+        'json error: expected boolean but got ' + encode(),
       );
     }
     return value;
   }
 
+  @useResult
   double asDoubleOrThrow() {
     final value = asDoubleOrNull();
     if (value == null) {
       throw Exception(
-        'json error: expected number but got ${encode()}',
+        'json error: expected number but got ' + encode(),
       );
     }
     return value;
   }
 
+  @useResult
   JsonObject getObjectOrThrow() {
     final value = this;
     if (value is JsonObject) {
       return value;
     }
     throw Exception(
-      'json error: expected object but got ${encode()}',
+      'json error: expected object but got ' + encode(),
     );
   }
 
+  @useResult
   bool isNull() {
     return this is JsonNull;
   }
 
+  @useResult
   IList<JsonValue>? getAsArray() {
     final value = this;
     if (value is JsonArray) {
@@ -171,6 +187,7 @@ abstract class JsonValue {
     return null;
   }
 
+  @useResult
   IList<T>? getAsArrayWithDecoder<T>(T? Function(JsonValue) decoder) {
     final jsonArray = getAsArray();
     if (jsonArray == null) {
@@ -187,13 +204,24 @@ abstract class JsonValue {
     return IList(result);
   }
 
+  @useResult
   IList<T> asArrayOrThrow<T>(T Function(JsonValue) decoder) {
     final jsonArray = getAsArray();
     if (jsonArray == null) {
-      throw Exception('json decode error: expected array but got ${encode()}');
+      throw Exception('json decode error: expected array but got ' + encode());
     }
     return IList(jsonArray.map(decoder));
   }
+
+  @useResult
+  T match<T>({
+    required T Function(JsonString string) string,
+    required T Function(JsonBoolean boolean) boolean,
+    required T Function(Json64bitFloat number) number,
+    required T Function(JsonObject object) object,
+    required T Function(JsonArray array) array,
+    required T Function(JsonNull jsonNull) jsonNull,
+  });
 }
 
 @immutable
@@ -208,6 +236,18 @@ class JsonString extends JsonValue {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  T match<T>({
+    required T Function(JsonString string) string,
+    required T Function(JsonBoolean boolean) boolean,
+    required T Function(Json64bitFloat number) number,
+    required T Function(JsonObject object) object,
+    required T Function(JsonArray array) array,
+    required T Function(JsonNull jsonNull) jsonNull,
+  }) {
+    return string(this);
+  }
 }
 
 @immutable
@@ -222,6 +262,18 @@ class JsonBoolean extends JsonValue {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  T match<T>({
+    required T Function(JsonString string) string,
+    required T Function(JsonBoolean boolean) boolean,
+    required T Function(Json64bitFloat number) number,
+    required T Function(JsonObject object) object,
+    required T Function(JsonArray array) array,
+    required T Function(JsonNull jsonNull) jsonNull,
+  }) {
+    return boolean(this);
+  }
 }
 
 @immutable
@@ -236,6 +288,18 @@ class Json64bitFloat extends JsonValue {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  T match<T>({
+    required T Function(JsonString string) string,
+    required T Function(JsonBoolean boolean) boolean,
+    required T Function(Json64bitFloat number) number,
+    required T Function(JsonObject object) object,
+    required T Function(JsonArray array) array,
+    required T Function(JsonNull jsonNull) jsonNull,
+  }) {
+    return number(this);
+  }
 }
 
 @immutable
@@ -251,11 +315,12 @@ class JsonObject extends JsonValue {
   @override
   int get hashCode => value.hashCode;
 
+  @useResult
   JsonValue getValueByKeyOrThrow(String key) {
     final objectValue = getValueByKeyOrNull(key);
     if (objectValue == null) {
       throw Exception(
-        'json error: expected { "$key": ??, ... } but got ${encode()}',
+        'json error: expected { "$key": ??, ... } but got ' + encode(),
       );
     }
     return objectValue;
@@ -263,6 +328,18 @@ class JsonObject extends JsonValue {
 
   JsonValue? getValueByKeyOrNull(String key) {
     return value[key];
+  }
+
+  @override
+  T match<T>({
+    required T Function(JsonString string) string,
+    required T Function(JsonBoolean boolean) boolean,
+    required T Function(Json64bitFloat number) number,
+    required T Function(JsonObject object) object,
+    required T Function(JsonArray array) array,
+    required T Function(JsonNull jsonNull) jsonNull,
+  }) {
+    return object(this);
   }
 }
 
@@ -277,6 +354,18 @@ class JsonNull extends JsonValue {
 
   @override
   int get hashCode => null.hashCode;
+
+  @override
+  T match<T>({
+    required T Function(JsonString string) string,
+    required T Function(JsonBoolean boolean) boolean,
+    required T Function(Json64bitFloat number) number,
+    required T Function(JsonObject object) object,
+    required T Function(JsonArray array) array,
+    required T Function(JsonNull jsonNull) jsonNull,
+  }) {
+    return jsonNull(this);
+  }
 }
 
 @immutable
@@ -294,4 +383,16 @@ class JsonArray extends JsonValue {
 
   @override
   int get hashCode => null.hashCode;
+
+  @override
+  T match<T>({
+    required T Function(JsonString string) string,
+    required T Function(JsonBoolean boolean) boolean,
+    required T Function(Json64bitFloat number) number,
+    required T Function(JsonObject object) object,
+    required T Function(JsonArray array) array,
+    required T Function(JsonNull jsonNull) jsonNull,
+  }) {
+    return array(this);
+  }
 }
