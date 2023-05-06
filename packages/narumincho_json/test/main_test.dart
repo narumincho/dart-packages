@@ -142,4 +142,13 @@ void main() {
       }),
     );
   });
+
+  test('decode format error', () {
+    expect(
+      () {
+        final _ = JsonValue.decode('json として不正な文字列');
+      },
+      throwsA(isA<FormatException>()),
+    );
+  });
 }
