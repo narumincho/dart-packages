@@ -1,0 +1,11 @@
+image:
+  file: .gitpod.Dockerfile
+
+vscode:
+  extensions:
+    - mhutchie.git-graph
+    - streetsidesoftware.code-spell-checker
+    - Dart-Code.dart-code
+
+tasks:
+  - init: dart pub get
