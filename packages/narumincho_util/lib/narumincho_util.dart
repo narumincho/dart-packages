@@ -94,24 +94,21 @@ String toFirstUppercase(String str) {
 /// 重複ありでリストを2つの要素ずつ取り出したリストを返す
 ///
 /// ```dart
-/// splitOverlappingTuple2(['a', 'b', 'c']) // IList([Tuple2('a', 'b'), Tuple2('b', 'c')])
+/// splitOverlappingTuple2(['a', 'b', 'c']) // IList([('a', 'b'), ('b', 'c')])
 /// ```
 @useResult
-IList<Tuple2<T, T>> splitOverlappingTuple2<T>(Iterable<T> iterable) {
+IList<(T, T)> splitOverlappingTuple2<T>(Iterable<T> iterable) {
   final firstOrNull = iterable.firstOrNull;
   if (firstOrNull == null) {
     return const IListConst([]);
   }
-  return iterable
-      .skip(1)
-      .fold<Tuple2<T, IList<Tuple2<T, T>>>>(
-        Tuple2(firstOrNull, const IListConst([])),
-        (value, element) => Tuple2(
-          element,
-          IList([...value.second, Tuple2(value.first, element)]),
-        ),
-      )
-      .second;
+  return iterable.skip(1).fold<({T prevItem, IList<(T, T)> list})>(
+    (prevItem: firstOrNull, list: const IListConst([])),
+    (value, element) => (
+      prevItem: element,
+      list: IList([...value.list, (value.prevItem, element)]),
+    ),
+  ).list;
 }
 
 /// `/` から始まる絶対パスを作成する

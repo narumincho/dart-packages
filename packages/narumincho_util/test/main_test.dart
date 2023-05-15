@@ -18,7 +18,7 @@ void main() {
   test('splitOverlappingTuple2', () {
     expect(
       splitOverlappingTuple2(['a', 'b', 'c']),
-      const IListConst([Tuple2('a', 'b'), Tuple2('b', 'c')]),
+      const IListConst([('a', 'b'), ('b', 'c')]),
     );
   });
 
