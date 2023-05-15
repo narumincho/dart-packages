@@ -2,6 +2,6 @@ name: dart_package_root
 publish_to: none
 
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 dev_dependencies:
-  lints: ^2.0.1
+  lints: ^2.1.0
