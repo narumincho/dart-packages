@@ -219,14 +219,12 @@ class ClassDeclaration extends Declaration {
           className: name,
           isConst: false,
           namedArguments: IList(fields.mapAndRemoveNull(
-            (field) {
-              if (field.parameterPattern is ParameterPatternPositional) {
-                return null;
-              }
-              return Tuple2(
-                field.name,
-                copyWithFieldExpr(field.name, field.type),
-              );
+            (field) => switch (field.parameterPattern) {
+              ParameterPatternPositional() => null,
+              _ => (
+                  field.name,
+                  copyWithFieldExpr(field.name, field.type),
+                )
             },
           )),
           positionalArguments: IList(fields.mapAndRemoveNull(
@@ -253,8 +251,9 @@ class ClassDeclaration extends Declaration {
           name: field.name,
           type: TypeFunction(
             returnType: field.type,
-            parameters: IList(
-                [Tuple2('prev' + toFirstUppercase(field.name), field.type)]),
+            parameters: IList([
+              (name: 'prev' + toFirstUppercase(field.name), type: field.type)
+            ]),
             isNullable: true,
           ),
           parameterPattern: ParameterPatternNamedWithDefault(ExprNull()),
@@ -265,25 +264,26 @@ class ClassDeclaration extends Declaration {
         StatementReturn(ExprConstructor(
           className: name,
           isConst: false,
-          namedArguments: IList(fields.mapAndRemoveNull(
-            (field) {
-              if (field.parameterPattern is ParameterPatternPositional) {
-                return null;
-              }
-              return Tuple2(
-                field.name,
-                updateFieldsFieldExpr(field.name, field.type),
-              );
-            },
-          )),
-          positionalArguments: IList(fields.mapAndRemoveNull(
-            (field) => field.parameterPattern.match(
-              positional: (positional) =>
-                  updateFieldsFieldExpr(field.name, field.type),
-              named: (named) => null,
-              namedWithDefault: (namedWithDefault) => null,
+          namedArguments: IList(
+            fields.mapAndRemoveNull(
+              (field) => switch (field.parameterPattern) {
+                ParameterPatternPositional() => null,
+                _ => (
+                    field.name,
+                    updateFieldsFieldExpr(field.name, field.type),
+                  )
+              },
             ),
-          )),
+          ),
+          positionalArguments: IList(
+            fields.mapAndRemoveNull(
+              (field) => switch (field.parameterPattern) {
+                ParameterPatternPositional() =>
+                  updateFieldsFieldExpr(field.name, field.type),
+                _ => null,
+              },
+            ),
+          ),
         ))
       ]),
     );
@@ -360,26 +360,23 @@ class ClassDeclaration extends Declaration {
 
   Method toStringMethod() {
     final namedCodeList = fields.expand<StringLiteralItem>((field) {
-      final text = IListConst([
-        StringLiteralItemNormal(field.name + ': '),
-        StringLiteralItemInterpolation(ExprVariable(field.name)),
-        StringLiteralItemNormal(', '),
-      ]);
-      return field.parameterPattern.match(
-        positional: (_) => const IListConst([]),
-        named: (_) => text,
-        namedWithDefault: (_) => text,
-      );
+      return switch (field.parameterPattern) {
+        ParameterPatternPositional() => const IListConst([]),
+        _ => IListConst([
+            StringLiteralItemNormal(field.name + ': '),
+            StringLiteralItemInterpolation(ExprVariable(field.name)),
+            StringLiteralItemNormal(', '),
+          ]),
+      };
     });
     final positionalCodeList = fields.expand<StringLiteralItem>(
-      (field) => field.parameterPattern.match(
-        positional: (positional) => [
-          StringLiteralItemInterpolation(ExprVariable(field.name)),
-          StringLiteralItemNormal(', '),
-        ],
-        named: (_) => [],
-        namedWithDefault: (_) => [],
-      ),
+      (field) => switch (field.parameterPattern) {
+        ParameterPatternPositional() => [
+            StringLiteralItemInterpolation(ExprVariable(field.name)),
+            StringLiteralItemNormal(', '),
+          ],
+        _ => [],
+      },
     );
     return Method(
       name: 'toString',
@@ -564,25 +561,25 @@ class Parameter {
   }
 
   String? _positionalArgumentToCodeString(bool isConstructor) {
-    return parameterPattern.match(
-      positional: (_) => _nameWithThis(isConstructor) + ',',
-      named: (_) => null,
-      namedWithDefault: (_) => null,
-    );
+    return switch (parameterPattern) {
+      ParameterPatternPositional() => _nameWithThis(isConstructor) + ',',
+      _ => null,
+    };
   }
 
   String? _namedArgumentToCodeString(bool isConstructor) {
-    return parameterPattern.match(
-      positional: (_) => null,
-      named: (_) => 'required ' + _nameWithThis(isConstructor) + ',',
-      namedWithDefault: (n) =>
-          _nameWithThis(isConstructor) +
-          (n.constDefaultExpr is ExprNull
-              ? ''
-              : '= ' +
-                  n.constDefaultExpr.toCodeAndIsConst().toCodeString(true)) +
-          ',',
-    );
+    return switch (parameterPattern) {
+      ParameterPatternPositional() => null,
+      ParameterPatternNamed() =>
+        'required ' + _nameWithThis(isConstructor) + ',',
+      ParameterPatternNamedWithDefault(:final constDefaultExpr) =>
+        _nameWithThis(isConstructor) +
+            switch (constDefaultExpr) {
+              ExprNull() => '',
+              _ => '= ' + constDefaultExpr.toCodeAndIsConst().toCodeString(true)
+            } +
+            ',',
+    };
   }
 
   String _nameWithThis(bool isConstructor) {
@@ -594,17 +591,12 @@ class Parameter {
 }
 
 @immutable
-abstract class Type {
+sealed class Type {
   String toCodeString();
 
   Type setIsNullable(bool isNullable);
 
   bool getIsNullable();
-
-  T match<T>({
-    required T Function(TypeFunction) typeFunction,
-    required T Function(TypeNormal) typeNormal,
-  });
 }
 
 @immutable
@@ -615,9 +607,7 @@ class TypeFunction implements Type {
     this.isNullable = false,
   });
   final Type returnType;
-
-  /// IList<(name, type)>
-  final IList<Tuple2<String, Type>> parameters;
+  final IList<({String name, Type type})> parameters;
   final bool isNullable;
 
   @override
@@ -626,7 +616,7 @@ class TypeFunction implements Type {
         ' Function(' +
         parameters
             .map((parameter) =>
-                parameter.second.toCodeString() + ' ' + parameter.first)
+                parameter.type.toCodeString() + ' ' + parameter.name)
             .safeJoin(',') +
         ')' +
         (isNullable ? '?' : '');
@@ -644,14 +634,6 @@ class TypeFunction implements Type {
   @override
   bool getIsNullable() {
     return isNullable;
-  }
-
-  @override
-  T match<T>({
-    required T Function(TypeFunction) typeFunction,
-    required T Function(TypeNormal) typeNormal,
-  }) {
-    return typeFunction(this);
   }
 }
 
@@ -699,14 +681,6 @@ class TypeNormal implements Type {
   @override
   bool getIsNullable() {
     return isNullable;
-  }
-
-  @override
-  T match<T>({
-    required T Function(TypeFunction) typeFunction,
-    required T Function(TypeNormal) typeNormal,
-  }) {
-    return typeNormal(this);
   }
 }
 
@@ -881,7 +855,7 @@ class StatementThrow implements Statement {
 
 /// 式
 @immutable
-abstract class Expr {
+sealed class Expr {
   const Expr();
 
   CodeAndIsConst toCodeAndIsConst();
@@ -897,7 +871,7 @@ class ExprCall implements Expr {
   });
   final String functionName;
   final IList<Expr> positionalArguments;
-  final IList<Tuple2<String, Expr>> namedArguments;
+  final IList<(String, Expr)> namedArguments;
   final bool isAwait;
 
   @override
@@ -940,9 +914,12 @@ class ExprStringLiteral implements Expr {
           ? '"' + codeAndIsConstList.map((item) => item.code).safeJoin() + '"'
           : "'" +
               items
-                  .map((item) => item is StringLiteralItemNormal
-                      ? item.toCodeAndIsConst().code.replaceAll("'", r"\'")
-                      : item.toCodeAndIsConst().code)
+                  .map((item) => switch (item) {
+                        StringLiteralItemNormal() =>
+                          item.toCodeAndIsConst().code.replaceAll("'", r"\'"),
+                        StringLiteralItemInterpolation() =>
+                          item.toCodeAndIsConst().code
+                      })
                   .safeJoin() +
               "'",
       isAllConst ? ConstType.implicit : ConstType.noConst,
@@ -951,7 +928,7 @@ class ExprStringLiteral implements Expr {
 }
 
 @immutable
-abstract class StringLiteralItem {
+sealed class StringLiteralItem {
   const StringLiteralItem();
 
   CodeAndIsConst toCodeAndIsConst();
@@ -1030,7 +1007,7 @@ class ExprMethodCall implements Expr {
   final Expr variable;
   final String methodName;
   final IList<Expr> positionalArguments;
-  final IList<Tuple2<String, Expr>> namedArguments;
+  final IList<(String, Expr)> namedArguments;
   final bool optionalChaining;
 
   @override
@@ -1056,7 +1033,7 @@ class ExprConstructor implements Expr {
   });
   final String className;
   final IList<Expr> positionalArguments;
-  final IList<Tuple2<String, Expr>> namedArguments;
+  final IList<(String, Expr)> namedArguments;
   final bool isConst;
 
   @override
@@ -1119,27 +1096,27 @@ class ExprListLiteral implements Expr {
 @immutable
 class ExprMapLiteral implements Expr {
   const ExprMapLiteral(this.items);
-  final IList<Tuple2<Expr, Expr>> items;
+  final IList<({Expr key, Expr value})> items;
 
   @override
   CodeAndIsConst toCodeAndIsConst() {
     final codeAndIsConstIter = items.map(
-      (item) => Tuple2(
-        item.first.toCodeAndIsConst(),
-        item.second.toCodeAndIsConst(),
+      (item) => (
+        key: item.key.toCodeAndIsConst(),
+        value: item.value.toCodeAndIsConst(),
       ),
     );
     final isAllConst = codeAndIsConstIter.every(
-      (item) => item.first.isConst() && item.second.isConst(),
+      (item) => item.key.isConst() && item.value.isConst(),
     );
     return CodeAndIsConst(
       '{' +
           stringListJoinWithComma(
             IList(codeAndIsConstIter.map(
               (item) =>
-                  item.first.toCodeString(!isAllConst) +
+                  item.key.toCodeString(!isAllConst) +
                   ': ' +
-                  item.second.toCodeString(!isAllConst),
+                  item.value.toCodeString(!isAllConst),
             )),
           ) +
           '}',
@@ -1282,14 +1259,14 @@ enum Operator {
 
 CodeAndIsConst _argumentsToString(
   IList<Expr> positionalArguments,
-  IList<Tuple2<String, Expr>> namedArguments,
+  IList<(String, Expr)> namedArguments,
 ) {
   final positionalArgumentsCodeAndIsConst =
       positionalArguments.map((argument) => argument.toCodeAndIsConst());
   final namedArgumentsCodeAndIsConst = namedArguments.map(
     (argument) => Tuple2(
-      argument.first,
-      argument.second.toCodeAndIsConst(),
+      argument.$1,
+      argument.$2.toCodeAndIsConst(),
     ),
   );
   final isAllConst = positionalArgumentsCodeAndIsConst
@@ -1351,55 +1328,22 @@ enum ConstType {
 }
 
 @immutable
-abstract class ParameterPattern {
+sealed class ParameterPattern {
   const ParameterPattern();
-
-  T match<T>({
-    required T Function(ParameterPatternPositional) positional,
-    required T Function(ParameterPatternNamed) named,
-    required T Function(ParameterPatternNamedWithDefault) namedWithDefault,
-  });
 }
 
 @immutable
 class ParameterPatternPositional implements ParameterPattern {
   const ParameterPatternPositional();
-
-  @override
-  T match<T>({
-    required T Function(ParameterPatternPositional) positional,
-    required T Function(ParameterPatternNamed) named,
-    required T Function(ParameterPatternNamedWithDefault) namedWithDefault,
-  }) {
-    return positional(this);
-  }
 }
 
 @immutable
 class ParameterPatternNamed implements ParameterPattern {
   const ParameterPatternNamed();
-
-  @override
-  T match<T>({
-    required T Function(ParameterPatternPositional) positional,
-    required T Function(ParameterPatternNamed) named,
-    required T Function(ParameterPatternNamedWithDefault) namedWithDefault,
-  }) {
-    return named(this);
-  }
 }
 
 @immutable
 class ParameterPatternNamedWithDefault implements ParameterPattern {
   const ParameterPatternNamedWithDefault(this.constDefaultExpr);
   final Expr constDefaultExpr;
-
-  @override
-  T match<T>({
-    required T Function(ParameterPatternPositional) positional,
-    required T Function(ParameterPatternNamed) named,
-    required T Function(ParameterPatternNamedWithDefault) namedWithDefault,
-  }) {
-    return namedWithDefault(this);
-  }
 }
