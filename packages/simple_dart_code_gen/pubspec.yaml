@@ -1,6 +1,6 @@
 name: simple_dart_code_gen
 description: simple_dart_code_gen
-repository: https://github.com/narumincho/dart-packages/packages/simple_dart_code_gen
+repository: https://github.com/narumincho/dart-packages/tree/main/packages/simple_dart_code_gen
 version: "0.2.2"
 environment:
   sdk: ">=3.0.0 <4.0.0"
