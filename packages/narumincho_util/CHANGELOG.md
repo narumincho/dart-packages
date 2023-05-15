@@ -1,3 +1,7 @@
+## 0.1.0
+
+- use dart records (Require Dart 3)
+
 ## 0.0.5
 
 - fix typo SaveJoin → SafeJoin
