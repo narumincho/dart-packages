@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 
 /// `dart:convert` の json が型がゆるいため, 作ったもの
 @immutable
-abstract class JsonValue {
+sealed class JsonValue {
   const JsonValue();
 
   /// JSON の文字列から変換する. JSONとして正常な文字列でない場合は[FormatException]を発生させる
@@ -56,67 +56,54 @@ abstract class JsonValue {
   /// テストの比較のときに使うと便利かも
   @useResult
   Object? toDartObjectOrNull() {
-    final value = this;
-    if (value is JsonString) {
-      return value.value;
-    }
-    if (value is JsonBoolean) {
-      return value.value;
-    }
-    if (value is Json64bitFloat) {
-      return value.value;
-    }
-    if (value is JsonObject) {
-      return value.value
+    return switch (this) {
+      JsonString(value: final value) => value,
+      JsonBoolean(value: final value) => value,
+      Json64bitFloat(value: final value) => value,
+      JsonObject(value: final value) => value
           .map<String, Object?>(
             (key, value) => MapEntry(key, value.toDartObjectOrNull()),
           )
-          .unlock;
-    }
-    if (value is JsonArray) {
-      return value.value
+          .unlock,
+      JsonArray(value: final value) => value
           .map<Object?>(
             (e) => e.toDartObjectOrNull(),
           )
-          .toList(growable: false);
-    }
-    return null;
+          .toList(growable: false),
+      JsonNull() => null
+    };
   }
 
   @useResult
   String? asStringOrNull() {
-    final value = this;
-    if (value is JsonString) {
-      return value.value;
-    }
-    return null;
+    return switch (this) {
+      JsonString(value: final value) => value,
+      _ => null,
+    };
   }
 
   @useResult
   bool? asBoolOrNull() {
-    final value = this;
-    if (value is JsonBoolean) {
-      return value.value;
-    }
-    return null;
+    return switch (this) {
+      JsonBoolean(value: final value) => value,
+      _ => null,
+    };
   }
 
   @useResult
   double? asDoubleOrNull() {
-    final value = this;
-    if (value is Json64bitFloat) {
-      return value.value;
-    }
-    return null;
+    return switch (this) {
+      Json64bitFloat(value: final value) => value,
+      _ => null,
+    };
   }
 
   @useResult
   JsonObject? asJsonObjectOrNull() {
-    final value = this;
-    if (value is JsonObject) {
-      return value;
-    }
-    return null;
+    return switch (this) {
+      JsonObject() && final obj => obj,
+      _ => null,
+    };
   }
 
   @useResult
@@ -164,27 +151,29 @@ abstract class JsonValue {
 
   @useResult
   JsonObject getObjectOrThrow() {
-    final value = this;
-    if (value is JsonObject) {
-      return value;
+    final value = asJsonObjectOrNull();
+    if (value == null) {
+      throw Exception(
+        'json error: expected object but got ' + encode(),
+      );
     }
-    throw Exception(
-      'json error: expected object but got ' + encode(),
-    );
+    return value;
   }
 
   @useResult
   bool isNull() {
-    return this is JsonNull;
+    return switch (this) {
+      JsonNull() => true,
+      _ => false,
+    };
   }
 
   @useResult
   IList<JsonValue>? getAsArray() {
-    final value = this;
-    if (value is JsonArray) {
-      return value.value;
-    }
-    return null;
+    return switch (this) {
+      JsonArray(value: final value) => value,
+      _ => null,
+    };
   }
 
   @useResult
@@ -212,16 +201,6 @@ abstract class JsonValue {
     }
     return IList(jsonArray.map(decoder));
   }
-
-  @useResult
-  T match<T>({
-    required T Function(JsonString string) string,
-    required T Function(JsonBoolean boolean) boolean,
-    required T Function(Json64bitFloat number) number,
-    required T Function(JsonObject object) object,
-    required T Function(JsonArray array) array,
-    required T Function(JsonNull jsonNull) jsonNull,
-  });
 }
 
 @immutable
@@ -236,18 +215,6 @@ class JsonString extends JsonValue {
 
   @override
   int get hashCode => value.hashCode;
-
-  @override
-  T match<T>({
-    required T Function(JsonString string) string,
-    required T Function(JsonBoolean boolean) boolean,
-    required T Function(Json64bitFloat number) number,
-    required T Function(JsonObject object) object,
-    required T Function(JsonArray array) array,
-    required T Function(JsonNull jsonNull) jsonNull,
-  }) {
-    return string(this);
-  }
 }
 
 @immutable
@@ -262,18 +229,6 @@ class JsonBoolean extends JsonValue {
 
   @override
   int get hashCode => value.hashCode;
-
-  @override
-  T match<T>({
-    required T Function(JsonString string) string,
-    required T Function(JsonBoolean boolean) boolean,
-    required T Function(Json64bitFloat number) number,
-    required T Function(JsonObject object) object,
-    required T Function(JsonArray array) array,
-    required T Function(JsonNull jsonNull) jsonNull,
-  }) {
-    return boolean(this);
-  }
 }
 
 @immutable
@@ -288,18 +243,6 @@ class Json64bitFloat extends JsonValue {
 
   @override
   int get hashCode => value.hashCode;
-
-  @override
-  T match<T>({
-    required T Function(JsonString string) string,
-    required T Function(JsonBoolean boolean) boolean,
-    required T Function(Json64bitFloat number) number,
-    required T Function(JsonObject object) object,
-    required T Function(JsonArray array) array,
-    required T Function(JsonNull jsonNull) jsonNull,
-  }) {
-    return number(this);
-  }
 }
 
 @immutable
@@ -329,18 +272,6 @@ class JsonObject extends JsonValue {
   JsonValue? getValueByKeyOrNull(String key) {
     return value[key];
   }
-
-  @override
-  T match<T>({
-    required T Function(JsonString string) string,
-    required T Function(JsonBoolean boolean) boolean,
-    required T Function(Json64bitFloat number) number,
-    required T Function(JsonObject object) object,
-    required T Function(JsonArray array) array,
-    required T Function(JsonNull jsonNull) jsonNull,
-  }) {
-    return object(this);
-  }
 }
 
 @immutable
@@ -354,18 +285,6 @@ class JsonNull extends JsonValue {
 
   @override
   int get hashCode => null.hashCode;
-
-  @override
-  T match<T>({
-    required T Function(JsonString string) string,
-    required T Function(JsonBoolean boolean) boolean,
-    required T Function(Json64bitFloat number) number,
-    required T Function(JsonObject object) object,
-    required T Function(JsonArray array) array,
-    required T Function(JsonNull jsonNull) jsonNull,
-  }) {
-    return jsonNull(this);
-  }
 }
 
 @immutable
@@ -383,16 +302,4 @@ class JsonArray extends JsonValue {
 
   @override
   int get hashCode => null.hashCode;
-
-  @override
-  T match<T>({
-    required T Function(JsonString string) string,
-    required T Function(JsonBoolean boolean) boolean,
-    required T Function(Json64bitFloat number) number,
-    required T Function(JsonObject object) object,
-    required T Function(JsonArray array) array,
-    required T Function(JsonNull jsonNull) jsonNull,
-  }) {
-    return array(this);
-  }
 }
