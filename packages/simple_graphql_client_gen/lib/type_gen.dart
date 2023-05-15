@@ -255,13 +255,14 @@ ClassDeclaration? _graphQLScalarTypeClass(GraphQLTypeDeclaration type) {
       ]),
     );
   }
-  return annotation.match(
-    dateTimeFunc: (_) => null,
-    textFunc: (text) => _annotationTextClassDeclaration(type, text),
-    tokenFunc: (token) => _annotationTokenClassDeclaration(type),
-    uuidFunc: (token) => _annotationUuidClassDeclaration(type),
-    urlFunc: (_) => null,
-  );
+  return switch (annotation) {
+    AnnotationDateTime() => null,
+    AnnotationText() && final text =>
+      _annotationTextClassDeclaration(type, text),
+    AnnotationToken() => _annotationTokenClassDeclaration(type),
+    AnnotationUuid() => _annotationUuidClassDeclaration(type),
+    AnnotationUrl() => null,
+  };
 }
 
 ClassDeclaration _graphQLTypeInputObjectClass(

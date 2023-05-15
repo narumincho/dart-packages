@@ -8,8 +8,8 @@ dependencies:
   fast_immutable_collections: ^9.1.1
   http: ^0.13.6
   meta: ">=1.9.1 <2.0.0"
-  narumincho_json: ^0.0.1
-  narumincho_util: ^0.0.3
+  narumincho_json: ^0.1.0
+  narumincho_util: ^0.1.0
   simple_dart_code_gen: ^0.2.0
 dev_dependencies:
   test: ^1.24.2

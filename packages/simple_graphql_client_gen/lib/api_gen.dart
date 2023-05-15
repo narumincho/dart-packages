@@ -69,27 +69,17 @@ SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
 
 IMap<String, GraphQLObjectType> collectObjectType(GraphQLObjectType object) {
   // フラットにする
-  final Map<String, GraphQLObjectType> children = Map.fromEntries(object
-      .toFieldList()
-      .expand((fieldOrOn) =>
-          fieldOrOn.match<List<MapEntry<String, GraphQLObjectType>>>(
-            field: (field) {
-              return field.return_.type.match(
-                scalar: (_) => [],
-                boolean: (_) => [],
-                dateTime: (_) => [],
-                url: (_) => [],
-                string: (_) => [],
-                object: (object) =>
-                    collectObjectType(object.objectType).toEntryList(),
-                float: (_) => [],
-                int: (_) => [],
-              );
+  final Map<String, GraphQLObjectType> children = Map.fromEntries(
+    object.toFieldList().expand((fieldOrOn) => switch (fieldOrOn) {
+          QueryFieldField(:final return_) => switch (return_.type) {
+              GraphQLOutputTypeObject(:final objectType) =>
+                collectObjectType(objectType).toEntryList(),
+              _ => [],
             },
-            on: (on) {
-              return collectObjectType(on.return_).toEntryList();
-            },
-          )));
+          QueryFieldOn(:final return_) =>
+            collectObjectType(return_).toEntryList(),
+        }),
+  );
   return IMap({object.getTypeName(): object, ...children});
 }
 
@@ -211,12 +201,11 @@ IList<ClassDeclaration> _objectTypeClassDeclaration(
   final fieldOrList = objectType.toFieldList();
   final onList = fieldOrListRemoveField(fieldOrList);
   if (onList.isEmpty) {
-    final fieldList = fieldOrList.mapAndRemoveNull(
-      (fieldOrOn) => fieldOrOn.match(
-        field: (field) => field,
-        on: (on) => null,
-      ),
-    );
+    final fieldList =
+        fieldOrList.mapAndRemoveNull((fieldOrOn) => switch (fieldOrOn) {
+              QueryFieldField() && final field => field,
+              QueryFieldOn() => null,
+            });
     final implementTypes = allObjectType.mapAndRemoveNull((o) {
       final oPossibleType = fieldOrListRemoveField(o.toFieldList());
       if (oPossibleType.isEmpty) {
@@ -270,11 +259,11 @@ IList<ClassDeclaration> _objectTypeClassDeclaration(
 }
 
 IList<QueryFieldOn> fieldOrListRemoveField(IList<QueryField> fieldOrOnList) {
-  return fieldOrOnList.mapAndRemoveNull(
-    (fieldOrOn) => fieldOrOn.match(
-      field: (_) => null,
-      on: (on) => on,
-    ),
+  return fieldOrOnList.mapAndRemoveNull<QueryFieldOn>(
+    (fieldOrOn) => switch (fieldOrOn) {
+      QueryFieldOn() && final on => on,
+      QueryFieldField() => null,
+    },
   );
 }
 
@@ -461,16 +450,16 @@ Type _graphQLOutputTypeToStringToDartTypeConsiderListNull(
 }
 
 Type _graphQLOutputTypeToStringToDartType(GraphQLOutputType outputType) {
-  return outputType.match(
-    scalar: (scalar) => TypeNormal(name: 'type.' + scalar.typeName),
-    string: (_) => wellknown_type.String,
-    boolean: (_) => wellknown_type.bool,
-    dateTime: (_) => wellknown_type.DateTime,
-    url: (_) => wellknown_type.Uri,
-    object: (object) => TypeNormal(name: object.objectType.getTypeName()),
-    float: (_) => wellknown_type.double,
-    int: (_) => wellknown_type.int,
-  );
+  return switch(outputType) {
+    GraphQLOutputTypeNotObject(:final typeName) => TypeNormal(name: 'type.' + typeName),
+    GraphQLOutputTypeString() => wellknown_type.String,
+    GraphQLOutputTypeBoolean() => wellknown_type.bool,
+    GraphQLOutputTypeDateTime() => wellknown_type.DateTime,
+    GraphQLOutputTypeUrl() => wellknown_type.Uri,
+    GraphQLOutputTypeObject(:final objectType) => TypeNormal(name: objectType.getTypeName()),
+    GraphQLOutputTypeFloat() => wellknown_type.double,
+    GraphQLOutputTypeInt() => wellknown_type.int,
+  }
 }
 
 Expr _graphQLOutputTypeToFromJsonValueExprConsiderListNull(
@@ -540,20 +529,20 @@ Expr _graphQLOutputTypeToFromJsonValueExpr(
   GraphQLOutputType outputType,
   Expr jsonValueExpr,
 ) {
-  return outputType.match(
-    scalar: (scalar) => ExprCall(
-      functionName: 'type.' + scalar.typeName + '.fromJsonValue',
+  return switch(outputType) {
+    GraphQLOutputTypeNotObject(:final typeName) => ExprCall(
+      functionName: 'type.' + typeName + '.fromJsonValue',
       positionalArguments: IList([jsonValueExpr]),
     ),
-    boolean: (_) => ExprMethodCall(
+    GraphQLOutputTypeBoolean() => ExprMethodCall(
       variable: jsonValueExpr,
       methodName: 'asBoolOrThrow',
     ),
-    string: (_) => ExprMethodCall(
+    GraphQLOutputTypeString() => ExprMethodCall(
       variable: jsonValueExpr,
       methodName: 'asStringOrThrow',
     ),
-    dateTime: (_) => ExprConstructor(
+    GraphQLOutputTypeDateTime() => ExprConstructor(
       className: 'DateTime.fromMillisecondsSinceEpoch',
       isConst: false,
       positionalArguments: IList([
@@ -566,7 +555,7 @@ Expr _graphQLOutputTypeToFromJsonValueExpr(
         )
       ]),
     ),
-    url: (_) => ExprConstructor(
+    GraphQLOutputTypeUrl() => ExprConstructor(
       className: 'Uri.parse',
       isConst: false,
       positionalArguments: IList([
@@ -576,22 +565,22 @@ Expr _graphQLOutputTypeToFromJsonValueExpr(
         ),
       ]),
     ),
-    object: (object) => _graphQLObjectTypeToFromJsonValueExpr(
-      object.objectType.getTypeName(),
+    GraphQLOutputTypeObject(:final objectType) => _graphQLObjectTypeToFromJsonValueExpr(
+      objectType.getTypeName(),
       jsonValueExpr,
     ),
-    float: (_) => ExprMethodCall(
+    GraphQLOutputTypeFloat() => ExprMethodCall(
       variable: jsonValueExpr,
       methodName: 'asDoubleOrThrow',
     ),
-    int: (_) => ExprMethodCall(
+    GraphQLOutputTypeInt() => ExprMethodCall(
       variable: ExprMethodCall(
         variable: jsonValueExpr,
         methodName: 'asDoubleOrThrow',
       ),
       methodName: 'toInt',
     ),
-  );
+  };
 }
 
 Expr _graphQLObjectTypeToFromJsonValueExpr(

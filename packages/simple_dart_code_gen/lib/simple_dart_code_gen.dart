@@ -90,7 +90,7 @@ final class ImportPackageFileNameAndAsName {
 }
 
 @immutable
-abstract class Declaration {
+sealed class Declaration {
   const Declaration();
 
   String toCodeString();
@@ -770,7 +770,7 @@ String documentationCommentsToCodeString(String documentationComments) {
 
 /// 文
 @immutable
-abstract class Statement {
+sealed class Statement {
   const Statement();
 
   String toCodeString();

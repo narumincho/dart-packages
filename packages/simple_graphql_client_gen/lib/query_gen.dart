@@ -476,19 +476,19 @@ Expr _toFieldMethodReturn(
           }
           return _exprGraphQLOutputTypeNotObject(typeData.name);
         }
-        return annotation.match(
-          dateTimeFunc: (_) => const ExprConstructor(
-            className: 'query_string.GraphQLOutputTypeDateTime',
-            isConst: true,
-          ),
-          textFunc: (_) => _exprGraphQLOutputTypeNotObject(typeData.name),
-          tokenFunc: (_) => _exprGraphQLOutputTypeNotObject(typeData.name),
-          uuidFunc: (_) => _exprGraphQLOutputTypeNotObject(typeData.name),
-          urlFunc: (_) => const ExprConstructor(
-            className: 'query_string.GraphQLOutputTypeUrl',
-            isConst: true,
-          ),
-        );
+        return switch (annotation) {
+          AnnotationDateTime() => const ExprConstructor(
+              className: 'query_string.GraphQLOutputTypeDateTime',
+              isConst: true,
+            ),
+          AnnotationText() => _exprGraphQLOutputTypeNotObject(typeData.name),
+          AnnotationToken() => _exprGraphQLOutputTypeNotObject(typeData.name),
+          AnnotationUuid() => _exprGraphQLOutputTypeNotObject(typeData.name),
+          AnnotationUrl() => const ExprConstructor(
+              className: 'query_string.GraphQLOutputTypeUrl',
+              isConst: true,
+            ),
+        };
       },
       inputObjectFunc: (_) => const ExprStringLiteral(IListConst([
         StringLiteralItemNormal('<error> return dose not support input object')

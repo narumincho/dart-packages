@@ -5,7 +5,7 @@ import 'package:simple_dart_code_gen/simple_dart_code_gen.dart';
 import 'package:simple_dart_code_gen/wellknown_type.dart' as wellknown_type;
 
 @immutable
-class GraphQLTypeDeclaration {
+final class GraphQLTypeDeclaration {
   const GraphQLTypeDeclaration({
     required this.name,
     required this.documentationComments,
@@ -21,7 +21,7 @@ class GraphQLTypeDeclaration {
 enum GraphQLRootObjectType { mutation, query }
 
 @immutable
-abstract class GraphQLTypeBody {
+sealed class GraphQLTypeBody {
   const GraphQLTypeBody();
 
   T match<T>({
@@ -34,7 +34,7 @@ abstract class GraphQLTypeBody {
 }
 
 @immutable
-class GraphQLTypeBodyObject extends GraphQLTypeBody {
+final class GraphQLTypeBodyObject extends GraphQLTypeBody {
   const GraphQLTypeBodyObject(this.fields);
   final IList<GraphQLField> fields;
 
@@ -51,7 +51,7 @@ class GraphQLTypeBodyObject extends GraphQLTypeBody {
 }
 
 @immutable
-class GraphQLTypeBodyInputObject extends GraphQLTypeBody {
+final class GraphQLTypeBodyInputObject extends GraphQLTypeBody {
   const GraphQLTypeBodyInputObject(this.fields);
   final IList<GraphQLInputValue> fields;
 
@@ -68,7 +68,7 @@ class GraphQLTypeBodyInputObject extends GraphQLTypeBody {
 }
 
 @immutable
-class GraphQLField {
+final class GraphQLField {
   const GraphQLField({
     required this.name,
     required this.description,
@@ -95,7 +95,7 @@ class GraphQLField {
 }
 
 @immutable
-class GraphQLInputValue {
+final class GraphQLInputValue {
   const GraphQLInputValue({
     required this.name,
     required this.description,
@@ -117,7 +117,7 @@ class GraphQLInputValue {
 }
 
 @immutable
-class GraphQLType {
+final class GraphQLType {
   const GraphQLType({
     required this.name,
     required this.isNullable,
@@ -211,7 +211,7 @@ String escapeFirstUnderLine(String name) {
 enum ListType { notList, list, listItemNullable }
 
 @immutable
-class GraphQLTypeBodyUnion extends GraphQLTypeBody {
+final class GraphQLTypeBodyUnion extends GraphQLTypeBody {
   const GraphQLTypeBodyUnion(this.possibleTypes);
   final IList<String> possibleTypes;
 
@@ -228,7 +228,7 @@ class GraphQLTypeBodyUnion extends GraphQLTypeBody {
 }
 
 @immutable
-class GraphQLTypeBodyEnum extends GraphQLTypeBody {
+final class GraphQLTypeBodyEnum extends GraphQLTypeBody {
   const GraphQLTypeBodyEnum(this.enumValueList);
   final IList<EnumValue> enumValueList;
 
@@ -245,7 +245,7 @@ class GraphQLTypeBodyEnum extends GraphQLTypeBody {
 }
 
 @immutable
-class GraphQLTypeBodyScaler extends GraphQLTypeBody {
+final class GraphQLTypeBodyScaler extends GraphQLTypeBody {
   const GraphQLTypeBodyScaler();
 
   @override

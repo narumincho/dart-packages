@@ -7,17 +7,12 @@ import 'package:narumincho_util/narumincho_util.dart';
 import 'package:simple_graphql_client_gen/graphql_type.dart';
 
 @immutable
-abstract class QueryField {
+sealed class QueryField {
   const QueryField();
-
-  T match<T>({
-    required T Function(QueryFieldField) field,
-    required T Function(QueryFieldOn) on,
-  });
 }
 
 @immutable
-class QueryFieldField implements QueryField {
+final class QueryFieldField implements QueryField {
   const QueryFieldField(
     this.fieldName, {
     this.args = const IListConst([]),
@@ -28,208 +23,70 @@ class QueryFieldField implements QueryField {
   final String description;
   final IList<QueryFieldArg> args;
   final GraphQLOutputTypeConsiderListNull return_;
-
-  @override
-  T match<T>({
-    required T Function(QueryFieldField) field,
-    required T Function(QueryFieldOn) on,
-  }) {
-    return field(this);
-  }
 }
 
 @immutable
-class GraphQLOutputTypeConsiderListNull {
-  const GraphQLOutputTypeConsiderListNull(this.type, this.listType, this.isNullable);
+final class GraphQLOutputTypeConsiderListNull {
+  const GraphQLOutputTypeConsiderListNull(
+      this.type, this.listType, this.isNullable);
   final GraphQLOutputType type;
   final ListType listType;
   final bool isNullable;
 }
 
 @immutable
-abstract class GraphQLOutputType {
-  T match<T>({
-    required T Function(GraphQLOutputTypeNotObject) scalar,
-    required T Function(GraphQLOutputTypeString) string,
-    required T Function(GraphQLOutputTypeBoolean) boolean,
-    required T Function(GraphQLOutputTypeDateTime) dateTime,
-    required T Function(GraphQLOutputTypeUrl) url,
-    required T Function(GraphQLOutputTypeObject) object,
-    required T Function(GraphQLOutputTypeFloat) float,
-    required T Function(GraphQLOutputTypeInt) int,
-  });
-}
+sealed class GraphQLOutputType {}
 
 @immutable
-class GraphQLOutputTypeNotObject implements GraphQLOutputType {
+final class GraphQLOutputTypeNotObject implements GraphQLOutputType {
   const GraphQLOutputTypeNotObject(this.typeName);
   final String typeName;
-
-  @override
-  T match<T>({
-    required T Function(GraphQLOutputTypeNotObject) scalar,
-    required T Function(GraphQLOutputTypeString) string,
-    required T Function(GraphQLOutputTypeBoolean) boolean,
-    required T Function(GraphQLOutputTypeDateTime) dateTime,
-    required T Function(GraphQLOutputTypeUrl) url,
-    required T Function(GraphQLOutputTypeObject) object,
-    required T Function(GraphQLOutputTypeFloat) float,
-    required T Function(GraphQLOutputTypeInt) int,
-  }) {
-    return scalar(this);
-  }
 }
 
 @immutable
-class GraphQLOutputTypeString implements GraphQLOutputType {
+final class GraphQLOutputTypeString implements GraphQLOutputType {
   const GraphQLOutputTypeString();
-
-  @override
-  T match<T>({
-    required T Function(GraphQLOutputTypeNotObject) scalar,
-    required T Function(GraphQLOutputTypeString) string,
-    required T Function(GraphQLOutputTypeBoolean) boolean,
-    required T Function(GraphQLOutputTypeDateTime) dateTime,
-    required T Function(GraphQLOutputTypeUrl) url,
-    required T Function(GraphQLOutputTypeObject) object,
-    required T Function(GraphQLOutputTypeFloat) float,
-    required T Function(GraphQLOutputTypeInt) int,
-  }) {
-    return string(this);
-  }
 }
 
 @immutable
-class GraphQLOutputTypeBoolean implements GraphQLOutputType {
+final class GraphQLOutputTypeBoolean implements GraphQLOutputType {
   const GraphQLOutputTypeBoolean();
-
-  @override
-  T match<T>({
-    required T Function(GraphQLOutputTypeNotObject) scalar,
-    required T Function(GraphQLOutputTypeString) string,
-    required T Function(GraphQLOutputTypeBoolean) boolean,
-    required T Function(GraphQLOutputTypeDateTime) dateTime,
-    required T Function(GraphQLOutputTypeUrl) url,
-    required T Function(GraphQLOutputTypeObject) object,
-    required T Function(GraphQLOutputTypeFloat) float,
-    required T Function(GraphQLOutputTypeInt) int,
-  }) {
-    return boolean(this);
-  }
 }
 
 @immutable
-class GraphQLOutputTypeDateTime implements GraphQLOutputType {
+final class GraphQLOutputTypeDateTime implements GraphQLOutputType {
   const GraphQLOutputTypeDateTime();
-
-  @override
-  T match<T>({
-    required T Function(GraphQLOutputTypeNotObject) scalar,
-    required T Function(GraphQLOutputTypeString) string,
-    required T Function(GraphQLOutputTypeBoolean) boolean,
-    required T Function(GraphQLOutputTypeDateTime) dateTime,
-    required T Function(GraphQLOutputTypeUrl) url,
-    required T Function(GraphQLOutputTypeObject) object,
-    required T Function(GraphQLOutputTypeFloat) float,
-    required T Function(GraphQLOutputTypeInt) int,
-  }) {
-    return dateTime(this);
-  }
 }
 
 @immutable
-class GraphQLOutputTypeUrl implements GraphQLOutputType {
+final class GraphQLOutputTypeUrl implements GraphQLOutputType {
   const GraphQLOutputTypeUrl();
-
-  @override
-  T match<T>({
-    required T Function(GraphQLOutputTypeNotObject) scalar,
-    required T Function(GraphQLOutputTypeString) string,
-    required T Function(GraphQLOutputTypeBoolean) boolean,
-    required T Function(GraphQLOutputTypeDateTime) dateTime,
-    required T Function(GraphQLOutputTypeUrl) url,
-    required T Function(GraphQLOutputTypeObject) object,
-    required T Function(GraphQLOutputTypeFloat) float,
-    required T Function(GraphQLOutputTypeInt) int,
-  }) {
-    return url(this);
-  }
 }
 
 @immutable
-class GraphQLOutputTypeObject implements GraphQLOutputType {
+final class GraphQLOutputTypeObject implements GraphQLOutputType {
   const GraphQLOutputTypeObject(this.objectType);
   final GraphQLObjectType objectType;
-
-  @override
-  T match<T>({
-    required T Function(GraphQLOutputTypeNotObject) scalar,
-    required T Function(GraphQLOutputTypeString) string,
-    required T Function(GraphQLOutputTypeBoolean) boolean,
-    required T Function(GraphQLOutputTypeDateTime) dateTime,
-    required T Function(GraphQLOutputTypeUrl) url,
-    required T Function(GraphQLOutputTypeObject) object,
-    required T Function(GraphQLOutputTypeFloat) float,
-    required T Function(GraphQLOutputTypeInt) int,
-  }) {
-    return object(this);
-  }
 }
 
 @immutable
-class GraphQLOutputTypeFloat implements GraphQLOutputType {
+final class GraphQLOutputTypeFloat implements GraphQLOutputType {
   const GraphQLOutputTypeFloat();
-
-  @override
-  T match<T>({
-    required T Function(GraphQLOutputTypeNotObject) scalar,
-    required T Function(GraphQLOutputTypeString) string,
-    required T Function(GraphQLOutputTypeBoolean) boolean,
-    required T Function(GraphQLOutputTypeDateTime) dateTime,
-    required T Function(GraphQLOutputTypeUrl) url,
-    required T Function(GraphQLOutputTypeObject) object,
-    required T Function(GraphQLOutputTypeFloat) float,
-    required T Function(GraphQLOutputTypeInt) int,
-  }) {
-    return float(this);
-  }
 }
 
 @immutable
-class GraphQLOutputTypeInt implements GraphQLOutputType {
+final class GraphQLOutputTypeInt implements GraphQLOutputType {
   const GraphQLOutputTypeInt();
-
-  @override
-  T match<T>({
-    required T Function(GraphQLOutputTypeNotObject) scalar,
-    required T Function(GraphQLOutputTypeString) string,
-    required T Function(GraphQLOutputTypeBoolean) boolean,
-    required T Function(GraphQLOutputTypeDateTime) dateTime,
-    required T Function(GraphQLOutputTypeUrl) url,
-    required T Function(GraphQLOutputTypeObject) object,
-    required T Function(GraphQLOutputTypeFloat) float,
-    required T Function(GraphQLOutputTypeInt) int,
-  }) {
-    return int(this);
-  }
 }
 
 @immutable
-class QueryFieldOn implements QueryField {
+final class QueryFieldOn implements QueryField {
   const QueryFieldOn({
     required this.typeName,
     required this.return_,
   });
   final String typeName;
   final GraphQLObjectType return_;
-
-  @override
-  T match<T>({
-    required T Function(QueryFieldField) field,
-    required T Function(QueryFieldOn) on,
-  }) {
-    return on(this);
-  }
 }
 
 String queryFieldListToString(
@@ -237,13 +94,16 @@ String queryFieldListToString(
   GraphQLRootObjectType rootObjectType,
 ) {
   final queryInputVariableList = collectVariableInQueryFieldList(objectType);
-  return (rootObjectType == GraphQLRootObjectType.mutation ? 'mutation' : 'query') +
+  return (rootObjectType == GraphQLRootObjectType.mutation
+          ? 'mutation'
+          : 'query') +
       (queryInputVariableList.isEmpty
           ? ''
           : ' (' +
               queryInputVariableList
                   .map(
-                    (variable) => r'$' + variable.name + ': ' + variable.type.toString(),
+                    (variable) =>
+                        r'$' + variable.name + ': ' + variable.type.toString(),
                   )
                   .safeJoin(', ') +
               ')') +
@@ -275,37 +135,34 @@ String _queryFieldToString(
   int indent,
 ) {
   return ('  ' * indent) +
-      queryField.match(
-        field: (field) =>
-            field.fieldName +
-            (field.args.isEmpty
-                ? ''
-                : '(' +
-                    field.args
-                        .map(
-                          (arg) => arg.name + ': ' + arg.input.toQueryString(),
-                        )
-                        .safeJoin(', ') +
-                    ')') +
-            field.return_.type.match(
-              object: (object) => _queryFieldListToStringLoop(object.objectType, indent),
-              scalar: (_) => '',
-              string: (_) => '',
-              boolean: (_) => '',
-              url: (_) => '',
-              dateTime: (_) => '',
-              float: (_) => '',
-              int: (_) => '',
-            ),
-        on: (pattern) => pattern.return_.toFieldList().isEmpty
-            ? '# ... on ' + pattern.typeName + '{}'
-            : '... on ' +
-                pattern.typeName +
-                _queryFieldListToStringLoop(
-                  pattern.return_,
-                  indent,
-                ),
-      );
+      (switch (queryField) {
+        QueryFieldField(:final fieldName, :final return_, :final args) =>
+          fieldName +
+              (args.isEmpty
+                  ? ''
+                  : '(' +
+                      args
+                          .map(
+                            (arg) =>
+                                arg.name + ': ' + arg.input.toQueryString(),
+                          )
+                          .safeJoin(', ') +
+                      ')') +
+              switch (return_.type) {
+                GraphQLOutputTypeObject(:final objectType) =>
+                  _queryFieldListToStringLoop(objectType, indent),
+                _ => '',
+              },
+        QueryFieldOn(:final typeName, :final return_) =>
+          return_.toFieldList().isEmpty
+              ? '# ... on ' + typeName + '{}'
+              : '... on ' +
+                  typeName +
+                  _queryFieldListToStringLoop(
+                    return_,
+                    indent,
+                  ),
+      });
 }
 
 IList<QueryInputVariable> collectVariableInQueryFieldList(
@@ -324,24 +181,22 @@ IList<QueryInputVariable> collectVariableInQueryFieldList(
 IList<QueryInputVariable> _collectVariableInQueryField(
   QueryField queryField,
 ) {
-  return queryField.match(
-    field: (field) {
-      return field.args.mapAndRemoveNull((arg) {
+  return switch (queryField) {
+    // dart bug
+    // ignore: unused_result
+    QueryFieldField(:final args) => args.mapAndRemoveNull((arg) {
         final input = arg.input;
         if (input is QueryInputVariable) {
           return input;
         }
         return null;
-      });
-    },
-    on: (onData) {
-      return collectVariableInQueryFieldList(onData.return_);
-    },
-  );
+      }),
+    QueryFieldOn(:final return_) => collectVariableInQueryFieldList(return_),
+  };
 }
 
 @immutable
-class QueryFieldArg {
+final class QueryFieldArg {
   const QueryFieldArg({
     required this.name,
     required this.input,
@@ -351,7 +206,7 @@ class QueryFieldArg {
 }
 
 @immutable
-abstract class VariableOrStaticValue<T> {
+sealed class VariableOrStaticValue<T> {
   const VariableOrStaticValue();
 
   QueryInput toQueryInput({
@@ -361,7 +216,7 @@ abstract class VariableOrStaticValue<T> {
 }
 
 @immutable
-class Variable<T> extends VariableOrStaticValue<T> {
+final class Variable<T> extends VariableOrStaticValue<T> {
   const Variable(this.name);
   final String name;
 
@@ -375,7 +230,7 @@ class Variable<T> extends VariableOrStaticValue<T> {
 }
 
 @immutable
-class StaticValue<T> extends VariableOrStaticValue<T> {
+final class StaticValue<T> extends VariableOrStaticValue<T> {
   const StaticValue(this.value);
   final T value;
 
@@ -389,14 +244,14 @@ class StaticValue<T> extends VariableOrStaticValue<T> {
 }
 
 @immutable
-abstract class QueryInput {
+sealed class QueryInput {
   const QueryInput();
 
   String toQueryString();
 }
 
 @immutable
-class QueryInputString extends QueryInput {
+final class QueryInputString extends QueryInput {
   const QueryInputString(this.value);
   final String value;
 
@@ -407,7 +262,7 @@ class QueryInputString extends QueryInput {
 }
 
 @immutable
-class QueryInputNumber extends QueryInput {
+final class QueryInputNumber extends QueryInput {
   const QueryInputNumber(this.value);
   final num value;
 
@@ -418,7 +273,7 @@ class QueryInputNumber extends QueryInput {
 }
 
 @immutable
-class QueryInputBoolean extends QueryInput {
+final class QueryInputBoolean extends QueryInput {
   const QueryInputBoolean(this.value);
   final bool value;
 
@@ -429,7 +284,7 @@ class QueryInputBoolean extends QueryInput {
 }
 
 @immutable
-class QueryInputNull extends QueryInput {
+final class QueryInputNull extends QueryInput {
   const QueryInputNull();
   @override
   String toQueryString() {
@@ -438,7 +293,7 @@ class QueryInputNull extends QueryInput {
 }
 
 @immutable
-class QueryInputArray extends QueryInput {
+final class QueryInputArray extends QueryInput {
   const QueryInputArray(this.items);
   final IList<QueryInput> items;
 
@@ -449,18 +304,22 @@ class QueryInputArray extends QueryInput {
 }
 
 @immutable
-class QueryInputObject extends QueryInput {
+final class QueryInputObject extends QueryInput {
   const QueryInputObject(this.entries);
   final IList<Tuple2<String, QueryInput>> entries;
 
   @override
   String toQueryString() {
-    return '{' + entries.map((item) => item.first + ': ' + item.second.toQueryString()).safeJoin(',') + '}';
+    return '{' +
+        entries
+            .map((item) => item.first + ': ' + item.second.toQueryString())
+            .safeJoin(',') +
+        '}';
   }
 }
 
 @immutable
-class QueryInputEnum extends QueryInput {
+final class QueryInputEnum extends QueryInput {
   const QueryInputEnum(this.valueName);
   final String valueName;
 
@@ -471,7 +330,7 @@ class QueryInputEnum extends QueryInput {
 }
 
 @immutable
-class QueryInputDateTime extends QueryInput {
+final class QueryInputDateTime extends QueryInput {
   const QueryInputDateTime(this.value);
   final DateTime value;
 
@@ -482,7 +341,7 @@ class QueryInputDateTime extends QueryInput {
 }
 
 @immutable
-class QueryInputVariable extends QueryInput {
+final class QueryInputVariable extends QueryInput {
   const QueryInputVariable(this.name, this.type);
   final String name;
   final GraphQLType type;
@@ -494,13 +353,13 @@ class QueryInputVariable extends QueryInput {
 }
 
 @immutable
-abstract class GraphQLRootObject implements GraphQLObjectType {
+sealed class GraphQLRootObject implements GraphQLObjectType {
   const GraphQLRootObject();
   GraphQLRootObjectType getRootObjectType();
 }
 
 @immutable
-abstract class GraphQLObjectType {
+sealed class GraphQLObjectType {
   const GraphQLObjectType();
 
   IList<QueryField> toFieldList();
@@ -509,14 +368,14 @@ abstract class GraphQLObjectType {
 }
 
 @immutable
-abstract class IntoGraphQLField {
+sealed class IntoGraphQLField {
   const IntoGraphQLField();
 
   QueryField toField();
 }
 
 @immutable
-abstract class IntoQueryInput {
+sealed class IntoQueryInput {
   const IntoQueryInput();
 
   QueryInput toQueryInput();

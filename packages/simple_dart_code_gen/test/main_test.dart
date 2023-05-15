@@ -37,7 +37,7 @@ import 'package:meta/meta.dart';
 
 /// document
 @immutable
-class SampleClass {
+final class SampleClass {
   /// document
   const SampleClass({
     required this.name,
