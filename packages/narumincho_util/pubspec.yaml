@@ -3,10 +3,10 @@ description: narumincho_util
 repository: https://github.com/narumincho/dart-packages/packages/narumincho_util
 version: "0.0.5"
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 dependencies:
-  collection: ^1.17.0
-  fast_immutable_collections: ^9.0.0
-  meta: ">=1.8.0 <2.0.0"
+  collection: ^1.17.2
+  fast_immutable_collections: ^9.1.1
+  meta: ">=1.9.1 <2.0.0"
 dev_dependencies:
   test: ^1.24.2

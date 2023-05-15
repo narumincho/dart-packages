@@ -148,7 +148,7 @@ void main() {
       () {
         final _ = JsonValue.decode('json として不正な文字列');
       },
-      throwsA(isA<FormatException>()),
+      throwsFormatException,
     );
   });
 }
