@@ -1,3 +1,7 @@
+## 0.3.0
+
+- support sealed class, final class (Require Dart 3)
+
 ## 0.2.2
 
 - remove

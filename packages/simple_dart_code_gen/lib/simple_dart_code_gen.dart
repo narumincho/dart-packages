@@ -102,7 +102,7 @@ class ClassDeclaration extends Declaration {
     required this.name,
     required this.documentationComments,
     required this.fields,
-    required this.isAbstract,
+    required this.modifier,
     this.implementsClassList = const IListConst([]),
     this.staticFields = const IListConst([]),
     this.methods = const IListConst([]),
@@ -111,7 +111,7 @@ class ClassDeclaration extends Declaration {
   final String name;
   final String documentationComments;
   final IList<Field> fields;
-  final bool isAbstract;
+  final ClassModifier? modifier;
   final IList<String> implementsClassList;
   final IList<StaticField> staticFields;
   final IList<Method> methods;
@@ -121,7 +121,12 @@ class ClassDeclaration extends Declaration {
   String toCodeString() {
     return documentationCommentsToCodeString(documentationComments) +
         '@immutable\n' +
-        (isAbstract ? 'abstract ' : '') +
+        switch (modifier) {
+          ClassModifier.abstract => 'abstract ',
+          ClassModifier.sealed => 'sealed ',
+          ClassModifier.final_ => 'final ',
+          null => ''
+        } +
         'class ' +
         name +
         ' ' +
@@ -184,14 +189,23 @@ class ClassDeclaration extends Declaration {
   }
 
   String methodsToCodeString() {
-    return [
-      if (!isAbstract && !isPrivateConstructor && fields.isNotEmpty) ...[
-        copyWithMethod(),
-        updateFieldsMethod(),
-      ],
-      if (!isAbstract) ...[hashCodeMethod(), equalMethod(), toStringMethod()],
+    final IList<Method> methodList = IList([
+      ...switch (modifier) {
+        ClassModifier.abstract => [],
+        ClassModifier.sealed => [],
+        ClassModifier.final_ || null => [
+            if (!isPrivateConstructor && fields.isNotEmpty) ...[
+              copyWithMethod(),
+              updateFieldsMethod(),
+            ],
+            hashCodeMethod(),
+            equalMethod(),
+            toStringMethod()
+          ]
+      },
       ...methods,
-    ].map((method) => method.toCodeString()).safeJoin();
+    ]);
+    return methodList.map((method) => method.toCodeString()).safeJoin();
   }
 
   Method copyWithMethod() {
@@ -398,6 +412,9 @@ class ClassDeclaration extends Declaration {
     );
   }
 }
+
+/// https://dart.dev/language/class-modifiers
+enum ClassModifier { abstract, sealed, final_ }
 
 Expr copyWithFieldExpr(String fieldName, Type type) {
   if (type.getIsNullable()) {

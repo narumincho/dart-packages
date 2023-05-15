@@ -25,7 +25,7 @@ void main() {
               parameterPattern: ParameterPatternNamed(),
             ),
           ]),
-          isAbstract: false,
+          modifier: null,
         ),
       ]),
     );
@@ -157,7 +157,7 @@ class SampleClass {
             parameterPattern: ParameterPatternNamed(),
           ),
         ]),
-        isAbstract: false,
+        modifier: null,
       );
 
       expect(sampleClass.toStringMethod().toCodeString(), r'''
