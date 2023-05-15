@@ -204,7 +204,7 @@ sealed class JsonValue {
 }
 
 @immutable
-class JsonString extends JsonValue {
+final class JsonString extends JsonValue {
   const JsonString(this.value);
   final String value;
 
@@ -218,7 +218,7 @@ class JsonString extends JsonValue {
 }
 
 @immutable
-class JsonBoolean extends JsonValue {
+final class JsonBoolean extends JsonValue {
   const JsonBoolean(this.value);
   final bool value;
 
@@ -232,7 +232,7 @@ class JsonBoolean extends JsonValue {
 }
 
 @immutable
-class Json64bitFloat extends JsonValue {
+final class Json64bitFloat extends JsonValue {
   const Json64bitFloat(this.value);
   final double value;
 
@@ -246,7 +246,7 @@ class Json64bitFloat extends JsonValue {
 }
 
 @immutable
-class JsonObject extends JsonValue {
+final class JsonObject extends JsonValue {
   const JsonObject(this.value);
   final IMap<String, JsonValue> value;
 
@@ -275,7 +275,7 @@ class JsonObject extends JsonValue {
 }
 
 @immutable
-class JsonNull extends JsonValue {
+final class JsonNull extends JsonValue {
   const JsonNull();
 
   @override
@@ -288,7 +288,7 @@ class JsonNull extends JsonValue {
 }
 
 @immutable
-class JsonArray extends JsonValue {
+final class JsonArray extends JsonValue {
   const JsonArray(this.value);
   final IList<JsonValue> value;
 

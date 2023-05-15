@@ -7,7 +7,7 @@ import 'package:narumincho_util/narumincho_util.dart';
 import 'package:simple_dart_code_gen/wellknown_type.dart' as wellknown_type;
 
 @immutable
-class SimpleDartCode {
+final class SimpleDartCode {
   const SimpleDartCode({
     required this.importPackageAndFileNames,
     required this.declarationList,
@@ -71,7 +71,7 @@ int comparePackageName(String a, String b) {
 }
 
 @immutable
-class ImportPackageFileNameAndAsName {
+final class ImportPackageFileNameAndAsName {
   const ImportPackageFileNameAndAsName({
     required this.packageAndFileName,
     this.asName,
@@ -97,7 +97,7 @@ abstract class Declaration {
 }
 
 @immutable
-class ClassDeclaration extends Declaration {
+final class ClassDeclaration implements Declaration {
   const ClassDeclaration({
     required this.name,
     required this.documentationComments,
@@ -236,8 +236,8 @@ class ClassDeclaration extends Declaration {
             (field) => switch (field.parameterPattern) {
               ParameterPatternPositional() => null,
               _ => (
-                  field.name,
-                  copyWithFieldExpr(field.name, field.type),
+                  name: field.name,
+                  argument: copyWithFieldExpr(field.name, field.type),
                 )
             },
           )),
@@ -283,8 +283,8 @@ class ClassDeclaration extends Declaration {
               (field) => switch (field.parameterPattern) {
                 ParameterPatternPositional() => null,
                 _ => (
-                    field.name,
-                    updateFieldsFieldExpr(field.name, field.type),
+                    name: field.name,
+                    argument: updateFieldsFieldExpr(field.name, field.type),
                   )
               },
             ),
@@ -445,7 +445,7 @@ Expr updateFieldsFieldExpr(String fieldName, Type type) {
 }
 
 @immutable
-class Field {
+final class Field {
   const Field({
     required this.name,
     required this.documentationComments,
@@ -459,7 +459,7 @@ class Field {
 }
 
 @immutable
-class StaticField {
+final class StaticField {
   const StaticField({
     required this.name,
     required this.documentationComments,
@@ -488,7 +488,7 @@ class StaticField {
 }
 
 @immutable
-class Method {
+final class Method {
   const Method({
     required this.name,
     required this.documentationComments,
@@ -548,7 +548,7 @@ class Method {
 enum MethodType { normal, override, static }
 
 @immutable
-class Parameter {
+final class Parameter {
   const Parameter({
     required this.name,
     required this.type,
@@ -617,7 +617,7 @@ sealed class Type {
 }
 
 @immutable
-class TypeFunction implements Type {
+final class TypeFunction implements Type {
   const TypeFunction({
     required this.returnType,
     required this.parameters,
@@ -655,7 +655,7 @@ class TypeFunction implements Type {
 }
 
 @immutable
-class TypeNormal implements Type {
+final class TypeNormal implements Type {
   const TypeNormal({
     required this.name,
     this.arguments = const IListConst([]),
@@ -702,7 +702,7 @@ class TypeNormal implements Type {
 }
 
 @immutable
-class EnumDeclaration extends Declaration {
+final class EnumDeclaration implements Declaration {
   const EnumDeclaration({
     required this.name,
     required this.documentationComments,
@@ -737,7 +737,7 @@ class EnumDeclaration extends Declaration {
 }
 
 @immutable
-class EnumValue {
+final class EnumValue {
   const EnumValue({
     required this.name,
     required this.documentationComments,
@@ -780,7 +780,7 @@ abstract class Statement {
 /// return expr;
 /// ```
 @immutable
-class StatementReturn implements Statement {
+final class StatementReturn implements Statement {
   const StatementReturn(this.expr);
   final Expr expr;
 
@@ -791,7 +791,7 @@ class StatementReturn implements Statement {
 }
 
 @immutable
-class StatementFinal implements Statement {
+final class StatementFinal implements Statement {
   const StatementFinal({
     required this.variableName,
     required this.expr,
@@ -812,7 +812,7 @@ class StatementFinal implements Statement {
 }
 
 @immutable
-class StatementIf implements Statement {
+final class StatementIf implements Statement {
   const StatementIf({
     required this.condition,
     required this.thenStatement,
@@ -831,10 +831,10 @@ class StatementIf implements Statement {
 }
 
 @immutable
-class StatementSwitch implements Statement {
+final class StatementSwitch implements Statement {
   const StatementSwitch(this.expr, this.patternList);
   final Expr expr;
-  final IList<Tuple2<Expr, IList<Statement>>> patternList;
+  final IList<({Expr case_, IList<Statement> statements})> patternList;
 
   @override
   String toCodeString() {
@@ -845,9 +845,9 @@ class StatementSwitch implements Statement {
             .map(
               (pattern) =>
                   'case' +
-                  pattern.first.toCodeAndIsConst().toCodeString(true) +
+                  pattern.case_.toCodeAndIsConst().toCodeString(true) +
                   ': {\n' +
-                  pattern.second
+                  pattern.statements
                       .map(
                         (statement) => statement.toCodeString(),
                       )
@@ -860,7 +860,7 @@ class StatementSwitch implements Statement {
 }
 
 @immutable
-class StatementThrow implements Statement {
+final class StatementThrow implements Statement {
   const StatementThrow(this.expr);
   final Expr expr;
 
@@ -879,7 +879,7 @@ sealed class Expr {
 }
 
 @immutable
-class ExprCall implements Expr {
+final class ExprCall implements Expr {
   const ExprCall({
     required this.functionName,
     this.positionalArguments = const IListConst([]),
@@ -888,7 +888,7 @@ class ExprCall implements Expr {
   });
   final String functionName;
   final IList<Expr> positionalArguments;
-  final IList<(String, Expr)> namedArguments;
+  final IList<({String name, Expr argument})> namedArguments;
   final bool isAwait;
 
   @override
@@ -903,7 +903,7 @@ class ExprCall implements Expr {
 }
 
 @immutable
-class ExprIntLiteral implements Expr {
+final class ExprIntLiteral implements Expr {
   const ExprIntLiteral(this.value);
   final int value;
 
@@ -914,7 +914,7 @@ class ExprIntLiteral implements Expr {
 }
 
 @immutable
-class ExprStringLiteral implements Expr {
+final class ExprStringLiteral implements Expr {
   const ExprStringLiteral(this.items);
   final IList<StringLiteralItem> items;
 
@@ -954,7 +954,7 @@ sealed class StringLiteralItem {
 }
 
 @immutable
-class StringLiteralItemInterpolation extends StringLiteralItem {
+final class StringLiteralItemInterpolation implements StringLiteralItem {
   const StringLiteralItemInterpolation(this.expr);
 
   final Expr expr;
@@ -975,7 +975,7 @@ class StringLiteralItemInterpolation extends StringLiteralItem {
 }
 
 @immutable
-class StringLiteralItemNormal extends StringLiteralItem {
+final class StringLiteralItemNormal implements StringLiteralItem {
   const StringLiteralItemNormal(this.value);
 
   final String value;
@@ -998,7 +998,7 @@ class StringLiteralItemNormal extends StringLiteralItem {
 }
 
 @immutable
-class ExprEnumValue implements Expr {
+final class ExprEnumValue implements Expr {
   const ExprEnumValue({
     required this.typeName,
     required this.valueName,
@@ -1013,7 +1013,7 @@ class ExprEnumValue implements Expr {
 }
 
 @immutable
-class ExprMethodCall implements Expr {
+final class ExprMethodCall implements Expr {
   const ExprMethodCall({
     required this.variable,
     required this.methodName,
@@ -1024,7 +1024,7 @@ class ExprMethodCall implements Expr {
   final Expr variable;
   final String methodName;
   final IList<Expr> positionalArguments;
-  final IList<(String, Expr)> namedArguments;
+  final IList<({String name, Expr argument})> namedArguments;
   final bool optionalChaining;
 
   @override
@@ -1041,7 +1041,7 @@ class ExprMethodCall implements Expr {
 }
 
 @immutable
-class ExprConstructor implements Expr {
+final class ExprConstructor implements Expr {
   const ExprConstructor({
     required this.className,
     required this.isConst,
@@ -1050,7 +1050,7 @@ class ExprConstructor implements Expr {
   });
   final String className;
   final IList<Expr> positionalArguments;
-  final IList<(String, Expr)> namedArguments;
+  final IList<({String name, Expr argument})> namedArguments;
   final bool isConst;
 
   @override
@@ -1067,7 +1067,7 @@ class ExprConstructor implements Expr {
 }
 
 @immutable
-class ExprLambda implements Expr {
+final class ExprLambda implements Expr {
   const ExprLambda({
     required this.parameterNames,
     required this.statements,
@@ -1089,7 +1089,7 @@ class ExprLambda implements Expr {
 }
 
 @immutable
-class ExprListLiteral implements Expr {
+final class ExprListLiteral implements Expr {
   const ExprListLiteral(this.items);
   final IList<Expr> items;
 
@@ -1111,7 +1111,7 @@ class ExprListLiteral implements Expr {
 }
 
 @immutable
-class ExprMapLiteral implements Expr {
+final class ExprMapLiteral implements Expr {
   const ExprMapLiteral(this.items);
   final IList<({Expr key, Expr value})> items;
 
@@ -1143,7 +1143,7 @@ class ExprMapLiteral implements Expr {
 }
 
 @immutable
-class ExprVariable implements Expr {
+final class ExprVariable implements Expr {
   const ExprVariable(this.name, {this.isConst = false});
   final String name;
   final bool isConst;
@@ -1158,7 +1158,7 @@ class ExprVariable implements Expr {
 }
 
 @immutable
-class ExprGet implements Expr {
+final class ExprGet implements Expr {
   const ExprGet({required this.expr, required this.fieldName});
   final Expr expr;
   final String fieldName;
@@ -1173,7 +1173,7 @@ class ExprGet implements Expr {
 }
 
 @immutable
-class ExprIs implements Expr {
+final class ExprIs implements Expr {
   const ExprIs({required this.expr, required this.type});
   final Expr expr;
   final Type type;
@@ -1192,7 +1192,7 @@ class ExprIs implements Expr {
 }
 
 @immutable
-class ExprOperator implements Expr {
+final class ExprOperator implements Expr {
   const ExprOperator(this.left, this.operator, this.right);
   final Expr left;
   final Expr right;
@@ -1212,7 +1212,7 @@ class ExprOperator implements Expr {
 }
 
 @immutable
-class ExprNull implements Expr {
+final class ExprNull implements Expr {
   const ExprNull();
 
   @override
@@ -1222,7 +1222,7 @@ class ExprNull implements Expr {
 }
 
 @immutable
-class ExprBool implements Expr {
+final class ExprBool implements Expr {
   const ExprBool(this.value);
   final bool value;
 
@@ -1233,7 +1233,7 @@ class ExprBool implements Expr {
 }
 
 @immutable
-class ExprConditionalOperator implements Expr {
+final class ExprConditionalOperator implements Expr {
   const ExprConditionalOperator(this.condition, this.thenExpr, this.elseExpr);
   final Expr condition;
   final Expr thenExpr;
@@ -1276,20 +1276,20 @@ enum Operator {
 
 CodeAndIsConst _argumentsToString(
   IList<Expr> positionalArguments,
-  IList<(String, Expr)> namedArguments,
+  IList<({String name, Expr argument})> namedArguments,
 ) {
   final positionalArgumentsCodeAndIsConst =
       positionalArguments.map((argument) => argument.toCodeAndIsConst());
   final namedArgumentsCodeAndIsConst = namedArguments.map(
-    (argument) => Tuple2(
-      argument.$1,
-      argument.$2.toCodeAndIsConst(),
+    (argument) => (
+      name: argument.name,
+      argument: argument.argument.toCodeAndIsConst(),
     ),
   );
   final isAllConst = positionalArgumentsCodeAndIsConst
           .every((argument) => argument.isConst()) &&
       namedArgumentsCodeAndIsConst
-          .every((argument) => argument.second.isConst());
+          .every((argument) => argument.argument.isConst());
   return CodeAndIsConst(
     '(' +
         stringListJoinWithComma(IList([
@@ -1297,9 +1297,9 @@ CodeAndIsConst _argumentsToString(
               .map((argument) => argument.toCodeString(!isAllConst)),
           ...namedArgumentsCodeAndIsConst.map(
             (argument) =>
-                argument.first +
+                argument.name +
                 ': ' +
-                argument.second.toCodeString(!isAllConst),
+                argument.argument.toCodeString(!isAllConst),
           ),
         ])) +
         ')',
@@ -1319,7 +1319,7 @@ String stringListJoinWithComma(IList<String> list) {
 }
 
 @immutable
-class CodeAndIsConst {
+final class CodeAndIsConst {
   const CodeAndIsConst(this.code, this.type);
   final String code;
   final ConstType type;
@@ -1350,17 +1350,17 @@ sealed class ParameterPattern {
 }
 
 @immutable
-class ParameterPatternPositional implements ParameterPattern {
+final class ParameterPatternPositional implements ParameterPattern {
   const ParameterPatternPositional();
 }
 
 @immutable
-class ParameterPatternNamed implements ParameterPattern {
+final class ParameterPatternNamed implements ParameterPattern {
   const ParameterPatternNamed();
 }
 
 @immutable
-class ParameterPatternNamedWithDefault implements ParameterPattern {
+final class ParameterPatternNamedWithDefault implements ParameterPattern {
   const ParameterPatternNamedWithDefault(this.constDefaultExpr);
   final Expr constDefaultExpr;
 }
