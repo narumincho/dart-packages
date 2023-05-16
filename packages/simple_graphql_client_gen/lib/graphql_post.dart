@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import 'package:narumincho_json/narumincho_json.dart';
 
 @immutable
-class GraphqlResponse {
+final class GraphqlResponse {
   const GraphqlResponse(this.data, this.errors);
 
   final JsonObject? data;
@@ -13,7 +13,7 @@ class GraphqlResponse {
 }
 
 @immutable
-class GraphqlError implements Exception {
+final class GraphqlError implements Exception {
   const GraphqlError(this.message, this.code);
 
   final String message;
@@ -30,7 +30,8 @@ Future<GraphqlResponse> graphQLPost({
     body: JsonObject(
       IMap({
         'query': JsonString(query),
-        'variables': variables == null ? const JsonNull() : JsonObject(variables),
+        'variables':
+            variables == null ? const JsonNull() : JsonObject(variables),
       }),
     ).encode(),
     headers: {'content-type': 'application/json'},
@@ -41,8 +42,11 @@ Future<GraphqlResponse> graphQLPost({
 
   return GraphqlResponse(
     jsonValue.getObjectValueOrThrow('data').asJsonObjectOrNull(),
-    jsonValue.getObjectValueOrNull('errors')?.getAsArrayWithDecoder((errorJson) {
-          final message = errorJson.getObjectValueOrNull('message')?.asStringOrNull();
+    jsonValue
+            .getObjectValueOrNull('errors')
+            ?.getAsArrayWithDecoder((errorJson) {
+          final message =
+              errorJson.getObjectValueOrNull('message')?.asStringOrNull();
           final code = errorJson.getObjectValueOrNull('code')?.asStringOrNull();
           if (message == null) {
             return null;

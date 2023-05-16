@@ -25,7 +25,7 @@ void main() {
               parameterPattern: ParameterPatternNamed(),
             ),
           ]),
-          isAbstract: false,
+          modifier: ClassModifier.final_,
         ),
       ]),
     );
@@ -37,7 +37,7 @@ import 'package:meta/meta.dart';
 
 /// document
 @immutable
-class SampleClass {
+final class SampleClass {
   /// document
   const SampleClass({
     required this.name,
@@ -157,7 +157,7 @@ class SampleClass {
             parameterPattern: ParameterPatternNamed(),
           ),
         ]),
-        isAbstract: false,
+        modifier: null,
       );
 
       expect(sampleClass.toStringMethod().toCodeString(), r'''

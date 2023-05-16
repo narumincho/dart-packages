@@ -36,7 +36,7 @@ const code = SimpleDartCode(
             parameterPattern: ParameterPatternNamed(),
         ),
         ]),
-        isAbstract: false,
+        modifier: ClassModifier.final_,
     ),
     ]),
 );
@@ -53,7 +53,7 @@ import 'package:meta/meta.dart';
 
 /// document
 @immutable
-class SampleClass {
+final class SampleClass {
   /// document
   const SampleClass({
     required this.name,

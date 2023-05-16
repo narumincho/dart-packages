@@ -189,10 +189,10 @@ packages:
     dependency: "direct main"
     description:
       name: narumincho_json
-      sha256: "49cbceb6541ed1ae5e52646a2fcda718873a3adf897cf83632331028d7a13495"
+      sha256: b3d9628f475af92b128f4cfc080104be10af5d781102814bf5f460470684274a
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.1.0"
   narumincho_util:
     dependency: "direct main"
     description:

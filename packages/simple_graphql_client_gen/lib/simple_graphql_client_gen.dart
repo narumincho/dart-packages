@@ -8,7 +8,7 @@ import 'package:simple_graphql_client_gen/request_schema.dart';
 import 'package:simple_graphql_client_gen/type_gen.dart';
 
 @immutable
-class TypeAndQueryCode {
+final class TypeAndQueryCode {
   const TypeAndQueryCode({required this.type, required this.query});
   final SimpleDartCode type;
   final SimpleDartCode query;
