@@ -450,16 +450,18 @@ Type _graphQLOutputTypeToStringToDartTypeConsiderListNull(
 }
 
 Type _graphQLOutputTypeToStringToDartType(GraphQLOutputType outputType) {
-  return switch(outputType) {
-    GraphQLOutputTypeNotObject(:final typeName) => TypeNormal(name: 'type.' + typeName),
+  return switch (outputType) {
+    GraphQLOutputTypeNotObject(:final typeName) =>
+      TypeNormal(name: 'type.' + typeName),
     GraphQLOutputTypeString() => wellknown_type.String,
     GraphQLOutputTypeBoolean() => wellknown_type.bool,
     GraphQLOutputTypeDateTime() => wellknown_type.DateTime,
     GraphQLOutputTypeUrl() => wellknown_type.Uri,
-    GraphQLOutputTypeObject(:final objectType) => TypeNormal(name: objectType.getTypeName()),
+    GraphQLOutputTypeObject(:final objectType) =>
+      TypeNormal(name: objectType.getTypeName()),
     GraphQLOutputTypeFloat() => wellknown_type.double,
     GraphQLOutputTypeInt() => wellknown_type.int,
-  }
+  };
 }
 
 Expr _graphQLOutputTypeToFromJsonValueExprConsiderListNull(
@@ -529,57 +531,58 @@ Expr _graphQLOutputTypeToFromJsonValueExpr(
   GraphQLOutputType outputType,
   Expr jsonValueExpr,
 ) {
-  return switch(outputType) {
+  return switch (outputType) {
     GraphQLOutputTypeNotObject(:final typeName) => ExprCall(
-      functionName: 'type.' + typeName + '.fromJsonValue',
-      positionalArguments: IList([jsonValueExpr]),
-    ),
+        functionName: 'type.' + typeName + '.fromJsonValue',
+        positionalArguments: IList([jsonValueExpr]),
+      ),
     GraphQLOutputTypeBoolean() => ExprMethodCall(
-      variable: jsonValueExpr,
-      methodName: 'asBoolOrThrow',
-    ),
+        variable: jsonValueExpr,
+        methodName: 'asBoolOrThrow',
+      ),
     GraphQLOutputTypeString() => ExprMethodCall(
-      variable: jsonValueExpr,
-      methodName: 'asStringOrThrow',
-    ),
+        variable: jsonValueExpr,
+        methodName: 'asStringOrThrow',
+      ),
     GraphQLOutputTypeDateTime() => ExprConstructor(
-      className: 'DateTime.fromMillisecondsSinceEpoch',
-      isConst: false,
-      positionalArguments: IList([
-        ExprMethodCall(
-          variable: ExprMethodCall(
-            variable: jsonValueExpr,
-            methodName: 'asDoubleOrThrow',
-          ),
-          methodName: 'floor',
-        )
-      ]),
-    ),
+        className: 'DateTime.fromMillisecondsSinceEpoch',
+        isConst: false,
+        positionalArguments: IList([
+          ExprMethodCall(
+            variable: ExprMethodCall(
+              variable: jsonValueExpr,
+              methodName: 'asDoubleOrThrow',
+            ),
+            methodName: 'floor',
+          )
+        ]),
+      ),
     GraphQLOutputTypeUrl() => ExprConstructor(
-      className: 'Uri.parse',
-      isConst: false,
-      positionalArguments: IList([
-        ExprMethodCall(
-          variable: jsonValueExpr,
-          methodName: 'asStringOrThrow',
-        ),
-      ]),
-    ),
-    GraphQLOutputTypeObject(:final objectType) => _graphQLObjectTypeToFromJsonValueExpr(
-      objectType.getTypeName(),
-      jsonValueExpr,
-    ),
+        className: 'Uri.parse',
+        isConst: false,
+        positionalArguments: IList([
+          ExprMethodCall(
+            variable: jsonValueExpr,
+            methodName: 'asStringOrThrow',
+          ),
+        ]),
+      ),
+    GraphQLOutputTypeObject(:final objectType) =>
+      _graphQLObjectTypeToFromJsonValueExpr(
+        objectType.getTypeName(),
+        jsonValueExpr,
+      ),
     GraphQLOutputTypeFloat() => ExprMethodCall(
-      variable: jsonValueExpr,
-      methodName: 'asDoubleOrThrow',
-    ),
-    GraphQLOutputTypeInt() => ExprMethodCall(
-      variable: ExprMethodCall(
         variable: jsonValueExpr,
         methodName: 'asDoubleOrThrow',
       ),
-      methodName: 'toInt',
-    ),
+    GraphQLOutputTypeInt() => ExprMethodCall(
+        variable: ExprMethodCall(
+          variable: jsonValueExpr,
+          methodName: 'asDoubleOrThrow',
+        ),
+        methodName: 'toInt',
+      ),
   };
 }
 

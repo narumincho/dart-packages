@@ -25,7 +25,7 @@ void main() {
               parameterPattern: ParameterPatternNamed(),
             ),
           ]),
-          modifier: null,
+          modifier: ClassModifier.final_,
         ),
       ]),
     );
