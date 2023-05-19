@@ -118,11 +118,11 @@ EnumDeclaration _graphQLEnumToDartEnumDeclaration(
               methodName: 'asStringOrThrow',
             ),
             IList(enumBody.enumValueList.map(
-              (enumValue) => Tuple2(
-                ExprStringLiteral(
+              (enumValue) => (
+                case_: ExprStringLiteral(
                   IListConst([StringLiteralItemNormal(enumValue.name)]),
                 ),
-                IList([
+                statements: IList([
                   StatementReturn(ExprEnumValue(
                     typeName: escapeFirstUnderLine(type.name),
                     valueName: enumValue.name,
@@ -167,7 +167,7 @@ ClassDeclaration? _graphQLScalarTypeClass(GraphQLTypeDeclaration type) {
           parameterPattern: ParameterPatternPositional(),
         ),
       ]),
-      isAbstract: false,
+      modifier: ClassModifier.final_,
       isPrivateConstructor: true,
       implementsClassList: const IListConst([queryStringIntoQueryInput]),
       methods: IList([
@@ -237,7 +237,7 @@ ClassDeclaration? _graphQLScalarTypeClass(GraphQLTypeDeclaration type) {
       name: type.name,
       documentationComments: '${type.documentationComments}\n\n内部表現が不明なスカラー値',
       fields: const IListConst([]),
-      isAbstract: false,
+      modifier: ClassModifier.final_,
       isPrivateConstructor: true,
       implementsClassList: const IListConst([queryStringIntoQueryInput]),
       methods: const IListConst([
@@ -301,7 +301,7 @@ ClassDeclaration _graphQLTypeInputObjectClass(
         type: field.type.toDartType(false),
       ),
     )),
-    isAbstract: false,
+    modifier: ClassModifier.final_,
     implementsClassList: const IListConst([queryStringIntoQueryInput]),
     methods: IList([
       Method(
@@ -349,11 +349,11 @@ ClassDeclaration _graphQLTypeInputObjectClass(
                 positionalArguments: IList([
                   ExprMapLiteral(IList(
                     inputObject.fields.map(
-                      (field) => Tuple2(
-                        ExprStringLiteral(
+                      (field) => (
+                        key: ExprStringLiteral(
                           IList([StringLiteralItemNormal(field.name)]),
                         ),
-                        toJsonValueExpr(
+                        value: toJsonValueExpr(
                           field.type,
                           ExprVariable(field.type.isNullable
                               ? getValueName(field.name)
@@ -391,7 +391,7 @@ ClassDeclaration _annotationTextClassDeclaration(
         parameterPattern: const ParameterPatternPositional(),
       )
     ]),
-    isAbstract: false,
+    modifier: ClassModifier.final_,
     isPrivateConstructor: true,
     implementsClassList: const IListConst([queryStringIntoQueryInput]),
     methods: IList([
@@ -417,9 +417,9 @@ ClassDeclaration _annotationTextClassDeclaration(
               functionName: 'text.textFromString',
               positionalArguments: const IListConst([ExprVariable('value')]),
               namedArguments: IList([
-                Tuple2(
-                  'maxLength',
-                  ExprIntLiteral(text.maxLength),
+                (
+                  name: 'maxLength',
+                  argument: ExprIntLiteral(text.maxLength),
                 ),
               ]),
             ),
@@ -518,7 +518,7 @@ ClassDeclaration _annotationTokenClassDeclaration(GraphQLTypeDeclaration type) {
         parameterPattern: ParameterPatternPositional(),
       ),
     ]),
-    isAbstract: false,
+    modifier: ClassModifier.final_,
     isPrivateConstructor: true,
     implementsClassList: const IListConst([queryStringIntoQueryInput]),
     methods: IList([
@@ -645,7 +645,7 @@ ClassDeclaration _annotationUuidClassDeclaration(GraphQLTypeDeclaration type) {
         parameterPattern: ParameterPatternPositional(),
       ),
     ]),
-    isAbstract: false,
+    modifier: ClassModifier.final_,
     isPrivateConstructor: true,
     implementsClassList: const IListConst([queryStringIntoQueryInput]),
     methods: IList([

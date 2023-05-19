@@ -88,7 +88,7 @@ ClassDeclaration _graphQLTypeQueryClass(GraphQLTypeDeclaration type) {
         ),
       ),
     ]),
-    isAbstract: false,
+    modifier: ClassModifier.final_,
     implementsClassList: IList([
       if (type.type == null)
         'query_string.GraphQLObjectType'
@@ -196,7 +196,7 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
         ),
       )
     ]),
-    isAbstract: false,
+    modifier: ClassModifier.final_,
     implementsClassList: const IListConst(['query_string.GraphQLObjectType']),
     methods: IList([
       Method(
@@ -226,15 +226,15 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
               (possibleType) => ExprCall(
                 functionName: 'query_string.QueryFieldOn',
                 namedArguments: IList([
-                  Tuple2(
-                    'typeName',
-                    ExprStringLiteral(
+                  (
+                    name: 'typeName',
+                    argument: ExprStringLiteral(
                       IList([StringLiteralItemNormal(possibleType)]),
                     ),
                   ),
-                  Tuple2(
-                    'return_',
-                    ExprVariable(toFirstLowercase(possibleType)),
+                  (
+                    name: 'return_',
+                    argument: ExprVariable(toFirstLowercase(possibleType)),
                   ),
                 ]),
               ),
@@ -273,7 +273,7 @@ ClassDeclaration _graphQLTypeAbstractFieldClass(GraphQLTypeDeclaration type) {
     name: _fieldAbstractClassName(type.name),
     documentationComments: type.documentationComments,
     fields: const IListConst([]),
-    isAbstract: true,
+    modifier: ClassModifier.sealed,
     implementsClassList: const IListConst(['query_string.IntoGraphQLField']),
   );
 }
@@ -330,7 +330,7 @@ ClassDeclaration _graphQLTypeFieldClass(
         ),
       if (isNeedReturn) returnField
     ]),
-    isAbstract: false,
+    modifier: ClassModifier.final_,
     implementsClassList: IList([_fieldAbstractClassName(type.name)]),
     methods: IList([
       _toFieldMethod(type, field, typeMap),
@@ -367,15 +367,15 @@ Method _toFieldMethod(
                       className: 'query_string.QueryFieldArg',
                       isConst: false,
                       namedArguments: IList([
-                        Tuple2(
-                          'name',
-                          ExprStringLiteral(
+                        (
+                          name: 'name',
+                          argument: ExprStringLiteral(
                             IList([StringLiteralItemNormal(arg.name)]),
                           ),
                         ),
-                        Tuple2(
-                          'input',
-                          ExprCall(
+                        (
+                          name: 'input',
+                          argument: ExprCall(
                             functionName: _fieldQueryInputMethodName(arg.name),
                           ),
                         ),
@@ -404,10 +404,13 @@ Expr _queryFieldFieldExprConstructor(
       ExprStringLiteral(IList([StringLiteralItemNormal(fieldName)]))
     ]),
     namedArguments: IList([
-      if (args != null) Tuple2('args', args),
-      Tuple2('description',
-          ExprStringLiteral(IList([StringLiteralItemNormal(description)]))),
-      Tuple2('return_', return_),
+      if (args != null) (name: 'args', argument: args),
+      (
+        name: 'description',
+        argument:
+            ExprStringLiteral(IList([StringLiteralItemNormal(description)]))
+      ),
+      (name: 'return_', argument: return_),
     ]),
   );
 }
@@ -529,10 +532,10 @@ Method _fieldQueryInputMethod(GraphQLInputValue field) {
     variable: ExprVariable(field.name),
     methodName: 'toQueryInput',
     namedArguments: IList([
-      Tuple2('type', field.type.toExpr()),
-      Tuple2(
-        'staticValueToQueryInputFunc',
-        ExprLambda(
+      (name: 'type', argument: field.type.toExpr()),
+      (
+        name: 'staticValueToQueryInputFunc',
+        argument: ExprLambda(
           parameterNames: const IListConst(['staticValue']),
           statements: IList([
             StatementReturn(fieldQueryInputMethodFuncReturnExpr(
