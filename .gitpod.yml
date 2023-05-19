@@ -8,4 +8,9 @@ vscode:
     - Dart-Code.dart-code
 
 tasks:
-  - init: dart pub get
+  - init: |-
+      dart pub get
+      dart pub get --directory ./packages/narumincho_json
+      dart pub get --directory ./packages/narumincho_util
+      dart pub get --directory ./packages/simple_dart_code_gen
+      dart pub get --directory ./packages/simple_graphql_client_gen
