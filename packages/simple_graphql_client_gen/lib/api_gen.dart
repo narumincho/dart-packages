@@ -48,7 +48,7 @@ SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
         name: 'Api',
         documentationComments: 'APIを呼ぶ',
         fields: const IListConst([]),
-        isAbstract: true,
+        modifier: ClassModifier.abstract,
         methods: IList(
           apiMap.mapTo(
             (apiName, objectType) => _createApiCallMethod(
@@ -124,25 +124,26 @@ Method _createApiCallMethod(
         expr: ExprCall(
           functionName: 'graphql_post.graphQLPost',
           namedArguments: IList([
-            Tuple2('uri', ExprVariable('origin')),
-            Tuple2(
-              'query',
-              ExprStringLiteral(IList([StringLiteralItemNormal(queryCode)])),
+            (name: 'uri', argument: ExprVariable('origin')),
+            (
+              name: 'query',
+              argument: ExprStringLiteral(
+                  IList([StringLiteralItemNormal(queryCode)])),
             ),
             if (variableList.isNotEmpty)
-              Tuple2(
-                'variables',
-                ExprConstructor(
+              (
+                name: 'variables',
+                argument: ExprConstructor(
                   className: 'IMap',
                   isConst: false,
                   positionalArguments: IList([
                     ExprMapLiteral(
                       IList(variableList.map(
-                        (variable) => Tuple2(
-                          ExprStringLiteral(
+                        (variable) => (
+                          key: ExprStringLiteral(
                             IList([StringLiteralItemNormal(variable.name)]),
                           ),
-                          toJsonValueExpr(
+                          value: toJsonValueExpr(
                               variable.type, ExprVariable(variable.name)),
                         ),
                       )),
@@ -223,7 +224,7 @@ IList<ClassDeclaration> _objectTypeClassDeclaration(
         name: objectType.getTypeName(),
         documentationComments: objectType.getDescription(),
         implementsClassList: IList(implementTypes.map((t) => t.getTypeName())),
-        isAbstract: false,
+        modifier: ClassModifier.final_,
         fields: IList(fieldList.map(
           (field) => Field(
             name: field.fieldName,
@@ -248,7 +249,7 @@ IList<ClassDeclaration> _objectTypeClassDeclaration(
     ClassDeclaration(
       name: objectType.getTypeName(),
       documentationComments: objectType.getDescription(),
-      isAbstract: true,
+      modifier: ClassModifier.sealed,
       fields: const IListConst([]),
       methods: IList([
         _fromJsonValueMethodUnion(objectType.getTypeName(), onList),
@@ -277,9 +278,9 @@ Method _fromJsonValueMethodObject(
           className: typeName,
           isConst: true,
           namedArguments: IList(fieldList.map(
-            (field) => Tuple2(
-              field.fieldName,
-              _graphQLOutputTypeToFromJsonValueExprConsiderListNull(
+            (field) => (
+              name: field.fieldName,
+              argument: _graphQLOutputTypeToFromJsonValueExprConsiderListNull(
                 field.return_,
                 ExprMethodCall(
                   variable: const ExprVariable('value'),
@@ -322,11 +323,11 @@ Method _fromJsonValueMethodUnion(String typeName, IList<QueryFieldOn> onList) {
         const ExprVariable('typeName'),
         IList(
           onList.map(
-            (pattern) => Tuple2(
-              ExprStringLiteral(
+            (pattern) => (
+              case_: ExprStringLiteral(
                 IList([StringLiteralItemNormal(pattern.typeName)]),
               ),
-              IList([
+              statements: IList([
                 StatementReturn(
                   _graphQLObjectTypeToFromJsonValueExpr(
                     pattern.return_.getTypeName(),
@@ -414,9 +415,9 @@ IList<Parameter> _matchMethodParameters(IList<QueryFieldOn> onList) {
       name: toFirstLowercase(pattern.typeName),
       type: TypeFunction(
         parameters: IList([
-          Tuple2(
-            toFirstLowercase(pattern.return_.getTypeName()),
-            TypeNormal(name: pattern.return_.getTypeName()),
+          (
+            name: toFirstLowercase(pattern.return_.getTypeName()),
+            type: TypeNormal(name: pattern.return_.getTypeName()),
           )
         ]),
         returnType: const TypeNormal(name: 'T'),

@@ -161,17 +161,17 @@ final class GraphQLType {
       className: 'graphql_type.GraphQLType',
       isConst: true,
       namedArguments: IList([
-        Tuple2(
-          'name',
-          ExprStringLiteral(IList([StringLiteralItemNormal(name)])),
+        (
+          name: 'name',
+          argument: ExprStringLiteral(IList([StringLiteralItemNormal(name)])),
         ),
-        Tuple2(
-          'isNullable',
-          ExprBool(isNullable),
+        (
+          name: 'isNullable',
+          argument: ExprBool(isNullable),
         ),
-        Tuple2(
-          'listType',
-          ExprEnumValue(
+        (
+          name: 'listType',
+          argument: ExprEnumValue(
               typeName: 'graphql_type.ListType', valueName: listType.name),
         ),
       ]),
