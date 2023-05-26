@@ -153,6 +153,8 @@ String _queryFieldToString(
                   _queryFieldListToStringLoop(objectType, indent),
                 _ => '',
               },
+        // Dart 3.0.2 bug https://github.com/dart-lang/sdk/issues/52151
+        // ignore: unreachable_switch_case
         QueryFieldOn(:final typeName, :final return_) =>
           return_.toFieldList().isEmpty
               ? '# ... on ' + typeName + '{}'
@@ -191,6 +193,8 @@ IList<QueryInputVariable> _collectVariableInQueryField(
         }
         return null;
       }),
+    // Dart 3.0.2 bug https://github.com/dart-lang/sdk/issues/52151
+    // ignore: unreachable_switch_case
     QueryFieldOn(:final return_) => collectVariableInQueryFieldList(return_),
   };
 }
