@@ -1,3 +1,7 @@
+## 0.2.0
+
+- update http to ^1.0.0
+
 ## 0.1.0
 
 - output final class, sealed class (Require Dart 3)

@@ -6,7 +6,7 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 dependencies:
   fast_immutable_collections: ^9.1.1
-  http: ^0.13.6
+  http: ^1.0.0
   meta: ">=1.9.1 <2.0.0"
   narumincho_json: ^0.1.0
   narumincho_util: ^0.1.0
