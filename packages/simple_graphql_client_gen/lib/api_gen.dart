@@ -76,6 +76,8 @@ IMap<String, GraphQLObjectType> collectObjectType(GraphQLObjectType object) {
                 collectObjectType(objectType).toEntryList(),
               _ => [],
             },
+          // Dart 3.0.2 bug https://github.com/dart-lang/sdk/issues/52151
+          // ignore: unreachable_switch_case
           QueryFieldOn(:final return_) =>
             collectObjectType(return_).toEntryList(),
         }),
@@ -458,6 +460,8 @@ Type _graphQLOutputTypeToStringToDartType(GraphQLOutputType outputType) {
     GraphQLOutputTypeBoolean() => wellknown_type.bool,
     GraphQLOutputTypeDateTime() => wellknown_type.DateTime,
     GraphQLOutputTypeUrl() => wellknown_type.Uri,
+    // Dart 3.0.2 bug https://github.com/dart-lang/sdk/issues/52151
+    // ignore: unreachable_switch_case
     GraphQLOutputTypeObject(:final objectType) =>
       TypeNormal(name: objectType.getTypeName()),
     GraphQLOutputTypeFloat() => wellknown_type.double,
@@ -568,6 +572,8 @@ Expr _graphQLOutputTypeToFromJsonValueExpr(
           ),
         ]),
       ),
+    // Dart 3.0.2 bug https://github.com/dart-lang/sdk/issues/52151
+    // ignore: unreachable_switch_case
     GraphQLOutputTypeObject(:final objectType) =>
       _graphQLObjectTypeToFromJsonValueExpr(
         objectType.getTypeName(),
