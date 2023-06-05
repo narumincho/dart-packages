@@ -1,3 +1,7 @@
+## 0.1.2
+
+- downgrade collection 1.17.2 → 1.17.1 for flutter_test
+
 ## 0.1.1
 
 - mapAndRemoveNull, mapFirstNotNull method can be called not only by IList but also by Iterable

@@ -1,11 +1,11 @@
 name: narumincho_util
 description: narumincho_util
 repository: https://github.com/narumincho/dart-packages/tree/main/packages/narumincho_util
-version: "0.1.1"
+version: "0.1.2"
 environment:
   sdk: ">=3.0.0 <4.0.0"
 dependencies:
-  collection: ^1.17.2
+  collection: ^1.17.1
   fast_immutable_collections: ^9.1.1
   meta: ">=1.9.1 <2.0.0"
 dev_dependencies:
