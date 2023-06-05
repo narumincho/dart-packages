@@ -372,14 +372,14 @@ abstract class GraphQLObjectType {
 }
 
 @immutable
-sealed class IntoGraphQLField {
+abstract class IntoGraphQLField {
   const IntoGraphQLField();
 
   QueryField toField();
 }
 
 @immutable
-sealed class IntoQueryInput {
+abstract class IntoQueryInput {
   const IntoQueryInput();
 
   QueryInput toQueryInput();
