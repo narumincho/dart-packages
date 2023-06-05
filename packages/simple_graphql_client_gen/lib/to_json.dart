@@ -7,40 +7,40 @@ import 'package:simple_graphql_client_gen/graphql_type.dart';
 /// narumincho_json.JsonArray(IList(expr.map((v) => v.toJsonValue())))
 /// ```
 Expr toJsonValueExpr(GraphQLType type, Expr variable) {
-  if (type.listType != ListType.notList) {
+  if (type.listType == ListType.notList) {
     return _toJsonValueExprConsiderNull(
       type.isNullable,
       variable,
-      ExprConstructor(
-        className: 'narumincho_json.JsonArray',
-        isConst: true,
-        positionalArguments: IList([
-          wellknown_expr.IList(
-            wellknown_expr.iterableMap(
-              iterable: variable,
-              itemVariableName: 'v',
-              lambdaStatements: IList([
-                StatementReturn(_toJsonValueExprConsiderNull(
-                  type.isNullable,
-                  const ExprVariable('v'),
-                  _toJsonValueExprNoArray(
-                    type.name,
-                    const ExprVariable('v'),
-                  ),
-                )),
-              ]),
-            ),
-          )
-        ]),
+      _toJsonValueExprNoArray(
+        type.name,
+        variable,
       ),
     );
   }
   return _toJsonValueExprConsiderNull(
     type.isNullable,
     variable,
-    _toJsonValueExprNoArray(
-      type.name,
-      variable,
+    ExprConstructor(
+      className: 'narumincho_json.JsonArray',
+      isConst: true,
+      positionalArguments: IList([
+        wellknown_expr.IList(
+          wellknown_expr.iterableMap(
+            iterable: variable,
+            itemVariableName: 'v',
+            lambdaStatements: IList([
+              StatementReturn(_toJsonValueExprConsiderNull(
+                type.listType == ListType.listItemNullable,
+                const ExprVariable('v'),
+                _toJsonValueExprNoArray(
+                  type.name,
+                  const ExprVariable('v'),
+                ),
+              )),
+            ]),
+          ),
+        )
+      ]),
     ),
   );
 }
@@ -92,7 +92,8 @@ Expr _toJsonValueExprNoArray(String typeName, Expr variable) {
     return ExprConstructor(
       className: 'narumincho_json.Json64bitFloat',
       isConst: true,
-      positionalArguments: IList([ExprMethodCall(variable: variable, methodName: 'toDouble')]),
+      positionalArguments:
+          IList([ExprMethodCall(variable: variable, methodName: 'toDouble')]),
     );
   }
 
@@ -102,7 +103,8 @@ Expr _toJsonValueExprNoArray(String typeName, Expr variable) {
       isConst: true,
       positionalArguments: IList([
         ExprMethodCall(
-          variable: ExprGet(expr: variable, fieldName: 'millisecondsSinceEpoch'),
+          variable:
+              ExprGet(expr: variable, fieldName: 'millisecondsSinceEpoch'),
           methodName: 'toDouble',
         )
       ]),

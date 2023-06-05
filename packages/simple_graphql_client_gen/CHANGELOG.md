@@ -1,3 +1,7 @@
+## 0.2.4
+
+- fix `List<Type>?` toJsonValue method output
+
 ## 0.2.3
 
 - fix. allow IntoGraphQLField, IntoQueryInput implements
