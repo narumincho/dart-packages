@@ -1,3 +1,7 @@
+## 0.2.2
+
+- fix. allow GraphQLRootObject, GraphQLObjectType implements
+
 ## 0.2.1
 
 - accept http 0.13.6 for google_sign_in

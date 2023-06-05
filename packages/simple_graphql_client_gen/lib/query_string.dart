@@ -357,13 +357,13 @@ final class QueryInputVariable extends QueryInput {
 }
 
 @immutable
-sealed class GraphQLRootObject implements GraphQLObjectType {
+abstract class GraphQLRootObject implements GraphQLObjectType {
   const GraphQLRootObject();
   GraphQLRootObjectType getRootObjectType();
 }
 
 @immutable
-sealed class GraphQLObjectType {
+abstract class GraphQLObjectType {
   const GraphQLObjectType();
 
   IList<QueryField> toFieldList();
