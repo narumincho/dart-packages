@@ -1,3 +1,7 @@
+## 0.2.3
+
+- fix. allow IntoGraphQLField, IntoQueryInput implements
+
 ## 0.2.2
 
 - fix. allow GraphQLRootObject, GraphQLObjectType implements
