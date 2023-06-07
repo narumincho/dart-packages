@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Remove output of match method. Please use switch expressions from now on.
+
 ## 0.2.4
 
 - fix `List<Type>?` toJsonValue method output
