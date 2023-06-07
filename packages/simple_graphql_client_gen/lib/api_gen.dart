@@ -238,11 +238,6 @@ IList<ClassDeclaration> _objectTypeClassDeclaration(
         )),
         methods: IList([
           _fromJsonValueMethodObject(objectType.getTypeName(), fieldList),
-          for (final t in implementTypes)
-            _matchMethodImplement(
-              objectType.getTypeName(),
-              t,
-            ),
         ]),
       )
     ]);
@@ -255,7 +250,6 @@ IList<ClassDeclaration> _objectTypeClassDeclaration(
       fields: const IListConst([]),
       methods: IList([
         _fromJsonValueMethodUnion(objectType.getTypeName(), onList),
-        _matchMethodAbstract(objectType.getTypeName(), onList),
       ]),
     )
   ]);
@@ -369,64 +363,6 @@ Method _fromJsonValueMethod(String typeName, IList<Statement> statementList) {
     returnType: TypeNormal(name: typeName),
     statements: statementList,
   );
-}
-
-Method _matchMethodAbstract(String typeName, IList<QueryFieldOn> onList) {
-  return Method(
-    name: 'match' + typeName,
-    documentationComments: 'パターンマッチング. 分岐して処理をすることができる',
-    useResultAnnotation: false,
-    methodType: MethodType.normal,
-    statements: const IListConst([]),
-    typeParameters: const IListConst(['T']),
-    returnType: const TypeNormal(name: 'T'),
-    parameters: _matchMethodParameters(onList),
-  );
-}
-
-Method _matchMethodImplement(String typeName, GraphQLObjectType objectType) {
-  final fieldOnList = fieldOrListRemoveField(objectType.toFieldList());
-  final originalTypeName = fieldOnList.mapFirstNotNull(
-    (fieldOn) =>
-        fieldOn.return_.getTypeName() == typeName ? fieldOn.typeName : null,
-  );
-  if (originalTypeName == null) {
-    throw Exception(
-        'oneOf で元の型の名前を取得できなかった $typeName in ${objectType.getTypeName()}');
-  }
-  return Method(
-    name: 'match' + objectType.getTypeName(),
-    documentationComments: 'パターンマッチング. 分岐して処理をすることができる',
-    useResultAnnotation: false,
-    methodType: MethodType.override,
-    typeParameters: const IListConst(['T']),
-    returnType: const TypeNormal(name: 'T'),
-    parameters: _matchMethodParameters(fieldOnList),
-    statements: IList([
-      StatementReturn(ExprCall(
-        functionName: toFirstLowercase(originalTypeName),
-        positionalArguments: const IListConst([ExprVariable('this')]),
-      ))
-    ]),
-  );
-}
-
-IList<Parameter> _matchMethodParameters(IList<QueryFieldOn> onList) {
-  return IList(onList.map(
-    (pattern) => Parameter(
-      name: toFirstLowercase(pattern.typeName),
-      type: TypeFunction(
-        parameters: IList([
-          (
-            name: toFirstLowercase(pattern.return_.getTypeName()),
-            type: TypeNormal(name: pattern.return_.getTypeName()),
-          )
-        ]),
-        returnType: const TypeNormal(name: 'T'),
-      ),
-      parameterPattern: const ParameterPatternNamed(),
-    ),
-  ));
 }
 
 Type _graphQLOutputTypeToStringToDartTypeConsiderListNull(
