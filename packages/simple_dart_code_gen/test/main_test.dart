@@ -115,7 +115,7 @@ final class SampleClass {
       const ExprStringLiteral(IListConst([
         StringLiteralItemNormal("only single quote (')"),
       ])).toCodeAndIsConst().code,
-      '''"only single quote (')"''',
+      '''\'only single quote (\\')\'''',
     );
   });
 
