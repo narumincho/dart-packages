@@ -920,25 +920,11 @@ final class ExprStringLiteral implements Expr {
 
   @override
   CodeAndIsConst toCodeAndIsConst() {
-    final isDoubleQuote = items.any(
-      (element) => element.containSingleQuoteNotDabble,
-    );
     final codeAndIsConstList =
         IList(items.map((item) => item.toCodeAndIsConst()));
     final isAllConst = codeAndIsConstList.every((item) => item.isConst());
     return CodeAndIsConst(
-      isDoubleQuote
-          ? '"' + codeAndIsConstList.map((item) => item.code).safeJoin() + '"'
-          : "'" +
-              items
-                  .map((item) => switch (item) {
-                        StringLiteralItemNormal() =>
-                          item.toCodeAndIsConst().code.replaceAll("'", r"\'"),
-                        StringLiteralItemInterpolation() =>
-                          item.toCodeAndIsConst().code
-                      })
-                  .safeJoin() +
-              "'",
+      "'" + codeAndIsConstList.map((item) => item.code).safeJoin() + "'",
       isAllConst ? ConstType.implicit : ConstType.noConst,
     );
   }
@@ -949,8 +935,6 @@ sealed class StringLiteralItem {
   const StringLiteralItem();
 
   CodeAndIsConst toCodeAndIsConst();
-
-  bool get containSingleQuoteNotDabble;
 }
 
 @immutable
@@ -967,11 +951,6 @@ final class StringLiteralItemInterpolation implements StringLiteralItem {
       codeAndIsConst.type,
     );
   }
-
-  @override
-  bool get containSingleQuoteNotDabble {
-    return false;
-  }
 }
 
 @immutable
@@ -986,14 +965,10 @@ final class StringLiteralItemNormal implements StringLiteralItem {
       value
           .replaceAll(r'\', r'\\')
           .replaceAll(r'$', r'\$')
-          .replaceAll('\n', r'\n'),
+          .replaceAll('\n', r'\n')
+          .replaceAll("'", r"\'"),
       ConstType.implicit,
     );
-  }
-
-  @override
-  bool get containSingleQuoteNotDabble {
-    return value.contains("'") && !value.contains('"');
   }
 }
 
