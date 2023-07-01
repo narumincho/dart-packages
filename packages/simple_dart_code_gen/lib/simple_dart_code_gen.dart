@@ -844,7 +844,7 @@ final class StatementSwitch implements Statement {
         patternList
             .map(
               (pattern) =>
-                  'case' +
+                  'case ' +
                   pattern.case_.toCodeAndIsConst().toCodeString(true) +
                   ': {\n' +
                   pattern.statements
