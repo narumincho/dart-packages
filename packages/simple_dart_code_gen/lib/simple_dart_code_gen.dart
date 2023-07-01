@@ -897,7 +897,8 @@ final class ExprCall implements Expr {
     return CodeAndConstType(
       (isAwait ? 'await ' : '') +
           functionName +
-          _argumentsToString(positionalArguments, namedArguments).code,
+          _argumentsToCodeAndConstType(positionalArguments, namedArguments)
+              .code,
       ConstType.noConst,
     );
   }
@@ -1010,7 +1011,8 @@ final class ExprMethodCall implements Expr {
           (optionalChaining ? '?' : '') +
           '.' +
           methodName +
-          _argumentsToString(positionalArguments, namedArguments).code,
+          _argumentsToCodeAndConstType(positionalArguments, namedArguments)
+              .code,
       ConstType.noConst,
     );
   }
@@ -1032,7 +1034,7 @@ final class ExprConstructor implements Expr {
   @override
   CodeAndConstType toCodeAndConstType() {
     final argumentsCodeAndConstType =
-        _argumentsToString(positionalArguments, namedArguments);
+        _argumentsToCodeAndConstType(positionalArguments, namedArguments);
     return CodeAndConstType(
       className + argumentsCodeAndConstType.code,
       (isConst && argumentsCodeAndConstType.isConst())
@@ -1250,7 +1252,7 @@ enum Operator {
   final String code;
 }
 
-CodeAndConstType _argumentsToString(
+CodeAndConstType _argumentsToCodeAndConstType(
   IList<Expr> positionalArguments,
   IList<({String name, Expr argument})> namedArguments,
 ) {

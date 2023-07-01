@@ -104,7 +104,7 @@ final class SampleClass {
   test('stringLiteral normal', () {
     expect(
       const ExprStringLiteral(IListConst([StringLiteralItemNormal('テスト')]))
-          .toCodeAndIsConst()
+          .toCodeAndConstType()
           .code,
       "'テスト'",
     );
@@ -114,7 +114,7 @@ final class SampleClass {
     expect(
       const ExprStringLiteral(IListConst([
         StringLiteralItemNormal("only single quote (')"),
-      ])).toCodeAndIsConst().code,
+      ])).toCodeAndConstType().code,
       '''\'only single quote (\\')\'''',
     );
   });
@@ -126,7 +126,7 @@ final class SampleClass {
         StringLiteralItemInterpolation(ExprVariable('test')),
         StringLiteralItemInterpolation(
             ExprGet(expr: ExprVariable('obj'), fieldName: 'name')),
-      ])).toCodeAndIsConst().code,
+      ])).toCodeAndConstType().code,
       r"'テスト${test}${obj.name}'",
     );
   });
