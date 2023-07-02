@@ -472,17 +472,17 @@ final class StaticField {
   final Expr expr;
 
   String toCodeString() {
-    final toCodeAndIsConst = expr.toCodeAndIsConst();
+    final toCodeAndConstType = expr.toCodeAndConstType();
     return documentationCommentsToCodeString(
           documentationComments,
         ) +
         '  static ' +
-        (toCodeAndIsConst.isConst() ? 'const ' : '') +
+        (toCodeAndConstType.isConst() ? 'const ' : '') +
         type.toCodeString() +
         ' ' +
         name +
         ' = ' +
-        toCodeAndIsConst.code +
+        toCodeAndConstType.code +
         ';\n';
   }
 }
@@ -593,7 +593,8 @@ final class Parameter {
         _nameWithThis(isConstructor) +
             switch (constDefaultExpr) {
               ExprNull() => '',
-              _ => '= ' + constDefaultExpr.toCodeAndIsConst().toCodeString(true)
+              _ =>
+                '= ' + constDefaultExpr.toCodeAndConstType().toCodeString(true)
             } +
             ',',
     };
@@ -786,7 +787,7 @@ final class StatementReturn implements Statement {
 
   @override
   String toCodeString() {
-    return 'return ' + expr.toCodeAndIsConst().toCodeString(true) + ';\n';
+    return 'return ' + expr.toCodeAndConstType().toCodeString(true) + ';\n';
   }
 }
 
@@ -801,12 +802,12 @@ final class StatementFinal implements Statement {
 
   @override
   String toCodeString() {
-    final codeAndIsConst = expr.toCodeAndIsConst();
-    return (codeAndIsConst.isConst() ? 'const' : 'final') +
+    final codeAndConstType = expr.toCodeAndConstType();
+    return (codeAndConstType.isConst() ? 'const' : 'final') +
         ' ' +
         variableName +
         ' = ' +
-        codeAndIsConst.code +
+        codeAndConstType.code +
         ';\n';
   }
 }
@@ -823,7 +824,7 @@ final class StatementIf implements Statement {
   @override
   String toCodeString() {
     return 'if (' +
-        condition.toCodeAndIsConst().toCodeString(true) +
+        condition.toCodeAndConstType().toCodeString(true) +
         ') {\n' +
         thenStatement.map((statement) => statement.toCodeString()).safeJoin() +
         '}\n';
@@ -839,13 +840,13 @@ final class StatementSwitch implements Statement {
   @override
   String toCodeString() {
     return 'switch (' +
-        expr.toCodeAndIsConst().toCodeString(true) +
+        expr.toCodeAndConstType().toCodeString(true) +
         ') {\n' +
         patternList
             .map(
               (pattern) =>
-                  'case' +
-                  pattern.case_.toCodeAndIsConst().toCodeString(true) +
+                  'case ' +
+                  pattern.case_.toCodeAndConstType().toCodeString(true) +
                   ': {\n' +
                   pattern.statements
                       .map(
@@ -866,7 +867,7 @@ final class StatementThrow implements Statement {
 
   @override
   String toCodeString() {
-    return 'throw ' + expr.toCodeAndIsConst().toCodeString(true) + ';\n';
+    return 'throw ' + expr.toCodeAndConstType().toCodeString(true) + ';\n';
   }
 }
 
@@ -875,7 +876,7 @@ final class StatementThrow implements Statement {
 sealed class Expr {
   const Expr();
 
-  CodeAndIsConst toCodeAndIsConst();
+  CodeAndConstType toCodeAndConstType();
 }
 
 @immutable
@@ -892,11 +893,12 @@ final class ExprCall implements Expr {
   final bool isAwait;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
       (isAwait ? 'await ' : '') +
           functionName +
-          _argumentsToString(positionalArguments, namedArguments).code,
+          _argumentsToCodeAndConstType(positionalArguments, namedArguments)
+              .code,
       ConstType.noConst,
     );
   }
@@ -908,8 +910,8 @@ final class ExprIntLiteral implements Expr {
   final int value;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(value.toString(), ConstType.implicit);
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(value.toString(), ConstType.implicit);
   }
 }
 
@@ -919,12 +921,12 @@ final class ExprStringLiteral implements Expr {
   final IList<StringLiteralItem> items;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    final codeAndIsConstList =
-        IList(items.map((item) => item.toCodeAndIsConst()));
-    final isAllConst = codeAndIsConstList.every((item) => item.isConst());
-    return CodeAndIsConst(
-      "'" + codeAndIsConstList.map((item) => item.code).safeJoin() + "'",
+  CodeAndConstType toCodeAndConstType() {
+    final codeAndConstTypeList =
+        IList(items.map((item) => item.toCodeAndConstType()));
+    final isAllConst = codeAndConstTypeList.every((item) => item.isConst());
+    return CodeAndConstType(
+      "'" + codeAndConstTypeList.map((item) => item.code).safeJoin() + "'",
       isAllConst ? ConstType.implicit : ConstType.noConst,
     );
   }
@@ -934,7 +936,7 @@ final class ExprStringLiteral implements Expr {
 sealed class StringLiteralItem {
   const StringLiteralItem();
 
-  CodeAndIsConst toCodeAndIsConst();
+  CodeAndConstType toCodeAndConstType();
 }
 
 @immutable
@@ -944,11 +946,11 @@ final class StringLiteralItemInterpolation implements StringLiteralItem {
   final Expr expr;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    final codeAndIsConst = expr.toCodeAndIsConst();
-    return CodeAndIsConst(
-      r'${' + codeAndIsConst.code + '}',
-      codeAndIsConst.type,
+  CodeAndConstType toCodeAndConstType() {
+    final codeAndConstType = expr.toCodeAndConstType();
+    return CodeAndConstType(
+      r'${' + codeAndConstType.code + '}',
+      codeAndConstType.type,
     );
   }
 }
@@ -960,8 +962,8 @@ final class StringLiteralItemNormal implements StringLiteralItem {
   final String value;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
       value
           .replaceAll(r'\', r'\\')
           .replaceAll(r'$', r'\$')
@@ -982,8 +984,8 @@ final class ExprEnumValue implements Expr {
   final String valueName;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(typeName + '.' + valueName, ConstType.implicit);
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(typeName + '.' + valueName, ConstType.implicit);
   }
 }
 
@@ -1003,13 +1005,14 @@ final class ExprMethodCall implements Expr {
   final bool optionalChaining;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(
-      variable.toCodeAndIsConst().toCodeString(true) +
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
+      variable.toCodeAndConstType().toCodeString(true) +
           (optionalChaining ? '?' : '') +
           '.' +
           methodName +
-          _argumentsToString(positionalArguments, namedArguments).code,
+          _argumentsToCodeAndConstType(positionalArguments, namedArguments)
+              .code,
       ConstType.noConst,
     );
   }
@@ -1029,12 +1032,12 @@ final class ExprConstructor implements Expr {
   final bool isConst;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    final argumentsCodeAndIsConst =
-        _argumentsToString(positionalArguments, namedArguments);
-    return CodeAndIsConst(
-      className + argumentsCodeAndIsConst.code,
-      (isConst && argumentsCodeAndIsConst.isConst())
+  CodeAndConstType toCodeAndConstType() {
+    final argumentsCodeAndConstType =
+        _argumentsToCodeAndConstType(positionalArguments, namedArguments);
+    return CodeAndConstType(
+      className + argumentsCodeAndConstType.code,
+      (isConst && argumentsCodeAndConstType.isConst())
           ? ConstType.explicit
           : ConstType.noConst,
     );
@@ -1051,8 +1054,8 @@ final class ExprLambda implements Expr {
   final IList<Statement> statements;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
       '(' +
           parameterNames.safeJoin(',') +
           ') {\n' +
@@ -1069,13 +1072,13 @@ final class ExprListLiteral implements Expr {
   final IList<Expr> items;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    final codeAndIsConstIter = items.map((item) => item.toCodeAndIsConst());
-    final isAllConst = codeAndIsConstIter.every((item) => item.isConst());
-    return CodeAndIsConst(
+  CodeAndConstType toCodeAndConstType() {
+    final codeAndConstTypeIter = items.map((item) => item.toCodeAndConstType());
+    final isAllConst = codeAndConstTypeIter.every((item) => item.isConst());
+    return CodeAndConstType(
       '[' +
           stringListJoinWithComma(
-            IList(codeAndIsConstIter.map(
+            IList(codeAndConstTypeIter.map(
               (item) => item.toCodeString(!isAllConst),
             )),
           ) +
@@ -1091,20 +1094,20 @@ final class ExprMapLiteral implements Expr {
   final IList<({Expr key, Expr value})> items;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    final codeAndIsConstIter = items.map(
+  CodeAndConstType toCodeAndConstType() {
+    final codeAndConstTypeIter = items.map(
       (item) => (
-        key: item.key.toCodeAndIsConst(),
-        value: item.value.toCodeAndIsConst(),
+        key: item.key.toCodeAndConstType(),
+        value: item.value.toCodeAndConstType(),
       ),
     );
-    final isAllConst = codeAndIsConstIter.every(
+    final isAllConst = codeAndConstTypeIter.every(
       (item) => item.key.isConst() && item.value.isConst(),
     );
-    return CodeAndIsConst(
+    return CodeAndConstType(
       '{' +
           stringListJoinWithComma(
-            IList(codeAndIsConstIter.map(
+            IList(codeAndConstTypeIter.map(
               (item) =>
                   item.key.toCodeString(!isAllConst) +
                   ': ' +
@@ -1124,8 +1127,8 @@ final class ExprVariable implements Expr {
   final bool isConst;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
       name,
       isConst ? ConstType.implicit : ConstType.noConst,
     );
@@ -1139,9 +1142,9 @@ final class ExprGet implements Expr {
   final String fieldName;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(
-      expr.toCodeAndIsConst().toCodeString(true) + '.' + fieldName,
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
+      expr.toCodeAndConstType().toCodeString(true) + '.' + fieldName,
       ConstType.noConst,
     );
   }
@@ -1154,10 +1157,10 @@ final class ExprIs implements Expr {
   final Type type;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
       '(' +
-          expr.toCodeAndIsConst().toCodeString(true) +
+          expr.toCodeAndConstType().toCodeString(true) +
           ' is ' +
           type.toCodeString() +
           ')',
@@ -1174,12 +1177,12 @@ final class ExprOperator implements Expr {
   final Operator operator;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
       '(' +
-          left.toCodeAndIsConst().toCodeString(true) +
+          left.toCodeAndConstType().toCodeString(true) +
           operator.code +
-          right.toCodeAndIsConst().toCodeString(true) +
+          right.toCodeAndConstType().toCodeString(true) +
           ')',
       ConstType.noConst,
     );
@@ -1191,8 +1194,8 @@ final class ExprNull implements Expr {
   const ExprNull();
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return const CodeAndIsConst('null', ConstType.implicit);
+  CodeAndConstType toCodeAndConstType() {
+    return const CodeAndConstType('null', ConstType.implicit);
   }
 }
 
@@ -1202,8 +1205,8 @@ final class ExprBool implements Expr {
   final bool value;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(value.toString(), ConstType.implicit);
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(value.toString(), ConstType.implicit);
   }
 }
 
@@ -1215,14 +1218,14 @@ final class ExprConditionalOperator implements Expr {
   final Expr elseExpr;
 
   @override
-  CodeAndIsConst toCodeAndIsConst() {
-    return CodeAndIsConst(
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
       '(' +
-          condition.toCodeAndIsConst().toCodeString(true) +
+          condition.toCodeAndConstType().toCodeString(true) +
           ' ? ' +
-          thenExpr.toCodeAndIsConst().toCodeString(true) +
+          thenExpr.toCodeAndConstType().toCodeString(true) +
           ' : ' +
-          elseExpr.toCodeAndIsConst().toCodeString(true) +
+          elseExpr.toCodeAndConstType().toCodeString(true) +
           ')',
       ConstType.noConst,
     );
@@ -1249,28 +1252,28 @@ enum Operator {
   final String code;
 }
 
-CodeAndIsConst _argumentsToString(
+CodeAndConstType _argumentsToCodeAndConstType(
   IList<Expr> positionalArguments,
   IList<({String name, Expr argument})> namedArguments,
 ) {
-  final positionalArgumentsCodeAndIsConst =
-      positionalArguments.map((argument) => argument.toCodeAndIsConst());
-  final namedArgumentsCodeAndIsConst = namedArguments.map(
+  final positionalArgumentsCodeAndConstType =
+      positionalArguments.map((argument) => argument.toCodeAndConstType());
+  final namedArgumentsCodeAndConstType = namedArguments.map(
     (argument) => (
       name: argument.name,
-      argument: argument.argument.toCodeAndIsConst(),
+      argument: argument.argument.toCodeAndConstType(),
     ),
   );
-  final isAllConst = positionalArgumentsCodeAndIsConst
+  final isAllConst = positionalArgumentsCodeAndConstType
           .every((argument) => argument.isConst()) &&
-      namedArgumentsCodeAndIsConst
+      namedArgumentsCodeAndConstType
           .every((argument) => argument.argument.isConst());
-  return CodeAndIsConst(
+  return CodeAndConstType(
     '(' +
         stringListJoinWithComma(IList([
-          ...positionalArgumentsCodeAndIsConst
+          ...positionalArgumentsCodeAndConstType
               .map((argument) => argument.toCodeString(!isAllConst)),
-          ...namedArgumentsCodeAndIsConst.map(
+          ...namedArgumentsCodeAndConstType.map(
             (argument) =>
                 argument.name +
                 ': ' +
@@ -1294,8 +1297,8 @@ String stringListJoinWithComma(IList<String> list) {
 }
 
 @immutable
-final class CodeAndIsConst {
-  const CodeAndIsConst(this.code, this.type);
+final class CodeAndConstType {
+  const CodeAndConstType(this.code, this.type);
   final String code;
   final ConstType type;
 
