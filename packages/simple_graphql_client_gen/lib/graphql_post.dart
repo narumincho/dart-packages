@@ -24,6 +24,7 @@ Future<GraphqlResponse> graphQLPost({
   required Uri uri,
   required String query,
   IMap<String, JsonValue>? variables,
+  String? auth,
 }) async {
   final http.Response response = await http.post(
     uri,
@@ -34,7 +35,10 @@ Future<GraphqlResponse> graphQLPost({
             variables == null ? const JsonNull() : JsonObject(variables),
       }),
     ).encode(),
-    headers: {'content-type': 'application/json'},
+    headers: {
+      'content-type': 'application/json',
+      if (auth != null) 'authorization': 'Bearer $auth',
+    },
   );
   final jsonValue = JsonValue.decode(
     utf8.decode(response.bodyBytes),
