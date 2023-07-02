@@ -14,10 +14,15 @@ final class GraphqlResponse {
 
 @immutable
 final class GraphqlError implements Exception {
-  const GraphqlError(this.message, this.code);
+  const GraphqlError({
+    required this.message,
+    required this.path,
+    required this.extensionsCode,
+  });
 
   final String message;
-  final String? code;
+  final IList<String> path;
+  final String? extensionsCode;
 }
 
 Future<GraphqlResponse> graphQLPost({
@@ -51,11 +56,19 @@ Future<GraphqlResponse> graphQLPost({
             ?.getAsArrayWithDecoder((errorJson) {
           final message =
               errorJson.getObjectValueOrNull('message')?.asStringOrNull();
-          final code = errorJson.getObjectValueOrNull('code')?.asStringOrNull();
-          if (message == null) {
-            return null;
-          }
-          return GraphqlError(message, code);
+          final path = IList(errorJson
+              .getObjectValueOrNull('path')
+              ?.getAsArray()
+              ?.map((element) => element.asStringOrThrow()));
+          final extensionsCode = errorJson
+              .getObjectValueOrNull('extensions')
+              ?.getObjectValueOrNull('code')
+              ?.asStringOrNull();
+          return GraphqlError(
+            message: message ?? 'Unknown error',
+            path: path,
+            extensionsCode: extensionsCode,
+          );
         }) ??
         const IListConst([]),
   );
