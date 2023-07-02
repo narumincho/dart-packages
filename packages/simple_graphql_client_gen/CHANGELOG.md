@@ -1,3 +1,7 @@
+## 0.4.0
+
+- Support Authorization Header
+
 ## 0.3.0
 
 - Remove output of match method. Please use switch expressions from now on.
