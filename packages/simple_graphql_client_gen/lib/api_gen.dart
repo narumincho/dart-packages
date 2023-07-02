@@ -110,7 +110,7 @@ Method _createApiCallMethod(
         ),
         Parameter(
           name: 'auth',
-          type: wellknown_type.String,
+          type: wellknown_type.String.setIsNullable(true),
           parameterPattern: const ParameterPatternPositional(),
         ),
         ...variableList.map(
