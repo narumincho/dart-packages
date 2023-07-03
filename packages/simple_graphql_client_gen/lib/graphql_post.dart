@@ -9,6 +9,14 @@ final class GraphqlResponse {
   const GraphqlResponse(this.data, this.errors);
 
   final JsonObject? data;
+  final GraphqlErrors? errors;
+}
+
+@immutable
+final class GraphqlErrors implements Exception {
+  const GraphqlErrors(this.errors);
+
+  /// nonEmpty
   final IList<GraphqlError> errors;
 }
 
@@ -49,27 +57,29 @@ Future<GraphqlResponse> graphQLPost({
     utf8.decode(response.bodyBytes),
   );
 
+  final errors = jsonValue
+          .getObjectValueOrNull('errors')
+          ?.getAsArrayWithDecoder((errorJson) {
+        final message =
+            errorJson.getObjectValueOrNull('message')?.asStringOrNull();
+        final path = IList(errorJson
+            .getObjectValueOrNull('path')
+            ?.getAsArray()
+            ?.map((element) => element.asStringOrThrow()));
+        final extensionsCode = errorJson
+            .getObjectValueOrNull('extensions')
+            ?.getObjectValueOrNull('code')
+            ?.asStringOrNull();
+        return GraphqlError(
+          message: message ?? 'Unknown error',
+          path: path,
+          extensionsCode: extensionsCode,
+        );
+      }) ??
+      const IListConst([]);
+
   return GraphqlResponse(
     jsonValue.getObjectValueOrThrow('data').asJsonObjectOrNull(),
-    jsonValue
-            .getObjectValueOrNull('errors')
-            ?.getAsArrayWithDecoder((errorJson) {
-          final message =
-              errorJson.getObjectValueOrNull('message')?.asStringOrNull();
-          final path = IList(errorJson
-              .getObjectValueOrNull('path')
-              ?.getAsArray()
-              ?.map((element) => element.asStringOrThrow()));
-          final extensionsCode = errorJson
-              .getObjectValueOrNull('extensions')
-              ?.getObjectValueOrNull('code')
-              ?.asStringOrNull();
-          return GraphqlError(
-            message: message ?? 'Unknown error',
-            path: path,
-            extensionsCode: extensionsCode,
-          );
-        }) ??
-        const IListConst([]),
+    errors.isEmpty ? null : GraphqlErrors(errors),
   );
 }
