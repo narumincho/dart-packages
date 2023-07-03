@@ -110,7 +110,7 @@ Method _createApiCallMethod(
         ),
         Parameter(
           name: 'auth',
-          type: wellknown_type.String,
+          type: wellknown_type.String.setIsNullable(true),
           parameterPattern: const ParameterPatternPositional(),
         ),
         ...variableList.map(
@@ -162,17 +162,14 @@ Method _createApiCallMethod(
         ),
       ),
       StatementFinal(
-        variableName: 'error',
-        expr: ExprGet(
-          expr: ExprGet(expr: ExprVariable('response'), fieldName: 'errors'),
-          fieldName: 'firstOrNull',
-        ),
+        variableName: 'errors',
+        expr: ExprGet(expr: ExprVariable('response'), fieldName: 'errors'),
       ),
       StatementIf(
         condition: const ExprOperator(
-            ExprVariable('error'), Operator.notEqual, ExprNull()),
+            ExprVariable('errors'), Operator.notEqual, ExprNull()),
         thenStatement: IList([
-          StatementThrow(ExprVariable('error')),
+          StatementThrow(ExprVariable('errors')),
         ]),
       ),
       StatementFinal(

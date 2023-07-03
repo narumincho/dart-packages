@@ -1,3 +1,9 @@
+## 0.5.0
+
+- to throw multiple errors instead of just one
+- add path, extensionsCode in GraphQLError
+- GraphQL API function auth parameter allow null
+
 ## 0.4.0
 
 - Support Authorization Header
