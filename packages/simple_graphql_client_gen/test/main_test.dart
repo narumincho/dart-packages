@@ -1,3 +1,5 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:simple_graphql_client_gen/graphql_post.dart';
 import 'package:simple_graphql_client_gen/text.dart';
 import 'package:test/test.dart';
 
@@ -34,6 +36,51 @@ void main() {
     expect(
       textFromString(' 連続した\u3000    空白は \n 1つに   まとめられる  ', maxLength: 50),
       '連続した 空白は 1つに まとめられる',
+    );
+  });
+
+  test('GraphQLError toString', () {
+    expect(
+      GraphqlError(
+        message: 'error message',
+        path: const IListConst(['path', 'to', 'error']),
+        extensionsCode: 'sampleCode',
+      ).toString(),
+      '''
+[sampleCode] error message ([
+   path,
+   to,
+   error
+])''',
+    );
+  });
+
+  test;
+  test('GraphQLErrors toString', () {
+    expect(
+      GraphqlErrors(IList([
+        GraphqlError(
+          message: 'messageA',
+          path: const IListConst(['path', 'to', 'error']),
+          extensionsCode: 'sampleCodeA',
+        ),
+        GraphqlError(
+          message: 'messageB',
+          path: const IListConst(['path', 'to', 'error']),
+          extensionsCode: 'sampleCodeB',
+        ),
+      ])).toString(),
+      '''
+[sampleCodeA] messageA ([
+   path,
+   to,
+   error
+])
+[sampleCodeB] messageB ([
+   path,
+   to,
+   error
+])''',
     );
   });
 }
