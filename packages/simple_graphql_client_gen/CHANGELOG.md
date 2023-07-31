@@ -1,3 +1,7 @@
+## 0.6.0
+
+- override GraphqlError.toString(), GraphqlErrors.toString()
+
 ## 0.5.0
 
 - to throw multiple errors instead of just one

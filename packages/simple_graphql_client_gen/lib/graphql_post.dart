@@ -18,6 +18,11 @@ final class GraphqlErrors implements Exception {
 
   /// nonEmpty
   final IList<GraphqlError> errors;
+
+  @override
+  String toString() {
+    return errors.join('\n');
+  }
 }
 
 @immutable
@@ -31,6 +36,11 @@ final class GraphqlError implements Exception {
   final String message;
   final IList<String> path;
   final String? extensionsCode;
+
+  @override
+  String toString() {
+    return '[$extensionsCode] $message ($path)';
+  }
 }
 
 Future<GraphqlResponse> graphQLPost({
