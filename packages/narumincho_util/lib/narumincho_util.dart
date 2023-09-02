@@ -53,6 +53,14 @@ extension NaruminchoUtilIterable<T> on Iterable<T> {
       return [item, separator];
     });
   }
+
+  @useResult
+  Iterable<T> setMinLength(int minLength, T fillValue) {
+    if (this.length >= minLength) {
+      return this;
+    }
+    return [...this, ...List.filled(minLength - this.length, fillValue)];
+  }
 }
 
 extension SafeISet<T> on ISet<T> {
