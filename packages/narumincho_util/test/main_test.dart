@@ -68,4 +68,18 @@ void main() {
       '/path?position=left&empty&=emptyValue',
     );
   });
+
+  test('setMinLength', () {
+    expect(
+      IList(const IListConst(['a', 'b', 'c']).setMinLength(6, 'fill')),
+      const IListConst(['a', 'b', 'c', 'fill', 'fill', 'fill']),
+    );
+  });
+
+  test('setMinLength over', () {
+    expect(
+      IList(const IListConst(['a', 'b', 'c']).setMinLength(2, 'fill')),
+      const IListConst(['a', 'b', 'c']),
+    );
+  });
 }

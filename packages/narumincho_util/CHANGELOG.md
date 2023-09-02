@@ -1,3 +1,7 @@
+## 0.1.3
+
+- add setMinLength
+
 ## 0.1.2
 
 - downgrade collection 1.17.2 → 1.17.1 for flutter_test
