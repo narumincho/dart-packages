@@ -1,3 +1,7 @@
+## 0.6.1
+
+- use IMap in QueryInputObject
+
 ## 0.6.0
 
 - override GraphqlError.toString(), GraphqlErrors.toString()

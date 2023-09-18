@@ -306,13 +306,13 @@ final class QueryInputArray extends QueryInput {
 @immutable
 final class QueryInputObject extends QueryInput {
   const QueryInputObject(this.entries);
-  final IList<Tuple2<String, QueryInput>> entries;
+  final IMap<String, QueryInput> entries;
 
   @override
   String toQueryString() {
     return '{' +
         entries
-            .map((item) => item.first + ': ' + item.second.toQueryString())
+            .mapTo((key, value) => key + ': ' + value.toQueryString())
             .safeJoin(',') +
         '}';
   }
