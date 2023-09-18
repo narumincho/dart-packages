@@ -703,6 +703,42 @@ final class TypeNormal implements Type {
 }
 
 @immutable
+final class TypeRecord implements Type {
+  const TypeRecord({
+    required this.items,
+    this.isNullable = false,
+  });
+  final IList<Type> items;
+  final bool isNullable;
+
+  @override
+  String toCodeString() {
+    return '(' +
+        items
+            .map(
+              (item) => item.toCodeString(),
+            )
+            .safeJoin(', ') +
+        (items.length == 1 ? ',' : '') +
+        ')' +
+        (isNullable ? '?' : '');
+  }
+
+  @override
+  Type setIsNullable(bool isNullable) {
+    return TypeRecord(
+      items: items,
+      isNullable: isNullable,
+    );
+  }
+
+  @override
+  bool getIsNullable() {
+    return isNullable;
+  }
+}
+
+@immutable
 final class EnumDeclaration implements Declaration {
   const EnumDeclaration({
     required this.name,
@@ -1239,7 +1275,7 @@ final class ExprConditionalOperator implements Expr {
 }
 
 @immutable
-class ExprRecord implements Expr {
+final class ExprRecord implements Expr {
   const ExprRecord({
     this.positional = const IListConst([]),
     this.named = const IListConst([]),
