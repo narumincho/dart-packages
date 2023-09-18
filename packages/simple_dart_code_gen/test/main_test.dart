@@ -1,6 +1,6 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:simple_dart_code_gen/simple_dart_code_gen.dart';
-import 'package:simple_dart_code_gen/wellknown_type.dart';
+import 'package:simple_dart_code_gen/wellknown_type.dart' as wellknown_type;
 import 'package:test/test.dart';
 
 void main() {
@@ -15,13 +15,13 @@ void main() {
             Field(
               name: 'name',
               documentationComments: '名前',
-              type: String,
+              type: wellknown_type.String,
               parameterPattern: ParameterPatternNamed(),
             ),
             Field(
               name: 'age',
               documentationComments: '年齢',
-              type: double,
+              type: wellknown_type.double,
               parameterPattern: ParameterPatternNamed(),
             ),
           ]),
@@ -141,19 +141,19 @@ final class SampleClass {
           Field(
             name: 'pos',
             documentationComments: '位置引数',
-            type: String,
+            type: wellknown_type.String,
             parameterPattern: ParameterPatternPositional(),
           ),
           Field(
             name: 'name',
             documentationComments: '名前',
-            type: String,
+            type: wellknown_type.String,
             parameterPattern: ParameterPatternNamed(),
           ),
           Field(
             name: 'age',
             documentationComments: '年齢',
-            type: double,
+            type: wellknown_type.double,
             parameterPattern: ParameterPatternNamed(),
           ),
         ]),
@@ -169,4 +169,20 @@ return 'SampleClass(${pos}, name: ${name}, age: ${age}, )';
 }''');
     },
   );
+
+  test('record empty', () {
+    expect(
+      const ExprRecord().toCodeAndConstType().code,
+      '()',
+    );
+  });
+
+  test('record positional one', () {
+    expect(
+      const ExprRecord(
+        positional: IListConst([ExprIntLiteral(28)]),
+      ).toCodeAndConstType().code,
+      '(28,)',
+    );
+  });
 }

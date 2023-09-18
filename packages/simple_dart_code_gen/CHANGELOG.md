@@ -1,3 +1,8 @@
+## 0.4.0
+
+- add ExprRecord
+- add TypeRecord
+
 ## 0.3.0
 
 - support sealed class, final class (Require Dart 3)
