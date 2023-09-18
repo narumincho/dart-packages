@@ -897,8 +897,10 @@ final class ExprCall implements Expr {
     return CodeAndConstType(
       (isAwait ? 'await ' : '') +
           functionName +
-          _argumentsToCodeAndConstType(positionalArguments, namedArguments)
-              .code,
+          _argumentsToCodeAndConstType(
+            positionalArguments: positionalArguments,
+            namedArguments: namedArguments,
+          ).code,
       ConstType.noConst,
     );
   }
@@ -1011,8 +1013,10 @@ final class ExprMethodCall implements Expr {
           (optionalChaining ? '?' : '') +
           '.' +
           methodName +
-          _argumentsToCodeAndConstType(positionalArguments, namedArguments)
-              .code,
+          _argumentsToCodeAndConstType(
+            positionalArguments: positionalArguments,
+            namedArguments: namedArguments,
+          ).code,
       ConstType.noConst,
     );
   }
@@ -1033,8 +1037,10 @@ final class ExprConstructor implements Expr {
 
   @override
   CodeAndConstType toCodeAndConstType() {
-    final argumentsCodeAndConstType =
-        _argumentsToCodeAndConstType(positionalArguments, namedArguments);
+    final argumentsCodeAndConstType = _argumentsToCodeAndConstType(
+      positionalArguments: positionalArguments,
+      namedArguments: namedArguments,
+    );
     return CodeAndConstType(
       className + argumentsCodeAndConstType.code,
       (isConst && argumentsCodeAndConstType.isConst())
@@ -1232,6 +1238,26 @@ final class ExprConditionalOperator implements Expr {
   }
 }
 
+@immutable
+class ExprRecord implements Expr {
+  const ExprRecord({
+    this.positional = const IListConst([]),
+    this.named = const IListConst([]),
+  });
+
+  final IList<Expr> positional;
+  final IList<({String name, Expr argument})> named;
+
+  @override
+  CodeAndConstType toCodeAndConstType() {
+    return _argumentsToCodeAndConstType(
+      positionalArguments: positional,
+      namedArguments: named,
+      trailingComma: named.isEmpty && positional.length == 1,
+    );
+  }
+}
+
 enum Operator {
   /// `??`
   nullishCoalescing('??'),
@@ -1252,10 +1278,11 @@ enum Operator {
   final String code;
 }
 
-CodeAndConstType _argumentsToCodeAndConstType(
-  IList<Expr> positionalArguments,
-  IList<({String name, Expr argument})> namedArguments,
-) {
+CodeAndConstType _argumentsToCodeAndConstType({
+  required IList<Expr> positionalArguments,
+  required IList<({String name, Expr argument})> namedArguments,
+  bool trailingComma = false,
+}) {
   final positionalArgumentsCodeAndConstType =
       positionalArguments.map((argument) => argument.toCodeAndConstType());
   final namedArgumentsCodeAndConstType = namedArguments.map(
@@ -1280,6 +1307,7 @@ CodeAndConstType _argumentsToCodeAndConstType(
                 argument.argument.toCodeString(!isAllConst),
           ),
         ])) +
+        (trailingComma ? ',' : '') +
         ')',
     isAllConst ? ConstType.explicit : ConstType.noConst,
   );
