@@ -272,22 +272,26 @@ ClassDeclaration _graphQLTypeInputObjectClass(
   final returnExpr = ExprCall(
     functionName: 'query_string.QueryInputObject',
     positionalArguments: IList([
-      wellknown_expr.IList(ExprListLiteral(
-        IList(inputObject.fields.map(
-          (field) => ExprCall(
-            functionName: 'Tuple2',
-            positionalArguments: IList([
-              ExprStringLiteral(IList([StringLiteralItemNormal(field.name)])),
-              fieldQueryInputMethodFuncReturnExpr(
-                field.type,
-                ExprVariable(field.type.isNullable
-                    ? getValueName(field.name)
-                    : field.name),
+      ExprConstructor(
+          className: 'IMap',
+          isConst: false,
+          positionalArguments: IList([
+            ExprMapLiteral(IList(
+              inputObject.fields.map(
+                (field) => (
+                  key: ExprStringLiteral(
+                    IList([StringLiteralItemNormal(field.name)]),
+                  ),
+                  value: fieldQueryInputMethodFuncReturnExpr(
+                    field.type,
+                    ExprVariable(field.type.isNullable
+                        ? getValueName(field.name)
+                        : field.name),
+                  ),
+                ),
               ),
-            ]),
-          ),
-        )),
-      ))
+            )),
+          ]))
     ]),
   );
   return ClassDeclaration(
