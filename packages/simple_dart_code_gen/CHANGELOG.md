@@ -1,3 +1,7 @@
+## 0.5.1
+
+- copyWith method use record if type is nullable `type? Function()` → `(type?, )?`
+
 ## 0.5.0
 
 - add ExprSwitch
