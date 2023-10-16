@@ -1,3 +1,9 @@
+## 0.5.0
+
+- add ExprSwitch
+- add Pattern Type
+- change type StatementSwitch Expr to Pattern
+
 ## 0.4.0
 
 - add ExprRecord

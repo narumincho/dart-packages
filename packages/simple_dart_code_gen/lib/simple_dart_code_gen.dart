@@ -871,7 +871,7 @@ final class StatementIf implements Statement {
 final class StatementSwitch implements Statement {
   const StatementSwitch(this.expr, this.patternList);
   final Expr expr;
-  final IList<({Expr case_, IList<Statement> statements})> patternList;
+  final IList<({Pattern pattern, IList<Statement> statements})> patternList;
 
   @override
   String toCodeString() {
@@ -882,7 +882,7 @@ final class StatementSwitch implements Statement {
             .map(
               (pattern) =>
                   'case ' +
-                  pattern.case_.toCodeAndConstType().toCodeString(true) +
+                  pattern.pattern.toCodeString() +
                   ': {\n' +
                   pattern.statements
                       .map(
@@ -1002,15 +1002,17 @@ final class StringLiteralItemNormal implements StringLiteralItem {
   @override
   CodeAndConstType toCodeAndConstType() {
     return CodeAndConstType(
-      value
-          .replaceAll(r'\', r'\\')
-          .replaceAll(r'$', r'\$')
-          .replaceAll('\n', r'\n')
-          .replaceAll("'", r"\'"),
+      _escapeStringLiteralValue(value),
       ConstType.implicit,
     );
   }
 }
+
+String _escapeStringLiteralValue(String value) => value
+    .replaceAll(r'\', r'\\')
+    .replaceAll(r'$', r'\$')
+    .replaceAll('\n', r'\n')
+    .replaceAll("'", r"\'");
 
 @immutable
 final class ExprEnumValue implements Expr {
@@ -1294,6 +1296,49 @@ final class ExprRecord implements Expr {
   }
 }
 
+@immutable
+final class ExprSwitch implements Expr {
+  const ExprSwitch(this.expr, this.patternList);
+
+  final Expr expr;
+  final IList<(Pattern, Expr)> patternList;
+
+  @override
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
+      '(switch (' +
+          expr.toCodeAndConstType().toCodeString(true) +
+          ') {' +
+          patternList
+              .map(
+                (patternAndExpr) =>
+                    patternAndExpr.$1.toCodeString() +
+                    ' => ' +
+                    patternAndExpr.$2.toCodeAndConstType().toCodeString(true) +
+                    ',\n',
+              )
+              .safeJoin() +
+          '}',
+      ConstType.noConst,
+    );
+  }
+}
+
+@immutable
+final class ExprThrow implements Expr {
+  const ExprThrow(this.expr);
+
+  final Expr expr;
+
+  @override
+  CodeAndConstType toCodeAndConstType() {
+    return CodeAndConstType(
+      '(throw ' + expr.toCodeAndConstType().toCodeString(true) + ')',
+      ConstType.noConst,
+    );
+  }
+}
+
 enum Operator {
   /// `??`
   nullishCoalescing('??'),
@@ -1405,4 +1450,47 @@ final class ParameterPatternNamed implements ParameterPattern {
 final class ParameterPatternNamedWithDefault implements ParameterPattern {
   const ParameterPatternNamedWithDefault(this.constDefaultExpr);
   final Expr constDefaultExpr;
+}
+
+@immutable
+sealed class Pattern {
+  const Pattern();
+
+  String toCodeString();
+}
+
+@immutable
+final class PatternStringLiteral implements Pattern {
+  const PatternStringLiteral(this.value);
+
+  final String value;
+
+  @override
+  String toCodeString() => _escapeStringLiteralValue(value);
+}
+
+@immutable
+final class PatternNullLiteral implements Pattern {
+  const PatternNullLiteral();
+
+  @override
+  String toCodeString() => 'null';
+}
+
+@immutable
+final class PatternFinal implements Pattern {
+  const PatternFinal(this.variableName);
+
+  final String variableName;
+
+  @override
+  String toCodeString() => 'final $variableName';
+}
+
+@immutable
+final class PatternWildcard implements Pattern {
+  const PatternWildcard();
+
+  @override
+  String toCodeString() => '_';
 }
