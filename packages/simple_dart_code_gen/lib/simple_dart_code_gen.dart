@@ -1461,12 +1461,11 @@ sealed class Pattern {
 
 @immutable
 final class PatternStringLiteral implements Pattern {
-  const PatternStringLiteral(this.value);
-
-  final String value;
+  const PatternStringLiteral(this.items);
+  final IList<StringLiteralItem> items;
 
   @override
-  String toCodeString() => _escapeStringLiteralValue(value);
+  String toCodeString() => ExprStringLiteral(items).toCodeAndConstType().code;
 }
 
 @immutable
