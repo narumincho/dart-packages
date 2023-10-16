@@ -22,6 +22,6 @@ jobs:
       - run: dart test
         working-directory: packages/simple_graphql_client_gen
       - name: Analyze Flutter
-        uses: ValentinVignal/action-dart-analyze@v0.15
+        uses: ValentinVignal/action-dart-analyze@v0.16
         with:
           fail-on: warning
