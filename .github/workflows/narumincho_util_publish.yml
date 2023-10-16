@@ -2,7 +2,7 @@ name: Publish narumincho_util to pub.dev
 
 on:
   push:
-    tags: "narumincho_util-v[0-9]+.[0-9]+.[0-9]+*"
+    tags: ["narumincho_util-v[0-9]+.[0-9]+.[0-9]+*"]
 
 jobs:
   publish:

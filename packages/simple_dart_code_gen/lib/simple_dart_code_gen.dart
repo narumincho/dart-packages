@@ -218,9 +218,8 @@ final class ClassDeclaration implements Declaration {
         (field) => Parameter(
           name: field.name,
           type: field.type.getIsNullable()
-              ? TypeFunction(
-                  returnType: field.type,
-                  parameters: const IListConst([]),
+              ? TypeRecord(
+                  items: IList([field.type]),
                   isNullable: true,
                 )
               : field.type.setIsNullable(true),
@@ -237,7 +236,7 @@ final class ClassDeclaration implements Declaration {
               ParameterPatternPositional() => null,
               _ => (
                   name: field.name,
-                  argument: copyWithFieldExpr(field.name, field.type),
+                  argument: _copyWithFieldExpr(field.name, field.type),
                 )
             },
           )),
@@ -246,7 +245,7 @@ final class ClassDeclaration implements Declaration {
               if (field.parameterPattern is! ParameterPatternPositional) {
                 return null;
               }
-              return copyWithFieldExpr(field.name, field.type);
+              return _copyWithFieldExpr(field.name, field.type);
             },
           )),
         ))
@@ -416,12 +415,12 @@ final class ClassDeclaration implements Declaration {
 /// https://dart.dev/language/class-modifiers
 enum ClassModifier { abstract, sealed, final_ }
 
-Expr copyWithFieldExpr(String fieldName, Type type) {
+Expr _copyWithFieldExpr(String fieldName, Type type) {
   if (type.getIsNullable()) {
     return ExprConditionalOperator(
       ExprOperator(ExprVariable(fieldName), Operator.equal, ExprNull()),
       ExprGet(expr: ExprVariable('this'), fieldName: fieldName),
-      ExprCall(functionName: fieldName),
+      ExprGet(expr: ExprVariable(fieldName), fieldName: r'$1'),
     );
   }
   return ExprOperator(
