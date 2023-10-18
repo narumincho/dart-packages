@@ -1,3 +1,8 @@
+## 0.5.2
+
+- fix switch expr output
+- SimpleDartCode.toCodeString add format parameter for debug
+
 ## 0.5.1
 
 - copyWith method use record if type is nullable `type? Function()` → `(type?, )?`

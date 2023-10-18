@@ -5,14 +5,14 @@ import 'package:test/test.dart';
 
 void main() {
   test('flatMapAndRemoveNull', () {
-    const code = SimpleDartCode(
-      importPackageAndFileNames: IListConst([]),
-      declarationList: IListConst([
+    final code = SimpleDartCode(
+      importPackageAndFileNames: const IListConst([]),
+      declarationList: IList([
         ClassDeclaration(
           name: 'SampleClass',
           documentationComments: 'document',
-          fields: IListConst([
-            Field(
+          fields: IList([
+            const Field(
               name: 'name',
               documentationComments: '名前',
               type: wellknown_type.String,
@@ -21,8 +21,8 @@ void main() {
             Field(
               name: 'age',
               documentationComments: '年齢',
-              type: wellknown_type.double,
-              parameterPattern: ParameterPatternNamed(),
+              type: wellknown_type.double.setIsNullable(true),
+              parameterPattern: const ParameterPatternNamed(),
             ),
           ]),
           modifier: ClassModifier.final_,
@@ -48,17 +48,17 @@ final class SampleClass {
   final String name;
 
   /// 年齢
-  final double age;
+  final double? age;
 
   /// `SampleClass` を複製する
   @useResult
   SampleClass copyWith({
     String? name,
-    double? age,
+    (double?,)? age,
   }) {
     return SampleClass(
       name: (name ?? this.name),
-      age: (age ?? this.age),
+      age: ((age == null) ? this.age : age.$1),
     );
   }
 
@@ -66,7 +66,7 @@ final class SampleClass {
   @useResult
   SampleClass updateFields({
     String Function(String prevName)? name,
-    double Function(double prevAge)? age,
+    double? Function(double? prevAge)? age,
   }) {
     return SampleClass(
       name: ((name == null) ? this.name : name(this.name)),
@@ -183,6 +183,41 @@ return 'SampleClass(${pos}, name: ${name}, age: ${age}, )';
         positional: IListConst([ExprIntLiteral(28)]),
       ).toCodeAndConstType().code,
       '(28,)',
+    );
+  });
+
+  test('switch expr', () {
+    expect(
+      const ExprSwitch(
+        ExprVariable('value'),
+        IListConst([
+          (
+            PatternNullLiteral(),
+            ExprStringLiteral(IListConst([
+              StringLiteralItemNormal('value is null'),
+            ])),
+          ),
+          (
+            PatternStringLiteral(
+                IListConst([StringLiteralItemNormal('sampleText')])),
+            ExprStringLiteral(IListConst([
+              StringLiteralItemNormal('value is sampleText!'),
+            ])),
+          ),
+          (
+            PatternFinal('valueNotNull'),
+            ExprStringLiteral(IListConst([
+              StringLiteralItemNormal('value is '),
+              StringLiteralItemInterpolation(ExprVariable('valueNotNull'))
+            ])),
+          ),
+        ]),
+      ).toCodeAndConstType().code,
+      r'''
+(switch (value) {null => 'value is null',
+'sampleText' => 'value is sampleText!',
+final valueNotNull => 'value is ${valueNotNull}',
+})''',
     );
   });
 }

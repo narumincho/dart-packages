@@ -31,6 +31,7 @@ linter:
     - parameter_assignments
     - prefer_asserts_in_initializer_lists
     - prefer_asserts_with_message
+    - prefer_const_constructors
     - prefer_final_in_for_each
     - prefer_final_locals
     - prefer_if_elements_to_conditional_expressions
