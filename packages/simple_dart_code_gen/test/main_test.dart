@@ -1,4 +1,5 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:meta/meta.dart';
 import 'package:simple_dart_code_gen/simple_dart_code_gen.dart';
 import 'package:simple_dart_code_gen/wellknown_type.dart' as wellknown_type;
 import 'package:test/test.dart';
@@ -183,6 +184,41 @@ return 'SampleClass(${pos}, name: ${name}, age: ${age}, )';
         positional: IListConst([ExprIntLiteral(28)]),
       ).toCodeAndConstType().code,
       '(28,)',
+    );
+  });
+
+  test('switch expr', () {
+    expect(
+      const ExprSwitch(
+        ExprVariable('value'),
+        IListConst([
+          (
+            PatternNullLiteral(),
+            ExprStringLiteral(IListConst([
+              StringLiteralItemNormal('value is null'),
+            ])),
+          ),
+          (
+            PatternStringLiteral(
+                IListConst([StringLiteralItemNormal('sampleText')])),
+            ExprStringLiteral(IListConst([
+              StringLiteralItemNormal('value is sampleText!'),
+            ])),
+          ),
+          (
+            PatternFinal('valueNotNull'),
+            ExprStringLiteral(IListConst([
+              StringLiteralItemNormal('value is '),
+              StringLiteralItemInterpolation(ExprVariable('valueNotNull'))
+            ])),
+          ),
+        ]),
+      ).toCodeAndConstType().code,
+      r'''
+(switch (value) {null => 'value is null',
+'sampleText' => 'value is sampleText!',
+final valueNotNull => 'value is ${valueNotNull}',
+})''',
     );
   });
 }

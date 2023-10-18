@@ -1318,7 +1318,7 @@ final class ExprSwitch implements Expr {
                     ',\n',
               )
               .safeJoin() +
-          '}',
+          '})',
       ConstType.noConst,
     );
   }
