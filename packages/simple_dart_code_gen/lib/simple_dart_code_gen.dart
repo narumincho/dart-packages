@@ -20,7 +20,7 @@ final class SimpleDartCode {
   final IList<Declaration> declarationList;
 
   @useResult
-  String toCodeString() {
+  String toCodeString({bool format = true}) {
     final importPackageFileNameAndAsNameList = IList([
       const ImportPackageFileNameAndAsName(
           packageAndFileName: 'package:meta/meta.dart'),
@@ -54,7 +54,8 @@ ${importStatementRelative}
 
 ${declarationListCode}
 ''';
-    return DartFormatter().format(code);
+
+    return format ? DartFormatter().format(code) : code;
   }
 }
 
