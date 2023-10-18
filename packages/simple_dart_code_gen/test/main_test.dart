@@ -40,7 +40,6 @@ import 'package:meta/meta.dart';
 @immutable
 final class SampleClass {
   /// document
-  @literal
   const SampleClass({
     required this.name,
     required this.age,

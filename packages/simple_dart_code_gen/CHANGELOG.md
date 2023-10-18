@@ -1,6 +1,5 @@
 ## 0.5.2
 
-- output @literal
 - fix switch expr output
 - SimpleDartCode.toCodeString add format parameter for debug
 
