@@ -1,5 +1,4 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:meta/meta.dart';
 import 'package:simple_dart_code_gen/simple_dart_code_gen.dart';
 import 'package:simple_dart_code_gen/wellknown_type.dart' as wellknown_type;
 import 'package:test/test.dart';
@@ -23,7 +22,7 @@ void main() {
               name: 'age',
               documentationComments: '年齢',
               type: wellknown_type.double.setIsNullable(true),
-              parameterPattern: ParameterPatternNamed(),
+              parameterPattern: const ParameterPatternNamed(),
             ),
           ]),
           modifier: ClassModifier.final_,

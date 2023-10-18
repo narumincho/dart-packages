@@ -114,7 +114,7 @@ EnumDeclaration _graphQLEnumToDartEnumDeclaration(
         statements: IList([
           StatementReturn(
             ExprSwitch(
-              ExprMethodCall(
+              const ExprMethodCall(
                 variable: ExprVariable('jsonValue'),
                 methodName: 'asStringOrNull',
               ),
@@ -131,7 +131,7 @@ EnumDeclaration _graphQLEnumToDartEnumDeclaration(
                   ),
                 ),
                 (
-                  PatternWildcard(),
+                  const PatternWildcard(),
                   ExprThrow(wellknown_expr.Exception(ExprStringLiteral(IList([
                     StringLiteralItemNormal('unknown Enum Value. typeName ' +
                         type.name +
@@ -142,7 +142,7 @@ EnumDeclaration _graphQLEnumToDartEnumDeclaration(
                             )
                             .safeJoin(' or ') +
                         '. but got '),
-                    StringLiteralItemInterpolation(ExprMethodCall(
+                    const StringLiteralItemInterpolation(ExprMethodCall(
                       variable: ExprVariable('jsonValue'),
                       methodName: 'encode',
                     )),
@@ -764,12 +764,12 @@ Expr fieldQueryInputMethodFuncReturnExpr(
         ? ExprSwitch(
             expr,
             IList([
-              (PatternNullLiteral(), queryInputNullExprConstructor),
+              (const PatternNullLiteral(), queryInputNullExprConstructor),
               (
-                PatternFinal('nonNull'),
+                const PatternFinal('nonNull'),
                 _fieldQueryInputMethodNonNullValue(
                   type,
-                  ExprVariable('nonNull'),
+                  const ExprVariable('nonNull'),
                 ),
               )
             ]),

@@ -103,10 +103,10 @@ Method _createApiCallMethod(
     ),
     parameters: IList(
       [
-        Parameter(
+        const Parameter(
           name: 'origin',
           type: wellknown_type.Uri,
-          parameterPattern: const ParameterPatternPositional(),
+          parameterPattern: ParameterPatternPositional(),
         ),
         Parameter(
           name: 'auth',
@@ -129,8 +129,8 @@ Method _createApiCallMethod(
         expr: ExprCall(
           functionName: 'graphql_post.graphQLPost',
           namedArguments: IList([
-            (name: 'uri', argument: ExprVariable('origin')),
-            (name: 'auth', argument: ExprVariable('auth')),
+            (name: 'uri', argument: const ExprVariable('origin')),
+            (name: 'auth', argument: const ExprVariable('auth')),
             (
               name: 'query',
               argument: ExprStringLiteral(
@@ -161,7 +161,7 @@ Method _createApiCallMethod(
           isAwait: true,
         ),
       ),
-      StatementFinal(
+      const StatementFinal(
         variableName: 'errors',
         expr: ExprGet(expr: ExprVariable('response'), fieldName: 'errors'),
       ),
@@ -169,10 +169,10 @@ Method _createApiCallMethod(
         condition: const ExprOperator(
             ExprVariable('errors'), Operator.notEqual, ExprNull()),
         thenStatement: IList([
-          StatementThrow(ExprVariable('errors')),
+          const StatementThrow(ExprVariable('errors')),
         ]),
       ),
-      StatementFinal(
+      const StatementFinal(
         variableName: 'data',
         expr: ExprGet(expr: ExprVariable('response'), fieldName: 'data'),
       ),

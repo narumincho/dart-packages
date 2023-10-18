@@ -33,7 +33,7 @@ const code = SimpleDartCode(
           name: 'age',
           documentationComments: '年齢',
           type: wellknown_type.double.setIsNullable(true),
-          parameterPattern: ParameterPatternNamed(),
+          parameterPattern: const ParameterPatternNamed(),
         ),
       ]),
       modifier: ClassModifier.final_,

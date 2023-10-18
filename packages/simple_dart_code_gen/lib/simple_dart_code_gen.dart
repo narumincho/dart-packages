@@ -224,7 +224,7 @@ final class ClassDeclaration implements Declaration {
                   isNullable: true,
                 )
               : field.type.setIsNullable(true),
-          parameterPattern: ParameterPatternNamedWithDefault(ExprNull()),
+          parameterPattern: const ParameterPatternNamedWithDefault(ExprNull()),
         ),
       )),
       returnType: TypeNormal(name: name),
@@ -270,7 +270,7 @@ final class ClassDeclaration implements Declaration {
             ]),
             isNullable: true,
           ),
-          parameterPattern: ParameterPatternNamedWithDefault(ExprNull()),
+          parameterPattern: const ParameterPatternNamedWithDefault(ExprNull()),
         ),
       )),
       returnType: TypeNormal(name: name),
@@ -319,7 +319,7 @@ final class ClassDeclaration implements Declaration {
         StatementReturn(
           oneField == null
               ? ExprMethodCall(
-                  variable: ExprVariable('Object'),
+                  variable: const ExprVariable('Object'),
                   methodName: useHashAll ? 'hashAll' : 'hash',
                   positionalArguments: useHashAll
                       ? IList([
@@ -364,7 +364,7 @@ final class ClassDeclaration implements Declaration {
             ExprOperator(
               ExprVariable(field.name),
               Operator.equal,
-              ExprGet(expr: ExprVariable('other'), fieldName: field.name),
+              ExprGet(expr: const ExprVariable('other'), fieldName: field.name),
             ),
           ),
         ))
@@ -379,7 +379,7 @@ final class ClassDeclaration implements Declaration {
         _ => IListConst([
             StringLiteralItemNormal(field.name + ': '),
             StringLiteralItemInterpolation(ExprVariable(field.name)),
-            StringLiteralItemNormal(', '),
+            const StringLiteralItemNormal(', '),
           ]),
       };
     });
@@ -387,7 +387,7 @@ final class ClassDeclaration implements Declaration {
       (field) => switch (field.parameterPattern) {
         ParameterPatternPositional() => [
             StringLiteralItemInterpolation(ExprVariable(field.name)),
-            StringLiteralItemNormal(', '),
+            const StringLiteralItemNormal(', '),
           ],
         _ => [],
       },
@@ -405,7 +405,7 @@ final class ClassDeclaration implements Declaration {
             StringLiteralItemNormal(name + '('),
             ...positionalCodeList,
             ...namedCodeList,
-            StringLiteralItemNormal(')'),
+            const StringLiteralItemNormal(')'),
           ])),
         ),
       ]),
@@ -419,26 +419,26 @@ enum ClassModifier { abstract, sealed, final_ }
 Expr _copyWithFieldExpr(String fieldName, Type type) {
   if (type.getIsNullable()) {
     return ExprConditionalOperator(
-      ExprOperator(ExprVariable(fieldName), Operator.equal, ExprNull()),
-      ExprGet(expr: ExprVariable('this'), fieldName: fieldName),
+      ExprOperator(ExprVariable(fieldName), Operator.equal, const ExprNull()),
+      ExprGet(expr: const ExprVariable('this'), fieldName: fieldName),
       ExprGet(expr: ExprVariable(fieldName), fieldName: r'$1'),
     );
   }
   return ExprOperator(
     ExprVariable(fieldName),
     Operator.nullishCoalescing,
-    ExprGet(expr: ExprVariable('this'), fieldName: fieldName),
+    ExprGet(expr: const ExprVariable('this'), fieldName: fieldName),
   );
 }
 
 Expr updateFieldsFieldExpr(String fieldName, Type type) {
   return ExprConditionalOperator(
-    ExprOperator(ExprVariable(fieldName), Operator.equal, ExprNull()),
-    ExprGet(expr: ExprVariable('this'), fieldName: fieldName),
+    ExprOperator(ExprVariable(fieldName), Operator.equal, const ExprNull()),
+    ExprGet(expr: const ExprVariable('this'), fieldName: fieldName),
     ExprCall(
       functionName: fieldName,
       positionalArguments: IList([
-        ExprGet(expr: ExprVariable('this'), fieldName: fieldName),
+        ExprGet(expr: const ExprVariable('this'), fieldName: fieldName),
       ]),
     ),
   );
