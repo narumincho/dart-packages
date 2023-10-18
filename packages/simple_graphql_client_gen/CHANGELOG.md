@@ -1,3 +1,8 @@
+## 0.7.0
+
+- type_gen use switch expr
+- update simple_dart_code_gen ^0.5.1
+
 ## 0.6.1
 
 - use IMap in QueryInputObject
