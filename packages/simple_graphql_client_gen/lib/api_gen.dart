@@ -321,7 +321,7 @@ Method _fromJsonValueMethodUnion(String typeName, IList<QueryFieldOn> onList) {
         IList(
           onList.map(
             (pattern) => (
-              case_: ExprStringLiteral(
+              pattern: PatternStringLiteral(
                 IList([StringLiteralItemNormal(pattern.typeName)]),
               ),
               statements: IList([

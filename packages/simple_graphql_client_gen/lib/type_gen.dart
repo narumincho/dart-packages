@@ -119,8 +119,8 @@ EnumDeclaration _graphQLEnumToDartEnumDeclaration(
             ),
             IList(enumBody.enumValueList.map(
               (enumValue) => (
-                case_: ExprStringLiteral(
-                  IListConst([StringLiteralItemNormal(enumValue.name)]),
+                pattern: PatternStringLiteral(
+                  IList([StringLiteralItemNormal(enumValue.name)]),
                 ),
                 statements: IList([
                   StatementReturn(ExprEnumValue(
