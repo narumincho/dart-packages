@@ -5,14 +5,14 @@ import 'package:test/test.dart';
 
 void main() {
   test('flatMapAndRemoveNull', () {
-    const code = SimpleDartCode(
-      importPackageAndFileNames: IListConst([]),
-      declarationList: IListConst([
+    final code = SimpleDartCode(
+      importPackageAndFileNames: const IListConst([]),
+      declarationList: IList([
         ClassDeclaration(
           name: 'SampleClass',
           documentationComments: 'document',
-          fields: IListConst([
-            Field(
+          fields: IList([
+            const Field(
               name: 'name',
               documentationComments: '名前',
               type: wellknown_type.String,
@@ -21,7 +21,7 @@ void main() {
             Field(
               name: 'age',
               documentationComments: '年齢',
-              type: wellknown_type.double,
+              type: wellknown_type.double.setIsNullable(true),
               parameterPattern: ParameterPatternNamed(),
             ),
           ]),
@@ -48,17 +48,17 @@ final class SampleClass {
   final String name;
 
   /// 年齢
-  final double age;
+  final double? age;
 
   /// `SampleClass` を複製する
   @useResult
   SampleClass copyWith({
     String? name,
-    double? age,
+    (double?,)? age,
   }) {
     return SampleClass(
       name: (name ?? this.name),
-      age: (age ?? this.age),
+      age: ((age == null) ? this.age : age.$1),
     );
   }
 
@@ -66,7 +66,7 @@ final class SampleClass {
   @useResult
   SampleClass updateFields({
     String Function(String prevName)? name,
-    double Function(double prevAge)? age,
+    double? Function(double? prevAge)? age,
   }) {
     return SampleClass(
       name: ((name == null) ? this.name : name(this.name)),
