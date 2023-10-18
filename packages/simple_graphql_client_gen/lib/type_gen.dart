@@ -112,42 +112,47 @@ EnumDeclaration _graphQLEnumToDartEnumDeclaration(
         ]),
         returnType: TypeNormal(name: escapeFirstUnderLine(type.name)),
         statements: IList([
-          StatementSwitch(
-            ExprMethodCall(
-              variable: ExprVariable('jsonValue'),
-              methodName: 'asStringOrThrow',
-            ),
-            IList(enumBody.enumValueList.map(
-              (enumValue) => (
-                pattern: PatternStringLiteral(
-                  IList([StringLiteralItemNormal(enumValue.name)]),
-                ),
-                statements: IList([
-                  StatementReturn(ExprEnumValue(
-                    typeName: escapeFirstUnderLine(type.name),
-                    valueName: enumValue.name,
-                  )),
-                ]),
+          StatementReturn(
+            ExprSwitch(
+              ExprMethodCall(
+                variable: ExprVariable('jsonValue'),
+                methodName: 'asStringOrNull',
               ),
-            )),
+              IList([
+                ...enumBody.enumValueList.map(
+                  (enumValue) => (
+                    PatternStringLiteral(
+                      IList([StringLiteralItemNormal(enumValue.name)]),
+                    ),
+                    ExprEnumValue(
+                      typeName: escapeFirstUnderLine(type.name),
+                      valueName: enumValue.name,
+                    ),
+                  ),
+                ),
+                (
+                  PatternWildcard(),
+                  ExprThrow(wellknown_expr.Exception(ExprStringLiteral(IList([
+                    StringLiteralItemNormal('unknown Enum Value. typeName ' +
+                        type.name +
+                        '. expected ' +
+                        enumBody.enumValueList
+                            .map(
+                              (enumValue) => '"' + enumValue.name + '"',
+                            )
+                            .safeJoin(' or ') +
+                        '. but got '),
+                    StringLiteralItemInterpolation(ExprMethodCall(
+                      variable: ExprVariable('jsonValue'),
+                      methodName: 'encode',
+                    )),
+                  ])))),
+                )
+              ]),
+            ),
           ),
-          StatementThrow(wellknown_expr.Exception(ExprStringLiteral(IList([
-            StringLiteralItemNormal('unknown Enum Value. typeName ' +
-                type.name +
-                '. expected ' +
-                enumBody.enumValueList
-                    .map(
-                      (enumValue) => "'" + enumValue.name + "'",
-                    )
-                    .safeJoin(' or ') +
-                '. but got '),
-            StringLiteralItemInterpolation(ExprMethodCall(
-              variable: ExprVariable('jsonValue'),
-              methodName: 'asStringOrThrow',
-            )),
-          ]))))
         ]),
-      )
+      ),
     ]),
   );
 }
@@ -269,31 +274,6 @@ ClassDeclaration _graphQLTypeInputObjectClass(
   GraphQLTypeDeclaration type,
   GraphQLTypeBodyInputObject inputObject,
 ) {
-  final returnExpr = ExprCall(
-    functionName: 'query_string.QueryInputObject',
-    positionalArguments: IList([
-      ExprConstructor(
-          className: 'IMap',
-          isConst: false,
-          positionalArguments: IList([
-            ExprMapLiteral(IList(
-              inputObject.fields.map(
-                (field) => (
-                  key: ExprStringLiteral(
-                    IList([StringLiteralItemNormal(field.name)]),
-                  ),
-                  value: fieldQueryInputMethodFuncReturnExpr(
-                    field.type,
-                    ExprVariable(field.type.isNullable
-                        ? getValueName(field.name)
-                        : field.name),
-                  ),
-                ),
-              ),
-            )),
-          ]))
-    ]),
-  );
   return ClassDeclaration(
     name: escapeFirstUnderLine(type.name),
     documentationComments: type.documentationComments,
@@ -316,15 +296,31 @@ ClassDeclaration _graphQLTypeInputObjectClass(
         parameters: const IListConst([]),
         returnType: const TypeNormal(name: 'query_string.QueryInput'),
         statements: IList([
-          ...inputObject.fields.mapAndRemoveNull(
-            (field) => field.type.isNullable
-                ? StatementFinal(
-                    variableName: getValueName(field.name),
-                    expr: ExprVariable(field.name),
-                  )
-                : null,
-          ),
-          StatementReturn(returnExpr)
+          StatementReturn(ExprConstructor(
+            className: 'query_string.QueryInputObject',
+            isConst: true,
+            positionalArguments: IList([
+              ExprConstructor(
+                className: 'IMap',
+                isConst: false,
+                positionalArguments: IList([
+                  ExprMapLiteral(IList(
+                    inputObject.fields.map(
+                      (field) => (
+                        key: ExprStringLiteral(
+                          IList([StringLiteralItemNormal(field.name)]),
+                        ),
+                        value: fieldQueryInputMethodFuncReturnExpr(
+                          field.type,
+                          ExprVariable(field.name),
+                        ),
+                      ),
+                    ),
+                  )),
+                ]),
+              )
+            ]),
+          ))
         ]),
       ),
       Method(
@@ -762,17 +758,23 @@ ClassDeclaration _annotationUuidClassDeclaration(GraphQLTypeDeclaration type) {
 
 Expr fieldQueryInputMethodFuncReturnExpr(
   GraphQLType type,
-  Expr variableExpr,
-) {
-  if (type.isNullable) {
-    return ExprConditionalOperator(
-      ExprOperator(variableExpr, Operator.equal, const ExprNull()),
-      queryInputNullExprConstructor,
-      _fieldQueryInputMethodNonNullValue(type, variableExpr),
-    );
-  }
-  return _fieldQueryInputMethodNonNullValue(type, variableExpr);
-}
+  Expr expr,
+) =>
+    type.isNullable
+        ? ExprSwitch(
+            expr,
+            IList([
+              (PatternNullLiteral(), queryInputNullExprConstructor),
+              (
+                PatternFinal('nonNull'),
+                _fieldQueryInputMethodNonNullValue(
+                  type,
+                  ExprVariable('nonNull'),
+                ),
+              )
+            ]),
+          )
+        : _fieldQueryInputMethodNonNullValue(type, expr);
 
 Expr _fieldQueryInputMethodNonNullValue(GraphQLType type, Expr variableExpr) {
   if (type.listType == ListType.list ||
