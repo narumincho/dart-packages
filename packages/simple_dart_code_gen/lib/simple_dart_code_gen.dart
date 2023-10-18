@@ -159,7 +159,7 @@ final class ClassDeclaration implements Declaration {
 
   String constructorToCodeString() {
     return documentationCommentsToCodeString(documentationComments) +
-        '  const ' +
+        '@literal  \n  const ' +
         name +
         (isPrivateConstructor ? '._' : '') +
         constructorFieldsToCodeString() +
