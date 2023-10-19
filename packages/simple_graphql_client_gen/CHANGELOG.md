@@ -1,3 +1,7 @@
+## 0.7.1
+
+- Union Type fromJsonValue use switch
+
 ## 0.7.0
 
 - type_gen use switch expr
