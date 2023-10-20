@@ -1,3 +1,8 @@
+## 0.7.2
+
+- fix collectVariableInQueryField
+- Revert Union Type fromJsonValue use switch
+
 ## 0.7.1
 
 - Union Type fromJsonValue use switch

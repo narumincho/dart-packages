@@ -166,11 +166,8 @@ String _queryFieldToString(
 }
 
 IList<QueryInputVariable> collectVariableInQueryFieldList(
-  GraphQLObjectType? objectType,
+  GraphQLObjectType objectType,
 ) {
-  if (objectType == null) {
-    return const IListConst([]);
-  }
   return IList(
     objectType.toFieldList().expand(
           (field) => _collectVariableInQueryField(field),
@@ -182,15 +179,19 @@ IList<QueryInputVariable> _collectVariableInQueryField(
   QueryField queryField,
 ) {
   return switch (queryField) {
-    // dart bug
-    // ignore: unused_result
-    QueryFieldField(:final args) => args.mapAndRemoveNull((arg) {
-        final input = arg.input;
-        if (input is QueryInputVariable) {
-          return input;
-        }
-        return null;
-      }),
+    QueryFieldField(:final args, :final return_) => IList(args.expand(
+        (arg) => [
+          ...switch (return_.type) {
+            GraphQLOutputTypeObject(:final objectType) =>
+              collectVariableInQueryFieldList(objectType),
+            _ => [],
+          },
+          ...switch (arg.input) {
+            QueryInputVariable() && final input => [input],
+            _ => [],
+          },
+        ],
+      )),
     QueryFieldOn(:final return_) => collectVariableInQueryFieldList(return_),
   };
 }

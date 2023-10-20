@@ -12,7 +12,7 @@ import 'package:simple_graphql_client_gen/to_json.dart';
 SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
   // 同じ型の名前で構造が同じものかどうか調べるために Map を使う
   final objectTypeList = apiMap.values.expand(
-    (element) => collectObjectType(element).toEntryList(),
+    (element) => _collectObjectType(element).toEntryList(),
   );
   final objectTypeMapMut = Map<String, GraphQLObjectType>();
   for (final objectType in objectTypeList) {
@@ -67,20 +67,18 @@ SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
   );
 }
 
-IMap<String, GraphQLObjectType> collectObjectType(GraphQLObjectType object) {
-  // フラットにする
-  final Map<String, GraphQLObjectType> children = Map.fromEntries(
+IMap<String, GraphQLObjectType> _collectObjectType(GraphQLObjectType object) {
+  return IMap<String, GraphQLObjectType>.fromEntries(
     object.toFieldList().expand((fieldOrOn) => switch (fieldOrOn) {
           QueryFieldField(:final return_) => switch (return_.type) {
               GraphQLOutputTypeObject(:final objectType) =>
-                collectObjectType(objectType).toEntryList(),
+                _collectObjectType(objectType).toEntryList(),
               _ => [],
             },
           QueryFieldOn(:final return_) =>
-            collectObjectType(return_).toEntryList(),
+            _collectObjectType(return_).toEntryList(),
         }),
-  );
-  return IMap({object.getTypeName(): object, ...children});
+  ).add(object.getTypeName(), object);
 }
 
 Method _createApiCallMethod(
@@ -304,47 +302,45 @@ Method _fromJsonValueMethodUnion(String typeName, IList<QueryFieldOn> onList) {
       const StatementFinal(
         variableName: 'typeName',
         expr: ExprMethodCall(
-          variable: ExprVariable('value'),
-          methodName: 'getObjectValueOrThrow',
-          positionalArguments: IListConst([
-            ExprStringLiteral(
-              IListConst([StringLiteralItemNormal('__typename')]),
-            )
-          ]),
+          variable: ExprMethodCall(
+            variable: ExprVariable('value'),
+            methodName: 'getObjectValueOrThrow',
+            positionalArguments: IListConst([
+              ExprStringLiteral(
+                IListConst([StringLiteralItemNormal('__typename')]),
+              )
+            ]),
+          ),
+          methodName: 'asStringOrThrow',
         ),
       ),
-      StatementReturn(ExprSwitch(
-        const ExprMethodCall(
-          variable: ExprVariable('typeName'),
-          methodName: 'asStringOrNull',
-        ),
-        IList([
-          ...onList.map(
+      StatementSwitch(
+        const ExprVariable('typeName'),
+        IList(
+          onList.map(
             (pattern) => (
-              PatternStringLiteral(
+              pattern: PatternStringLiteral(
                 IList([StringLiteralItemNormal(pattern.typeName)]),
               ),
-              _graphQLObjectTypeToFromJsonValueExpr(
-                pattern.return_.getTypeName(),
-                const ExprVariable('value'),
-              ),
+              statements: IList([
+                StatementReturn(
+                  _graphQLObjectTypeToFromJsonValueExpr(
+                    pattern.return_.getTypeName(),
+                    const ExprVariable('value'),
+                  ),
+                ),
+              ]),
             ),
           ),
-          (
-            const PatternWildcard(),
-            ExprThrow(ExprStringLiteral(IList([
-              StringLiteralItemNormal(
-                  'invalid __typename in ' + typeName + '. __typename='),
-              const StringLiteralItemInterpolation(
-                const ExprMethodCall(
-                  variable: ExprVariable('typeName'),
-                  methodName: 'encode',
-                ),
-              ),
-            ]))),
-          ),
-        ]),
-      )),
+        ),
+      ),
+      StatementThrow(wellknown_expr.Exception(
+        ExprStringLiteral(IList([
+          StringLiteralItemNormal(
+              'invalid __typename in ' + typeName + '. __typename='),
+          const StringLiteralItemInterpolation(ExprVariable('typeName')),
+        ])),
+      ))
     ]),
   );
 }
