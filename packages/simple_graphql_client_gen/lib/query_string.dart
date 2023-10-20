@@ -179,12 +179,19 @@ IList<QueryInputVariable> _collectVariableInQueryField(
   QueryField queryField,
 ) {
   return switch (queryField) {
-    QueryFieldField(:final args) => args.mapAndRemoveNull(
-        (arg) => switch (arg.input) {
-          QueryInputVariable() && final input => input,
-          _ => null,
-        },
-      ),
+    QueryFieldField(:final args, :final return_) => IList(args.expand(
+        (arg) => [
+          ...switch (return_.type) {
+            GraphQLOutputTypeObject(:final objectType) =>
+              collectVariableInQueryFieldList(objectType),
+            _ => [],
+          },
+          ...switch (arg.input) {
+            QueryInputVariable() && final input => [input],
+            _ => [],
+          },
+        ],
+      )),
     QueryFieldOn(:final return_) => collectVariableInQueryFieldList(return_),
   };
 }
