@@ -12,7 +12,7 @@ import 'package:simple_graphql_client_gen/to_json.dart';
 SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
   // 同じ型の名前で構造が同じものかどうか調べるために Map を使う
   final objectTypeList = apiMap.values.expand(
-    (element) => collectObjectType(element).toEntryList(),
+    (element) => _collectObjectType(element).toEntryList(),
   );
   final objectTypeMapMut = Map<String, GraphQLObjectType>();
   for (final objectType in objectTypeList) {
@@ -67,20 +67,18 @@ SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
   );
 }
 
-IMap<String, GraphQLObjectType> collectObjectType(GraphQLObjectType object) {
-  // フラットにする
-  final Map<String, GraphQLObjectType> children = Map.fromEntries(
+IMap<String, GraphQLObjectType> _collectObjectType(GraphQLObjectType object) {
+  return IMap<String, GraphQLObjectType>.fromEntries(
     object.toFieldList().expand((fieldOrOn) => switch (fieldOrOn) {
           QueryFieldField(:final return_) => switch (return_.type) {
               GraphQLOutputTypeObject(:final objectType) =>
-                collectObjectType(objectType).toEntryList(),
+                _collectObjectType(objectType).toEntryList(),
               _ => [],
             },
           QueryFieldOn(:final return_) =>
-            collectObjectType(return_).toEntryList(),
+            _collectObjectType(return_).toEntryList(),
         }),
-  );
-  return IMap({object.getTypeName(): object, ...children});
+  ).add(object.getTypeName(), object);
 }
 
 Method _createApiCallMethod(
