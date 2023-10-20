@@ -302,47 +302,45 @@ Method _fromJsonValueMethodUnion(String typeName, IList<QueryFieldOn> onList) {
       const StatementFinal(
         variableName: 'typeName',
         expr: ExprMethodCall(
-          variable: ExprVariable('value'),
-          methodName: 'getObjectValueOrThrow',
-          positionalArguments: IListConst([
-            ExprStringLiteral(
-              IListConst([StringLiteralItemNormal('__typename')]),
-            )
-          ]),
+          variable: ExprMethodCall(
+            variable: ExprVariable('value'),
+            methodName: 'getObjectValueOrThrow',
+            positionalArguments: IListConst([
+              ExprStringLiteral(
+                IListConst([StringLiteralItemNormal('__typename')]),
+              )
+            ]),
+          ),
+          methodName: 'asStringOrThrow',
         ),
       ),
-      StatementReturn(ExprSwitch(
-        const ExprMethodCall(
-          variable: ExprVariable('typeName'),
-          methodName: 'asStringOrNull',
-        ),
-        IList([
-          ...onList.map(
+      StatementSwitch(
+        const ExprVariable('typeName'),
+        IList(
+          onList.map(
             (pattern) => (
-              PatternStringLiteral(
+              pattern: PatternStringLiteral(
                 IList([StringLiteralItemNormal(pattern.typeName)]),
               ),
-              _graphQLObjectTypeToFromJsonValueExpr(
-                pattern.return_.getTypeName(),
-                const ExprVariable('value'),
-              ),
+              statements: IList([
+                StatementReturn(
+                  _graphQLObjectTypeToFromJsonValueExpr(
+                    pattern.return_.getTypeName(),
+                    const ExprVariable('value'),
+                  ),
+                ),
+              ]),
             ),
           ),
-          (
-            const PatternWildcard(),
-            ExprThrow(ExprStringLiteral(IList([
-              StringLiteralItemNormal(
-                  'invalid __typename in ' + typeName + '. __typename='),
-              const StringLiteralItemInterpolation(
-                const ExprMethodCall(
-                  variable: ExprVariable('typeName'),
-                  methodName: 'encode',
-                ),
-              ),
-            ]))),
-          ),
-        ]),
-      )),
+        ),
+      ),
+      StatementThrow(wellknown_expr.Exception(
+        ExprStringLiteral(IList([
+          StringLiteralItemNormal(
+              'invalid __typename in ' + typeName + '. __typename='),
+          const StringLiteralItemInterpolation(ExprVariable('typeName')),
+        ])),
+      ))
     ]),
   );
 }
