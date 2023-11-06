@@ -63,6 +63,21 @@ extension NaruminchoUtilIterable<T> on Iterable<T> {
   }
 }
 
+extension NaruminchoUtilIterableNullable<T> on Iterable<T?> {
+  @useResult
+  IList<T>? toNotNullable() {
+    final list = <T>[];
+    for (final item in this) {
+      if (item == null) {
+        return null;
+      } else {
+        list.add(item);
+      }
+    }
+    return IList(list);
+  }
+}
+
 extension SafeISet<T> on ISet<T> {
   /// 取り除く要素の指定を T に制限した [removeAll]
   @useResult
