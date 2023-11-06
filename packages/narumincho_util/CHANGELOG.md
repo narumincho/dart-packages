@@ -1,3 +1,7 @@
+## 0.1.4
+
+- add toNotNullable
+
 ## 0.1.3
 
 - add setMinLength

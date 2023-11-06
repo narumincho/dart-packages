@@ -36,6 +36,14 @@ void main() {
     );
   });
 
+  test('toNotNullable null', () {
+    expect([1, null, 32].toNotNullable(), null);
+  });
+
+  test('toNotNullable not null', () {
+    expect([1, 32, 28].toNotNullable(), [1, 32, 28]);
+  });
+
   test('toFirstUppercase', () {
     expect(toFirstUppercase('name'), 'Name');
   });
