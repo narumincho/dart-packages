@@ -1,3 +1,7 @@
+## 0.7.3
+
+- Object Type fromJson use switch expr
+
 ## 0.7.2
 
 - fix collectVariableInQueryField
