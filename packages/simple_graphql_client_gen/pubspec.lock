@@ -77,18 +77,18 @@ packages:
     dependency: transitive
     description:
       name: dart_style
-      sha256: abd7625e16f51f554ea244d090292945ec4d4be7bfbaf2ec8cccea568919d334
+      sha256: "40ae61a5d43feea6d24bd22c0537a6629db858963b99b4bc1c3db80676f32368"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.3"
+    version: "2.3.4"
   fast_immutable_collections:
     dependency: "direct main"
     description:
       name: fast_immutable_collections
-      sha256: b9c39e4a9e72efbc9c69e38d06e8b289af2516b95186733ec00537212ebde3ed
+      sha256: "3eb1d7495c70598964add20e10666003fad6e855b108fe684ebcbf8ad0c8e120"
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.6"
+    version: "9.2.0"
   file:
     dependency: transitive
     description:
@@ -197,10 +197,10 @@ packages:
     dependency: "direct main"
     description:
       name: narumincho_util
-      sha256: acd0fc98442b91bf105ab18bd1bbb00fe93302816265b213e48cc028bc349cfe
+      sha256: ece30f6faf5a46e87ded35389b77641e87687ce0093b421229aa945d548af450
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.3"
+    version: "0.1.5"
   node_preamble:
     dependency: transitive
     description:
@@ -277,10 +277,10 @@ packages:
     dependency: "direct main"
     description:
       name: simple_dart_code_gen
-      sha256: "5931fc2a4ecf3be9d871827f2480b8c2394f9f4f4ce1df4f42db5c70f15927cc"
+      sha256: d200aed091c7392c62cc1d5fb99fed81ef343efdcd9162a49d0e34ade35d696b
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.2"
+    version: "0.5.4"
   source_map_stack_trace:
     dependency: transitive
     description:

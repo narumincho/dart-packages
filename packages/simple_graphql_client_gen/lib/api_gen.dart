@@ -456,10 +456,21 @@ Expr _graphQLOutputTypeToFromJsonValueExprConsiderNull(
   Expr jsonValueExpr,
 ) {
   if (isNull) {
-    return ExprConditionalOperator(
-      ExprMethodCall(variable: jsonValueExpr, methodName: 'isNull'),
-      const ExprNull(),
-      _graphQLOutputTypeToFromJsonValueExpr(outputType, jsonValueExpr),
+    return ExprSwitch(
+      jsonValueExpr,
+      IList([
+        (
+          const PatternObject('narumincho_json.JsonNull', IListConst([])),
+          const ExprNull(),
+        ),
+        (
+          const PatternFinal('jsonValue'),
+          _graphQLOutputTypeToFromJsonValueExpr(
+            outputType,
+            const ExprVariable('jsonValue'),
+          ),
+        )
+      ]),
     );
   }
   return _graphQLOutputTypeToFromJsonValueExpr(outputType, jsonValueExpr);
