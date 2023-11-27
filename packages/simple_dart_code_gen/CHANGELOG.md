@@ -1,3 +1,7 @@
+## 0.5.4
+
+- add PatternObject
+
 ## 0.5.3
 
 - 

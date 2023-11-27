@@ -1493,3 +1493,27 @@ final class PatternWildcard implements Pattern {
   @override
   String toCodeString() => '_';
 }
+
+@immutable
+final class PatternObject implements Pattern {
+  const PatternObject(this.className, this.namedFields);
+
+  final String className;
+  final IList<(String, Pattern)> namedFields;
+
+  @override
+  String toCodeString() =>
+      this.className +
+      '(' +
+      namedFields
+          .map(
+            (field) => switch (field.$2) {
+              PatternFinal(:final variableName) => field.$1 == variableName
+                  ? ':final ' + variableName
+                  : field.$1 + ': ' + field.$2.toCodeString(),
+              _ => field.$1 + ': ' + field.$2.toCodeString(),
+            },
+          )
+          .safeJoin(',') +
+      ')';
+}
