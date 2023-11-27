@@ -1,3 +1,7 @@
+## 0.1.5
+
+- rename toNotNullable → allNonNullOrNull
+
 ## 0.1.4
 
 - add toNotNullable

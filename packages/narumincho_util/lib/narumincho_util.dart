@@ -63,18 +63,17 @@ extension NaruminchoUtilIterable<T> on Iterable<T> {
   }
 }
 
-extension NaruminchoUtilIterableNullable<T> on Iterable<T?> {
+extension NaruminchoUtilNullableIterable<T> on Iterable<T?> {
   @useResult
-  IList<T>? toNotNullable() {
-    final list = <T>[];
+  IList<T>? allNonNullOrNull() {
+    final result = <T>[];
     for (final item in this) {
       if (item == null) {
         return null;
-      } else {
-        list.add(item);
       }
+      result.add(item);
     }
-    return IList(list);
+    return IList(result);
   }
 }
 
@@ -115,7 +114,7 @@ String toFirstUppercase(String str) {
 /// 重複ありでリストを2つの要素ずつ取り出したリストを返す
 ///
 /// ```dart
-/// splitOverlappingTuple2(['a', 'b', 'c']) // IList([('a', 'b'), ('b', 'c')])
+/// splitOverlappingTuple2(['a', 'b', 'c', 'd']) // IList([('a', 'b'), ('b', 'c'), ('c', 'd')])
 /// ```
 @useResult
 IList<(T, T)> splitOverlappingTuple2<T>(Iterable<T> iterable) {
@@ -154,6 +153,7 @@ Uri uriAbsolute({
   );
 }
 
+/// 空ではないないことを保証した文字列
 @immutable
 final class NonEmptyString {
   const NonEmptyString._(this.value);

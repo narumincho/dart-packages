@@ -15,7 +15,14 @@ void main() {
     );
   });
 
-  test('splitOverlappingTuple2', () {
+  test('splitOverlappingTuple2 length 4', () {
+    expect(
+      splitOverlappingTuple2(['a', 'b', 'c', 'd']),
+      const IListConst([('a', 'b'), ('b', 'c'), ('c', 'd')]),
+    );
+  });
+
+  test('splitOverlappingTuple2 length 3', () {
     expect(
       splitOverlappingTuple2(['a', 'b', 'c']),
       const IListConst([('a', 'b'), ('b', 'c')]),
@@ -36,12 +43,23 @@ void main() {
     );
   });
 
-  test('toNotNullable null', () {
-    expect([1, null, 32].toNotNullable(), null);
+  test('allNonNullOrNull all non null', () {
+    expect(
+      const IListConst(['a', 'b', 'c']).allNonNullOrNull(),
+      const IListConst(['a', 'b', 'c']),
+    );
   });
 
-  test('toNotNullable not null', () {
-    expect([1, 32, 28].toNotNullable(), [1, 32, 28]);
+  test('allNonNullOrNull include null', () {
+    final IList<String>? result =
+        const IListConst<String?>(['a', null, 'c']).allNonNullOrNull();
+    expect(result, null);
+  });
+
+  test('allNonNullOrNull empty', () {
+    final IList<String>? result =
+        const IListConst<String?>([]).allNonNullOrNull();
+    expect(result, const IListConst([]));
   });
 
   test('toFirstUppercase', () {
