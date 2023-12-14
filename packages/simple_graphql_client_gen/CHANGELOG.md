@@ -1,3 +1,7 @@
+## 0.7.4
+
+- rename origin → url
+
 ## 0.7.3
 
 - Object Type fromJson use switch expr

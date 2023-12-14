@@ -102,7 +102,7 @@ Method _createApiCallMethod(
     parameters: IList(
       [
         const Parameter(
-          name: 'origin',
+          name: 'url',
           type: wellknown_type.Uri,
           parameterPattern: ParameterPatternPositional(),
         ),
@@ -127,7 +127,7 @@ Method _createApiCallMethod(
         expr: ExprCall(
           functionName: 'graphql_post.graphQLPost',
           namedArguments: IList([
-            (name: 'uri', argument: const ExprVariable('origin')),
+            (name: 'uri', argument: const ExprVariable('url')),
             (name: 'auth', argument: const ExprVariable('auth')),
             (
               name: 'query',
