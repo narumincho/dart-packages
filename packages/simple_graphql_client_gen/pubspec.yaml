@@ -3,7 +3,7 @@ description: simple_graphql_client_gen
 repository: https://github.com/narumincho/dart-packages/tree/main/packages/simple_graphql_client_gen
 version: "0.7.4"
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.2.0 <4.0.0"
 dependencies:
   fast_immutable_collections: ^9.1.1
   http: ">=0.13.6 <2.0.0"

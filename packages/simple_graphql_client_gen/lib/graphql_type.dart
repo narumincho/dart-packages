@@ -23,48 +23,18 @@ enum GraphQLRootObjectType { mutation, query }
 @immutable
 sealed class GraphQLTypeBody {
   const GraphQLTypeBody();
-
-  T match<T>({
-    required T Function(GraphQLTypeBodyEnum) enumFunc,
-    required T Function(GraphQLTypeBodyObject) objectFunc,
-    required T Function(GraphQLTypeBodyUnion) unionFunc,
-    required T Function(GraphQLTypeBodyScaler) scalerFunc,
-    required T Function(GraphQLTypeBodyInputObject) inputObjectFunc,
-  });
 }
 
 @immutable
 final class GraphQLTypeBodyObject extends GraphQLTypeBody {
   const GraphQLTypeBodyObject(this.fields);
   final IList<GraphQLField> fields;
-
-  @override
-  T match<T>({
-    required T Function(GraphQLTypeBodyEnum p1) enumFunc,
-    required T Function(GraphQLTypeBodyObject p1) objectFunc,
-    required T Function(GraphQLTypeBodyUnion p1) unionFunc,
-    required T Function(GraphQLTypeBodyScaler p1) scalerFunc,
-    required T Function(GraphQLTypeBodyInputObject) inputObjectFunc,
-  }) {
-    return objectFunc(this);
-  }
 }
 
 @immutable
 final class GraphQLTypeBodyInputObject extends GraphQLTypeBody {
   const GraphQLTypeBodyInputObject(this.fields);
   final IList<GraphQLInputValue> fields;
-
-  @override
-  T match<T>({
-    required T Function(GraphQLTypeBodyEnum p1) enumFunc,
-    required T Function(GraphQLTypeBodyObject p1) objectFunc,
-    required T Function(GraphQLTypeBodyUnion p1) unionFunc,
-    required T Function(GraphQLTypeBodyScaler p1) scalerFunc,
-    required T Function(GraphQLTypeBodyInputObject) inputObjectFunc,
-  }) {
-    return inputObjectFunc(this);
-  }
 }
 
 @immutable
@@ -214,50 +184,17 @@ enum ListType { notList, list, listItemNullable }
 final class GraphQLTypeBodyUnion extends GraphQLTypeBody {
   const GraphQLTypeBodyUnion(this.possibleTypes);
   final IList<String> possibleTypes;
-
-  @override
-  T match<T>({
-    required T Function(GraphQLTypeBodyEnum) enumFunc,
-    required T Function(GraphQLTypeBodyObject) objectFunc,
-    required T Function(GraphQLTypeBodyUnion) unionFunc,
-    required T Function(GraphQLTypeBodyScaler) scalerFunc,
-    required T Function(GraphQLTypeBodyInputObject) inputObjectFunc,
-  }) {
-    return unionFunc(this);
-  }
 }
 
 @immutable
 final class GraphQLTypeBodyEnum extends GraphQLTypeBody {
   const GraphQLTypeBodyEnum(this.enumValueList);
   final IList<EnumValue> enumValueList;
-
-  @override
-  T match<T>({
-    required T Function(GraphQLTypeBodyEnum) enumFunc,
-    required T Function(GraphQLTypeBodyObject) objectFunc,
-    required T Function(GraphQLTypeBodyUnion) unionFunc,
-    required T Function(GraphQLTypeBodyScaler) scalerFunc,
-    required T Function(GraphQLTypeBodyInputObject) inputObjectFunc,
-  }) {
-    return enumFunc(this);
-  }
 }
 
 @immutable
 final class GraphQLTypeBodyScaler extends GraphQLTypeBody {
   const GraphQLTypeBodyScaler();
-
-  @override
-  T match<T>({
-    required T Function(GraphQLTypeBodyEnum) enumFunc,
-    required T Function(GraphQLTypeBodyObject) objectFunc,
-    required T Function(GraphQLTypeBodyUnion) unionFunc,
-    required T Function(GraphQLTypeBodyScaler) scalerFunc,
-    required T Function(GraphQLTypeBodyInputObject) inputObjectFunc,
-  }) {
-    return scalerFunc(this);
-  }
 }
 
 GraphQLType _graphQLTypeRefJsonToGraphQLType(JsonValue value) {
