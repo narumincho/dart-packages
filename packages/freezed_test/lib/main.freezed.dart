@@ -23,6 +23,9 @@ mixin _$Person {
   String get firstName => throw _privateConstructorUsedError;
   String get lastName => throw _privateConstructorUsedError;
   int get age => throw _privateConstructorUsedError;
+  IList<String> get tags => throw _privateConstructorUsedError;
+  List<String> get mTags => throw _privateConstructorUsedError;
+  ISet<String> get set => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +37,13 @@ abstract class $PersonCopyWith<$Res> {
   factory $PersonCopyWith(Person value, $Res Function(Person) then) =
       _$PersonCopyWithImpl<$Res, Person>;
   @useResult
-  $Res call({String firstName, String lastName, int age});
+  $Res call(
+      {String firstName,
+      String lastName,
+      int age,
+      IList<String> tags,
+      List<String> mTags,
+      ISet<String> set});
 }
 
 /// @nodoc
@@ -53,6 +62,9 @@ class _$PersonCopyWithImpl<$Res, $Val extends Person>
     Object? firstName = null,
     Object? lastName = null,
     Object? age = null,
+    Object? tags = null,
+    Object? mTags = null,
+    Object? set = null,
   }) {
     return _then(_value.copyWith(
       firstName: null == firstName
@@ -67,6 +79,18 @@ class _$PersonCopyWithImpl<$Res, $Val extends Person>
           ? _value.age
           : age // ignore: cast_nullable_to_non_nullable
               as int,
+      tags: null == tags
+          ? _value.tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as IList<String>,
+      mTags: null == mTags
+          ? _value.mTags
+          : mTags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      set: null == set
+          ? _value.set
+          : set // ignore: cast_nullable_to_non_nullable
+              as ISet<String>,
     ) as $Val);
   }
 }
@@ -78,7 +102,13 @@ abstract class _$$PersonImplCopyWith<$Res> implements $PersonCopyWith<$Res> {
       __$$PersonImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String firstName, String lastName, int age});
+  $Res call(
+      {String firstName,
+      String lastName,
+      int age,
+      IList<String> tags,
+      List<String> mTags,
+      ISet<String> set});
 }
 
 /// @nodoc
@@ -95,6 +125,9 @@ class __$$PersonImplCopyWithImpl<$Res>
     Object? firstName = null,
     Object? lastName = null,
     Object? age = null,
+    Object? tags = null,
+    Object? mTags = null,
+    Object? set = null,
   }) {
     return _then(_$PersonImpl(
       firstName: null == firstName
@@ -109,6 +142,18 @@ class __$$PersonImplCopyWithImpl<$Res>
           ? _value.age
           : age // ignore: cast_nullable_to_non_nullable
               as int,
+      tags: null == tags
+          ? _value.tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as IList<String>,
+      mTags: null == mTags
+          ? _value._mTags
+          : mTags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      set: null == set
+          ? _value.set
+          : set // ignore: cast_nullable_to_non_nullable
+              as ISet<String>,
     ));
   }
 }
@@ -117,7 +162,13 @@ class __$$PersonImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PersonImpl implements _Person {
   const _$PersonImpl(
-      {required this.firstName, required this.lastName, required this.age});
+      {required this.firstName,
+      required this.lastName,
+      required this.age,
+      required this.tags,
+      required final List<String> mTags,
+      required this.set})
+      : _mTags = mTags;
 
   factory _$PersonImpl.fromJson(Map<String, dynamic> json) =>
       _$$PersonImplFromJson(json);
@@ -128,10 +179,22 @@ class _$PersonImpl implements _Person {
   final String lastName;
   @override
   final int age;
+  @override
+  final IList<String> tags;
+  final List<String> _mTags;
+  @override
+  List<String> get mTags {
+    if (_mTags is EqualUnmodifiableListView) return _mTags;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_mTags);
+  }
+
+  @override
+  final ISet<String> set;
 
   @override
   String toString() {
-    return 'Person(firstName: $firstName, lastName: $lastName, age: $age)';
+    return 'Person(firstName: $firstName, lastName: $lastName, age: $age, tags: $tags, mTags: $mTags, set: $set)';
   }
 
   @override
@@ -143,12 +206,22 @@ class _$PersonImpl implements _Person {
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
-            (identical(other.age, age) || other.age == age));
+            (identical(other.age, age) || other.age == age) &&
+            const DeepCollectionEquality().equals(other.tags, tags) &&
+            const DeepCollectionEquality().equals(other._mTags, _mTags) &&
+            const DeepCollectionEquality().equals(other.set, set));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, firstName, lastName, age);
+  int get hashCode => Object.hash(
+      runtimeType,
+      firstName,
+      lastName,
+      age,
+      const DeepCollectionEquality().hash(tags),
+      const DeepCollectionEquality().hash(_mTags),
+      const DeepCollectionEquality().hash(set));
 
   @JsonKey(ignore: true)
   @override
@@ -168,7 +241,10 @@ abstract class _Person implements Person {
   const factory _Person(
       {required final String firstName,
       required final String lastName,
-      required final int age}) = _$PersonImpl;
+      required final int age,
+      required final IList<String> tags,
+      required final List<String> mTags,
+      required final ISet<String> set}) = _$PersonImpl;
 
   factory _Person.fromJson(Map<String, dynamic> json) = _$PersonImpl.fromJson;
 
@@ -178,6 +254,12 @@ abstract class _Person implements Person {
   String get lastName;
   @override
   int get age;
+  @override
+  IList<String> get tags;
+  @override
+  List<String> get mTags;
+  @override
+  ISet<String> get set;
   @override
   @JsonKey(ignore: true)
   _$$PersonImplCopyWith<_$PersonImpl> get copyWith =>
