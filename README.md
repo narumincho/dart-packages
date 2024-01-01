@@ -39,6 +39,12 @@ click simple_graphql_client_gen "https://github.com/narumincho/dart-packages/tre
 
 ### lint
 
-```
+```sh
 dart fix --apply
+```
+
+### codegen
+
+```sh
+dart run ./packages/simple_graphql_client_gen/lib/codegen.dart
 ```
