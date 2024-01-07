@@ -259,6 +259,8 @@ ClassDeclaration? _graphQLScalarTypeClass(GraphQLTypeDeclaration type) {
     AnnotationToken() => _annotationTokenClassDeclaration(type),
     AnnotationUuid() => _annotationUuidClassDeclaration(type),
     AnnotationUrl() => null,
+    AnnotationRegex() && final regex =>
+      _annotationRegexClassDeclaration(type, regex),
   };
 }
 
@@ -685,6 +687,119 @@ ClassDeclaration _annotationUuidClassDeclaration(GraphQLTypeDeclaration type) {
             isConst: true,
             positionalArguments: const IListConst([ExprVariable('normalized')]),
           ))
+        ]),
+      ),
+      const Method(
+        name: 'toQueryInput',
+        documentationComments: '',
+        useResultAnnotation: true,
+        returnType: TypeNormal(name: 'query_string.QueryInput'),
+        parameters: IListConst([]),
+        methodType: MethodType.override,
+        statements: IListConst([
+          StatementReturn(ExprCall(
+            functionName: 'query_string.QueryInputString',
+            positionalArguments: IListConst([valueExpr]),
+          ))
+        ]),
+      ),
+      const Method(
+        name: 'toJsonValue',
+        documentationComments: '',
+        useResultAnnotation: true,
+        returnType: TypeNormal(name: 'narumincho_json.JsonValue'),
+        parameters: IListConst([]),
+        methodType: MethodType.override,
+        statements: IListConst([
+          StatementReturn(ExprConstructor(
+            className: 'narumincho_json.JsonString',
+            isConst: true,
+            positionalArguments: IListConst([valueExpr]),
+          ))
+        ]),
+      ),
+      Method(
+        name: 'fromJsonValue',
+        documentationComments: '',
+        useResultAnnotation: false,
+        methodType: MethodType.static,
+        parameters: const IListConst([
+          Parameter(
+            name: 'jsonValue',
+            type: TypeNormal(name: 'narumincho_json.JsonValue'),
+            parameterPattern: ParameterPatternPositional(),
+          )
+        ]),
+        returnType: TypeNormal(name: escapeFirstUnderLine(type.name)),
+        statements: IList([
+          StatementReturn(
+            ExprConstructor(
+              className: '${escapeFirstUnderLine(type.name)}._',
+              isConst: true,
+              positionalArguments: const IListConst([
+                ExprMethodCall(
+                  variable: ExprVariable('jsonValue'),
+                  methodName: 'asStringOrThrow',
+                )
+              ]),
+            ),
+          )
+        ]),
+      ),
+    ]),
+  );
+}
+
+ClassDeclaration _annotationRegexClassDeclaration(
+  GraphQLTypeDeclaration type,
+  AnnotationRegex regex,
+) {
+  const valueName = 'value';
+  const valueExpr = ExprVariable(valueName);
+
+  return ClassDeclaration(
+    name: type.name,
+    documentationComments: type.documentationComments,
+    fields: const IListConst([
+      Field(
+        name: valueName,
+        documentationComments: '内部表現の文字列',
+        type: wellknown_type.String,
+        parameterPattern: ParameterPatternPositional(),
+      ),
+    ]),
+    modifier: ClassModifier.final_,
+    isPrivateConstructor: true,
+    implementsClassList: const IListConst([queryStringIntoQueryInput]),
+    methods: IList([
+      Method(
+        name: 'fromString',
+        documentationComments: 'String からバリデーションして変換する. 変換できない場合は null が返される',
+        useResultAnnotation: true,
+        methodType: MethodType.static,
+        parameters: const IListConst([
+          Parameter(
+            name: 'value',
+            type: wellknown_type.String,
+            parameterPattern: ParameterPatternPositional(),
+          )
+        ]),
+        returnType:
+            TypeNormal(name: escapeFirstUnderLine(type.name), isNullable: true),
+        statements: IList([
+          StatementIf(
+            condition: ExprMethodCall(
+                variable: ExprStringLiteral(
+                    IList([StringLiteralItemNormal(regex.pattern.toString())])),
+                methodName: 'hasMatch',
+                positionalArguments: IList([valueExpr])),
+            thenStatement: const IListConst([StatementReturn(valueExpr)]),
+          ),
+          StatementThrow(wellknown_expr.Exception(ExprStringLiteral(IList([
+            StringLiteralItemNormal('Invalid ${type.name}. \nactual: '),
+            const StringLiteralItemInterpolation(valueExpr),
+            StringLiteralItemNormal('\nexpected: ${regex.pattern.toString()}'),
+          ])))),
         ]),
       ),
       const Method(
