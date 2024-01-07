@@ -46,18 +46,23 @@ IList<Declaration> _graphQLTypeListToQueryCode(
         type.name == 'Int') {
       return [];
     }
-    return body.match(
-      enumFunc: (_) => [],
-      objectFunc: (object) => [
-        _graphQLTypeQueryClass(type),
-        _graphQLTypeAbstractFieldClass(type),
-        for (final field in object.fields)
-          _graphQLTypeFieldClass(type, field, typeMap),
-      ],
-      unionFunc: (union) => [_graphQLUnionTypeQueryClass(type, union, typeMap)],
-      scalerFunc: (_) => [],
-      inputObjectFunc: (_) => [],
-    );
+    switch (body) {
+      case GraphQLTypeBodyEnum():
+        return [];
+      case GraphQLTypeBodyObject() && final object:
+        return [
+          _graphQLTypeQueryClass(type),
+          _graphQLTypeAbstractFieldClass(type),
+          for (final field in object.fields)
+            _graphQLTypeFieldClass(type, field, typeMap),
+        ];
+      case GraphQLTypeBodyUnion() && final union:
+        return [_graphQLUnionTypeQueryClass(type, union, typeMap)];
+      case GraphQLTypeBodyScaler():
+        return [];
+      case GraphQLTypeBodyInputObject():
+        return [];
+    }
   }));
 }
 
@@ -297,14 +302,14 @@ ClassDeclaration _graphQLTypeFieldClass(
     ),
     parameterPattern: const ParameterPatternPositional(),
   );
-  final bool isNeedReturn = typeMap.get(field.type.name)?.body.match(
-            enumFunc: (_) => false,
-            objectFunc: (_) => true,
-            unionFunc: (_) => true,
-            scalerFunc: (_) => false,
-            inputObjectFunc: (_) => true,
-          ) ??
-      false;
+  final bool isNeedReturn = switch (typeMap.get(field.type.name)?.body) {
+    GraphQLTypeBodyEnum() => false,
+    GraphQLTypeBodyObject() => true,
+    GraphQLTypeBodyUnion() => true,
+    GraphQLTypeBodyScaler() => false,
+    GraphQLTypeBodyInputObject() => true,
+    null => false,
+  };
 
   return ClassDeclaration(
     name: _fieldClassName(type.name, field.name),
@@ -431,55 +436,46 @@ Expr _toFieldMethodReturn(
   return _fieldMethodReturnObject(
     type.listType,
     type.isNullable,
-    typeData.body.match(
-      enumFunc: (_) => ExprConstructor(
-        className: 'query_string.GraphQLOutputTypeNotObject',
-        isConst: true,
-        positionalArguments: IList([
-          ExprStringLiteral(
-            IListConst([StringLiteralItemNormal(typeData.name)]),
-          )
-        ]),
-      ),
-      objectFunc: (_) => const ExprConstructor(
-        className: 'query_string.GraphQLOutputTypeObject',
-        isConst: true,
-        positionalArguments: IListConst([ExprVariable('return_')]),
-      ),
-      unionFunc: (_) => const ExprConstructor(
-        className: 'query_string.GraphQLOutputTypeObject',
-        isConst: true,
-        positionalArguments: IListConst([ExprVariable('return_')]),
-      ),
-      scalerFunc: (scalar) {
-        if (annotation == null) {
-          if (typeData.name == 'Boolean') {
-            return const ExprConstructor(
-              className: 'query_string.GraphQLOutputTypeBoolean',
-              isConst: true,
-            );
-          }
-          if (typeData.name == 'String') {
-            return const ExprConstructor(
-              className: 'query_string.GraphQLOutputTypeString',
-              isConst: true,
-            );
-          }
-          if (typeData.name == 'Float') {
-            return const ExprConstructor(
-              className: 'query_string.GraphQLOutputTypeFloat',
-              isConst: true,
-            );
-          }
-          if (typeData.name == 'Int') {
-            return const ExprConstructor(
-              className: 'query_string.GraphQLOutputTypeInt',
-              isConst: true,
-            );
-          }
-          return _exprGraphQLOutputTypeNotObject(typeData.name);
-        }
-        return switch (annotation) {
+    switch (typeData.body) {
+      GraphQLTypeBodyEnum() => ExprConstructor(
+          className: 'query_string.GraphQLOutputTypeNotObject',
+          isConst: true,
+          positionalArguments: IList([
+            ExprStringLiteral(
+              IListConst([StringLiteralItemNormal(typeData.name)]),
+            )
+          ]),
+        ),
+      GraphQLTypeBodyObject() => const ExprConstructor(
+          className: 'query_string.GraphQLOutputTypeObject',
+          isConst: true,
+          positionalArguments: IListConst([ExprVariable('return_')]),
+        ),
+      GraphQLTypeBodyUnion() => const ExprConstructor(
+          className: 'query_string.GraphQLOutputTypeObject',
+          isConst: true,
+          positionalArguments: IListConst([ExprVariable('return_')]),
+        ),
+      GraphQLTypeBodyScaler() => switch (annotation) {
+          null => switch (typeData.name) {
+              'Boolean' => const ExprConstructor(
+                  className: 'query_string.GraphQLOutputTypeBoolean',
+                  isConst: true,
+                ),
+              'String' => const ExprConstructor(
+                  className: 'query_string.GraphQLOutputTypeString',
+                  isConst: true,
+                ),
+              'Float' => const ExprConstructor(
+                  className: 'query_string.GraphQLOutputTypeFloat',
+                  isConst: true,
+                ),
+              'Int' => const ExprConstructor(
+                  className: 'query_string.GraphQLOutputTypeInt',
+                  isConst: true,
+                ),
+              _ => _exprGraphQLOutputTypeNotObject(typeData.name),
+            },
           AnnotationDateTime() => const ExprConstructor(
               className: 'query_string.GraphQLOutputTypeDateTime',
               isConst: true,
@@ -491,12 +487,12 @@ Expr _toFieldMethodReturn(
               className: 'query_string.GraphQLOutputTypeUrl',
               isConst: true,
             ),
-        };
-      },
-      inputObjectFunc: (_) => const ExprStringLiteral(IListConst([
-        StringLiteralItemNormal('<error> return dose not support input object')
-      ])),
-    ),
+        },
+      GraphQLTypeBodyInputObject() => const ExprStringLiteral(IListConst([
+          StringLiteralItemNormal(
+              '<error> return dose not support input object')
+        ])),
+    },
   );
 }
 

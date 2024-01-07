@@ -38,23 +38,15 @@ IList<Declaration> _generateDeclarationList(
         type.name == 'Int') {
       return null;
     }
-    return type.body.match(
-      enumFunc: (enumBody) {
-        return _graphQLEnumToDartEnumDeclaration(type, enumBody);
-      },
-      objectFunc: (_) {
-        return null;
-      },
-      unionFunc: (union) {
-        return null;
-      },
-      scalerFunc: (scaler) {
-        return _graphQLScalarTypeClass(type);
-      },
-      inputObjectFunc: (inputObject) {
-        return _graphQLTypeInputObjectClass(type, inputObject);
-      },
-    );
+    return switch (type.body) {
+      GraphQLTypeBodyEnum() && final enumBody =>
+        _graphQLEnumToDartEnumDeclaration(type, enumBody),
+      GraphQLTypeBodyObject() => null,
+      GraphQLTypeBodyUnion() => null,
+      GraphQLTypeBodyScaler() => _graphQLScalarTypeClass(type),
+      GraphQLTypeBodyInputObject() && final inputObject =>
+        _graphQLTypeInputObjectClass(type, inputObject)
+    };
   });
 }
 
