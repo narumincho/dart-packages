@@ -1,3 +1,7 @@
+## 0.7.5
+
+- add Regex type
+
 ## 0.7.4
 
 - rename origin → url

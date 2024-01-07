@@ -430,9 +430,6 @@ Expr _toFieldMethodReturn(
       IListConst([StringLiteralItemNormal('<error> type not found')]),
     );
   }
-  final annotation = Annotation.fromDocumentationComments(
-    typeData.documentationComments,
-  );
   return _fieldMethodReturnObject(
     type.listType,
     type.isNullable,
@@ -456,7 +453,9 @@ Expr _toFieldMethodReturn(
           isConst: true,
           positionalArguments: IListConst([ExprVariable('return_')]),
         ),
-      GraphQLTypeBodyScaler() => switch (annotation) {
+      GraphQLTypeBodyScaler() => switch (Annotation.fromDocumentationComments(
+          typeData.documentationComments,
+        )) {
           null => switch (typeData.name) {
               'Boolean' => const ExprConstructor(
                   className: 'query_string.GraphQLOutputTypeBoolean',
@@ -487,6 +486,7 @@ Expr _toFieldMethodReturn(
               className: 'query_string.GraphQLOutputTypeUrl',
               isConst: true,
             ),
+          AnnotationRegex() => _exprGraphQLOutputTypeNotObject(typeData.name),
         },
       GraphQLTypeBodyInputObject() => const ExprStringLiteral(IListConst([
           StringLiteralItemNormal(
