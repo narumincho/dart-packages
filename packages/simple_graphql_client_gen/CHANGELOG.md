@@ -1,3 +1,7 @@
+## 0.7.7
+
+- fix _annotationRegExpClassDeclaration
+
 ## 0.7.6
 
 - rename regex → regexp
