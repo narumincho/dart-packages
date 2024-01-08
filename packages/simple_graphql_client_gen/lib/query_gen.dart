@@ -486,7 +486,7 @@ Expr _toFieldMethodReturn(
               className: 'query_string.GraphQLOutputTypeUrl',
               isConst: true,
             ),
-          AnnotationRegex() => _exprGraphQLOutputTypeNotObject(typeData.name),
+          AnnotationRegExp() => _exprGraphQLOutputTypeNotObject(typeData.name),
         },
       GraphQLTypeBodyInputObject() => const ExprStringLiteral(IListConst([
           StringLiteralItemNormal(

@@ -1,3 +1,7 @@
+## 0.7.6
+
+- rename regex → regexp
+
 ## 0.7.5
 
 - add Regex type

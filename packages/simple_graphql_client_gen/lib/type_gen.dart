@@ -259,8 +259,8 @@ ClassDeclaration? _graphQLScalarTypeClass(GraphQLTypeDeclaration type) {
     AnnotationToken() => _annotationTokenClassDeclaration(type),
     AnnotationUuid() => _annotationUuidClassDeclaration(type),
     AnnotationUrl() => null,
-    AnnotationRegex() && final regex =>
-      _annotationRegexClassDeclaration(type, regex),
+    AnnotationRegExp() && final regExp =>
+      _annotationRegExpClassDeclaration(type, regExp),
   };
 }
 
@@ -750,9 +750,9 @@ ClassDeclaration _annotationUuidClassDeclaration(GraphQLTypeDeclaration type) {
   );
 }
 
-ClassDeclaration _annotationRegexClassDeclaration(
+ClassDeclaration _annotationRegExpClassDeclaration(
   GraphQLTypeDeclaration type,
-  AnnotationRegex regex,
+  AnnotationRegExp regExp,
 ) {
   const valueName = 'value';
   const valueExpr = ExprVariable(valueName);
@@ -790,7 +790,7 @@ ClassDeclaration _annotationRegexClassDeclaration(
           StatementIf(
             condition: ExprMethodCall(
                 variable: ExprStringLiteral(
-                    IList([StringLiteralItemNormal(regex.pattern.toString())])),
+                    IList([StringLiteralItemNormal(regExp.pattern.toString())])),
                 methodName: 'hasMatch',
                 positionalArguments: IList([valueExpr])),
             thenStatement: const IListConst([StatementReturn(valueExpr)]),
@@ -798,7 +798,7 @@ ClassDeclaration _annotationRegexClassDeclaration(
           StatementThrow(wellknown_expr.Exception(ExprStringLiteral(IList([
             StringLiteralItemNormal('Invalid ${type.name}. \nactual: '),
             const StringLiteralItemInterpolation(valueExpr),
-            StringLiteralItemNormal('\nexpected: ${regex.pattern.toString()}'),
+            StringLiteralItemNormal('\nexpected: ${regExp.pattern.toString()}'),
           ])))),
         ]),
       ),
