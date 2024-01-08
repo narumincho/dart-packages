@@ -789,10 +789,18 @@ ClassDeclaration _annotationRegExpClassDeclaration(
         statements: IList([
           StatementIf(
             condition: ExprMethodCall(
-                variable: ExprStringLiteral(
-                    IList([StringLiteralItemNormal(regExp.pattern.toString())])),
-                methodName: 'hasMatch',
-                positionalArguments: IList([valueExpr])),
+              variable: ExprConstructor(
+                className: 'RegExp',
+                isConst: false,
+                positionalArguments: IListConst([
+                  ExprStringLiteral(
+                    IList([StringLiteralItemNormal(regExp.pattern.pattern)]),
+                  )
+                ]),
+              ),
+              methodName: 'hasMatch',
+              positionalArguments: IList([valueExpr]),
+            ),
             thenStatement: const IListConst([StatementReturn(valueExpr)]),
           ),
           StatementThrow(wellknown_expr.Exception(ExprStringLiteral(IList([
