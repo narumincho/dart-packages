@@ -37,8 +37,8 @@ sealed class Annotation {
         return const AnnotationDateTime();
       case 'url':
         return const AnnotationUrl();
-      case 'regex':
-        return AnnotationRegex(
+      case 'regexp':
+        return AnnotationRegExp(
           RegExp(jsonValue.getObjectValueOrThrow('pattern').asStringOrThrow()),
         );
       default:
@@ -75,8 +75,8 @@ final class AnnotationUrl implements Annotation {
 }
 
 @immutable
-final class AnnotationRegex implements Annotation {
-  const AnnotationRegex(this.pattern);
+final class AnnotationRegExp implements Annotation {
+  const AnnotationRegExp(this.pattern);
 
   final RegExp pattern;
 }
