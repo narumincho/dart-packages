@@ -1,3 +1,7 @@
+## 0.7.8
+
+- fix RegExp fromString method
+
 ## 0.7.7
 
 - fix _annotationRegExpClassDeclaration

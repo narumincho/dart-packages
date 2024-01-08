@@ -801,7 +801,15 @@ ClassDeclaration _annotationRegExpClassDeclaration(
               methodName: 'hasMatch',
               positionalArguments: IList([valueExpr]),
             ),
-            thenStatement: const IListConst([StatementReturn(valueExpr)]),
+            thenStatement: IList([
+              StatementReturn(
+                ExprConstructor(
+                  className: '${escapeFirstUnderLine(type.name)}._',
+                  isConst: true,
+                  positionalArguments: const IListConst([valueExpr]),
+                ),
+              ),
+            ]),
           ),
           StatementThrow(wellknown_expr.Exception(ExprStringLiteral(IList([
             StringLiteralItemNormal('Invalid ${type.name}. \nactual: '),
@@ -864,7 +872,7 @@ ClassDeclaration _annotationRegExpClassDeclaration(
                 )
               ]),
             ),
-          )
+          ),
         ]),
       ),
     ]),
