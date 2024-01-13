@@ -1,3 +1,7 @@
+## 0.7.9
+
+- Fix regexp type fromString method. Returns null instead of throwing an error when the regular expression is not satisfied 
+
 ## 0.7.8
 
 - fix RegExp fromString method
