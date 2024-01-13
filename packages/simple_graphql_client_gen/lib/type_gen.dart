@@ -811,11 +811,7 @@ ClassDeclaration _annotationRegExpClassDeclaration(
               ),
             ]),
           ),
-          StatementThrow(wellknown_expr.Exception(ExprStringLiteral(IList([
-            StringLiteralItemNormal('Invalid ${type.name}. \nactual: '),
-            const StringLiteralItemInterpolation(valueExpr),
-            StringLiteralItemNormal('\nexpected: ${regExp.pattern.toString()}'),
-          ])))),
+          const StatementReturn(ExprNull()),
         ]),
       ),
       const Method(
