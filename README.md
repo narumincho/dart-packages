@@ -39,6 +39,6 @@ click simple_graphql_client_gen "https://github.com/narumincho/dart-packages/tre
 
 ### lint
 
-```
+```sh
 dart fix --apply
 ```
