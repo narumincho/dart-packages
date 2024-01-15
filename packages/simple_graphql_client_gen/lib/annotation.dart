@@ -29,10 +29,6 @@ sealed class Annotation {
               .asDoubleOrThrow()
               .toInt(),
         );
-      case 'token':
-        return const AnnotationToken();
-      case 'uuid':
-        return const AnnotationUuid();
       case 'dateTime':
         return const AnnotationDateTime();
       case 'url':
@@ -47,34 +43,20 @@ sealed class Annotation {
   }
 }
 
-@immutable
 final class AnnotationText implements Annotation {
   const AnnotationText({required this.maxLength});
 
   final int maxLength;
 }
 
-@immutable
-final class AnnotationToken implements Annotation {
-  const AnnotationToken();
-}
-
-@immutable
-final class AnnotationUuid implements Annotation {
-  const AnnotationUuid();
-}
-
-@immutable
 final class AnnotationDateTime implements Annotation {
   const AnnotationDateTime();
 }
 
-@immutable
 final class AnnotationUrl implements Annotation {
   const AnnotationUrl();
 }
 
-@immutable
 final class AnnotationRegExp implements Annotation {
   const AnnotationRegExp(this.pattern);
 

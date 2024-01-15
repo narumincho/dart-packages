@@ -480,8 +480,6 @@ Expr _toFieldMethodReturn(
               isConst: true,
             ),
           AnnotationText() => _exprGraphQLOutputTypeNotObject(typeData.name),
-          AnnotationToken() => _exprGraphQLOutputTypeNotObject(typeData.name),
-          AnnotationUuid() => _exprGraphQLOutputTypeNotObject(typeData.name),
           AnnotationUrl() => const ExprConstructor(
               className: 'query_string.GraphQLOutputTypeUrl',
               isConst: true,
