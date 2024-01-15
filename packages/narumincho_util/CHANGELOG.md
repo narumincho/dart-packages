@@ -16,7 +16,8 @@
 
 ## 0.1.1
 
-- mapAndRemoveNull, mapFirstNotNull method can be called not only by IList but also by Iterable
+- mapAndRemoveNull, mapFirstNotNull method can be called not only by IList but
+  also by Iterable
 
 ## 0.1.0
 
