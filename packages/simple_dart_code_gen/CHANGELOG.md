@@ -4,7 +4,7 @@
 
 ## 0.5.3
 
-- 
+-
 
 ## 0.5.2
 
@@ -13,7 +13,8 @@
 
 ## 0.5.1
 
-- copyWith method use record if type is nullable `type? Function()` → `(type?, )?`
+- copyWith method use record if type is nullable `type? Function()` →
+  `(type?, )?`
 
 ## 0.5.0
 

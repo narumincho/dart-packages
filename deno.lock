@@ -1,0 +1,29 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "npm:@narumincho/simple-graphql-server-common": "npm:@narumincho/simple-graphql-server-common@0.2.0",
+      "npm:graphql": "npm:graphql@16.8.1",
+      "npm:graphql-http": "npm:graphql-http@1.22.0_graphql@16.8.1"
+    },
+    "npm": {
+      "@narumincho/simple-graphql-server-common@0.2.0": {
+        "integrity": "sha512-L4FupoAQpp+SU4CLFP1MHLl0t0lwHuRaTLG8jQfkeeoFfQ3CkTuZPD53pFwn9A/iQ6L3iuD6MxbfHu7ndvr11g==",
+        "dependencies": {
+          "graphql": "graphql@16.8.1"
+        }
+      },
+      "graphql-http@1.22.0_graphql@16.8.1": {
+        "integrity": "sha512-9RBUlGJWBFqz9LwfpmAbjJL/8j/HCNkZwPBU5+Bfmwez+1Ay43DocMNQYpIWsWqH0Ftv6PTNAh2aRnnMCBJgLw==",
+        "dependencies": {
+          "graphql": "graphql@16.8.1"
+        }
+      },
+      "graphql@16.8.1": {
+        "integrity": "sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==",
+        "dependencies": {}
+      }
+    }
+  },
+  "remote": {}
+}
