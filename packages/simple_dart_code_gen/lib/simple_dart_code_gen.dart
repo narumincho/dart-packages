@@ -324,7 +324,8 @@ final class ClassDeclaration implements Declaration {
                   positionalArguments: useHashAll
                       ? IList([
                           ExprListLiteral(IList(fields.map(
-                            (field) => ExprVariable(field.name),
+                            (field) =>
+                                (ExprVariable(field.name), spread: false),
                           )))
                         ])
                       : IList(fields.map(
@@ -1113,17 +1114,20 @@ final class ExprLambda implements Expr {
 @immutable
 final class ExprListLiteral implements Expr {
   const ExprListLiteral(this.items);
-  final IList<Expr> items;
+  final IList<(Expr expr, {bool spread})> items;
 
   @override
   CodeAndConstType toCodeAndConstType() {
-    final codeAndConstTypeIter = items.map((item) => item.toCodeAndConstType());
-    final isAllConst = codeAndConstTypeIter.every((item) => item.isConst());
+    final codeAndConstTypeIter = items
+        .map((item) => (item.$1.toCodeAndConstType(), spread: item.spread));
+    final isAllConst = codeAndConstTypeIter.every((item) => item.$1.isConst());
     return CodeAndConstType(
       '[' +
           stringListJoinWithComma(
             IList(codeAndConstTypeIter.map(
-              (item) => item.toCodeString(!isAllConst),
+              (item) =>
+                  (item.spread ? '...' : '') +
+                  item.$1.toCodeString(!isAllConst),
             )),
           ) +
           ']',
