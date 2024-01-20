@@ -12,35 +12,63 @@ import './type.dart' as type;
 final class Query implements query_string.GraphQLRootObject {
   /// データを取得できる. データを取得するのみで, データを変更しない
   const Query(
-    this.fields, {
-    this.name = 'Query',
+    this.typeName,
+    this.extra__, {
+    required this.now,
+    required this.hello,
+    required this.account,
   });
-  final IList<Query_Field> fields;
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
-  final String name;
+  final String typeName;
+
+  /// サーバーでの現在時刻を取得する
+  final Query_now? now;
+
+  /// 挨拶をする
+  final Query_hello? hello;
+
+  /// IDからアカウントを取得
+  final Query_account? account;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, IList<Query_Field>> extra__;
 
   /// `Query` を複製する
   @useResult
   Query copyWith({
-    IList<Query_Field>? fields,
-    String? name,
+    String? typeName,
+    (Query_now?,)? now,
+    (Query_hello?,)? hello,
+    (Query_account?,)? account,
+    IMap<String, IList<Query_Field>>? extra__,
   }) {
     return Query(
-      (fields ?? this.fields),
-      name: (name ?? this.name),
+      (typeName ?? this.typeName),
+      (extra__ ?? this.extra__),
+      now: ((now == null) ? this.now : now.$1),
+      hello: ((hello == null) ? this.hello : hello.$1),
+      account: ((account == null) ? this.account : account.$1),
     );
   }
 
   /// `Query` のフィールドを変更したものを新しく返す
   @useResult
   Query updateFields({
-    IList<Query_Field> Function(IList<Query_Field> prevFields)? fields,
-    String Function(String prevName)? name,
+    String Function(String prevTypeName)? typeName,
+    Query_now? Function(Query_now? prevNow)? now,
+    Query_hello? Function(Query_hello? prevHello)? hello,
+    Query_account? Function(Query_account? prevAccount)? account,
+    IMap<String, IList<Query_Field>> Function(
+            IMap<String, IList<Query_Field>> prevExtra__)?
+        extra__,
   }) {
     return Query(
-      ((fields == null) ? this.fields : fields(this.fields)),
-      name: ((name == null) ? this.name : name(this.name)),
+      ((typeName == null) ? this.typeName : typeName(this.typeName)),
+      ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
+      now: ((now == null) ? this.now : now(this.now)),
+      hello: ((hello == null) ? this.hello : hello(this.hello)),
+      account: ((account == null) ? this.account : account(this.account)),
     );
   }
 
@@ -48,8 +76,11 @@ final class Query implements query_string.GraphQLRootObject {
   @useResult
   int get hashCode {
     return Object.hash(
-      fields,
-      name,
+      typeName,
+      now,
+      hello,
+      account,
+      extra__,
     );
   }
 
@@ -58,14 +89,17 @@ final class Query implements query_string.GraphQLRootObject {
   bool operator ==(
     Object other,
   ) {
-    return (((other is Query) && (fields == other.fields)) &&
-        (name == other.name));
+    return ((((((other is Query) && (typeName == other.typeName)) &&
+                    (now == other.now)) &&
+                (hello == other.hello)) &&
+            (account == other.account)) &&
+        (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'Query(${fields}, name: ${name}, )';
+    return 'Query(${typeName}, ${extra__}, now: ${now}, hello: ${hello}, account: ${account}, )';
   }
 
   @override
@@ -298,34 +332,54 @@ final class Query_account implements Query_Field {
 final class Account implements query_string.GraphQLObjectType {
   /// よくあるアカウントの型
   const Account(
-    this.fields, {
-    this.name = 'Account',
+    this.typeName,
+    this.extra__, {
+    required this.id,
+    required this.name,
   });
-  final IList<Account_Field> fields;
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
-  final String name;
+  final String typeName;
+
+  /// 識別するためのID
+  final Account_id? id;
+
+  /// 名前
+  final Account_name? name;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, IList<Account_Field>> extra__;
 
   /// `Account` を複製する
   @useResult
   Account copyWith({
-    IList<Account_Field>? fields,
-    String? name,
+    String? typeName,
+    (Account_id?,)? id,
+    (Account_name?,)? name,
+    IMap<String, IList<Account_Field>>? extra__,
   }) {
     return Account(
-      (fields ?? this.fields),
-      name: (name ?? this.name),
+      (typeName ?? this.typeName),
+      (extra__ ?? this.extra__),
+      id: ((id == null) ? this.id : id.$1),
+      name: ((name == null) ? this.name : name.$1),
     );
   }
 
   /// `Account` のフィールドを変更したものを新しく返す
   @useResult
   Account updateFields({
-    IList<Account_Field> Function(IList<Account_Field> prevFields)? fields,
-    String Function(String prevName)? name,
+    String Function(String prevTypeName)? typeName,
+    Account_id? Function(Account_id? prevId)? id,
+    Account_name? Function(Account_name? prevName)? name,
+    IMap<String, IList<Account_Field>> Function(
+            IMap<String, IList<Account_Field>> prevExtra__)?
+        extra__,
   }) {
     return Account(
-      ((fields == null) ? this.fields : fields(this.fields)),
+      ((typeName == null) ? this.typeName : typeName(this.typeName)),
+      ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
+      id: ((id == null) ? this.id : id(this.id)),
       name: ((name == null) ? this.name : name(this.name)),
     );
   }
@@ -334,8 +388,10 @@ final class Account implements query_string.GraphQLObjectType {
   @useResult
   int get hashCode {
     return Object.hash(
-      fields,
+      typeName,
+      id,
       name,
+      extra__,
     );
   }
 
@@ -344,14 +400,16 @@ final class Account implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return (((other is Account) && (fields == other.fields)) &&
-        (name == other.name));
+    return (((((other is Account) && (typeName == other.typeName)) &&
+                (id == other.id)) &&
+            (name == other.name)) &&
+        (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'Account(${fields}, name: ${name}, )';
+    return 'Account(${typeName}, ${extra__}, id: ${id}, name: ${name}, )';
   }
 
   @override
@@ -475,35 +533,47 @@ final class Account_name implements Account_Field {
 final class Mutation implements query_string.GraphQLRootObject {
   /// データを作成、更新ができる
   const Mutation(
-    this.fields, {
-    this.name = 'Mutation',
+    this.typeName,
+    this.extra__, {
+    required this.now,
   });
-  final IList<Mutation_Field> fields;
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
-  final String name;
+  final String typeName;
+
+  /// サーバーでの現在時刻を取得する
+  final Mutation_now? now;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, IList<Mutation_Field>> extra__;
 
   /// `Mutation` を複製する
   @useResult
   Mutation copyWith({
-    IList<Mutation_Field>? fields,
-    String? name,
+    String? typeName,
+    (Mutation_now?,)? now,
+    IMap<String, IList<Mutation_Field>>? extra__,
   }) {
     return Mutation(
-      (fields ?? this.fields),
-      name: (name ?? this.name),
+      (typeName ?? this.typeName),
+      (extra__ ?? this.extra__),
+      now: ((now == null) ? this.now : now.$1),
     );
   }
 
   /// `Mutation` のフィールドを変更したものを新しく返す
   @useResult
   Mutation updateFields({
-    IList<Mutation_Field> Function(IList<Mutation_Field> prevFields)? fields,
-    String Function(String prevName)? name,
+    String Function(String prevTypeName)? typeName,
+    Mutation_now? Function(Mutation_now? prevNow)? now,
+    IMap<String, IList<Mutation_Field>> Function(
+            IMap<String, IList<Mutation_Field>> prevExtra__)?
+        extra__,
   }) {
     return Mutation(
-      ((fields == null) ? this.fields : fields(this.fields)),
-      name: ((name == null) ? this.name : name(this.name)),
+      ((typeName == null) ? this.typeName : typeName(this.typeName)),
+      ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
+      now: ((now == null) ? this.now : now(this.now)),
     );
   }
 
@@ -511,8 +581,9 @@ final class Mutation implements query_string.GraphQLRootObject {
   @useResult
   int get hashCode {
     return Object.hash(
-      fields,
-      name,
+      typeName,
+      now,
+      extra__,
     );
   }
 
@@ -521,14 +592,15 @@ final class Mutation implements query_string.GraphQLRootObject {
   bool operator ==(
     Object other,
   ) {
-    return (((other is Mutation) && (fields == other.fields)) &&
-        (name == other.name));
+    return ((((other is Mutation) && (typeName == other.typeName)) &&
+            (now == other.now)) &&
+        (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'Mutation(${fields}, name: ${name}, )';
+    return 'Mutation(${typeName}, ${extra__}, now: ${now}, )';
   }
 
   @override
@@ -614,37 +686,108 @@ final class Mutation_now implements Mutation_Field {
 final class GraphQL__Schema implements query_string.GraphQLObjectType {
   /// A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.
   const GraphQL__Schema(
-    this.fields, {
-    this.name = 'GraphQL__Schema',
+    this.typeName,
+    this.extra__, {
+    required this.description,
+    required this.types,
+    required this.queryType,
+    required this.mutationType,
+    required this.subscriptionType,
+    required this.directives,
   });
-  final IList<GraphQL__Schema_Field> fields;
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
-  final String name;
+  final String typeName;
+
+  final GraphQL__Schema_description? description;
+
+  /// A list of all types supported by this server.
+  final GraphQL__Schema_types? types;
+
+  /// The type that query operations will be rooted at.
+  final GraphQL__Schema_queryType? queryType;
+
+  /// If this server supports mutation, the type that mutation operations will be rooted at.
+  final GraphQL__Schema_mutationType? mutationType;
+
+  /// If this server support subscription, the type that subscription operations will be rooted at.
+  final GraphQL__Schema_subscriptionType? subscriptionType;
+
+  /// A list of all directives supported by this server.
+  final GraphQL__Schema_directives? directives;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, IList<GraphQL__Schema_Field>> extra__;
 
   /// `GraphQL__Schema` を複製する
   @useResult
   GraphQL__Schema copyWith({
-    IList<GraphQL__Schema_Field>? fields,
-    String? name,
+    String? typeName,
+    (GraphQL__Schema_description?,)? description,
+    (GraphQL__Schema_types?,)? types,
+    (GraphQL__Schema_queryType?,)? queryType,
+    (GraphQL__Schema_mutationType?,)? mutationType,
+    (GraphQL__Schema_subscriptionType?,)? subscriptionType,
+    (GraphQL__Schema_directives?,)? directives,
+    IMap<String, IList<GraphQL__Schema_Field>>? extra__,
   }) {
     return GraphQL__Schema(
-      (fields ?? this.fields),
-      name: (name ?? this.name),
+      (typeName ?? this.typeName),
+      (extra__ ?? this.extra__),
+      description: ((description == null) ? this.description : description.$1),
+      types: ((types == null) ? this.types : types.$1),
+      queryType: ((queryType == null) ? this.queryType : queryType.$1),
+      mutationType:
+          ((mutationType == null) ? this.mutationType : mutationType.$1),
+      subscriptionType: ((subscriptionType == null)
+          ? this.subscriptionType
+          : subscriptionType.$1),
+      directives: ((directives == null) ? this.directives : directives.$1),
     );
   }
 
   /// `GraphQL__Schema` のフィールドを変更したものを新しく返す
   @useResult
   GraphQL__Schema updateFields({
-    IList<GraphQL__Schema_Field> Function(
-            IList<GraphQL__Schema_Field> prevFields)?
-        fields,
-    String Function(String prevName)? name,
+    String Function(String prevTypeName)? typeName,
+    GraphQL__Schema_description? Function(
+            GraphQL__Schema_description? prevDescription)?
+        description,
+    GraphQL__Schema_types? Function(GraphQL__Schema_types? prevTypes)? types,
+    GraphQL__Schema_queryType? Function(
+            GraphQL__Schema_queryType? prevQueryType)?
+        queryType,
+    GraphQL__Schema_mutationType? Function(
+            GraphQL__Schema_mutationType? prevMutationType)?
+        mutationType,
+    GraphQL__Schema_subscriptionType? Function(
+            GraphQL__Schema_subscriptionType? prevSubscriptionType)?
+        subscriptionType,
+    GraphQL__Schema_directives? Function(
+            GraphQL__Schema_directives? prevDirectives)?
+        directives,
+    IMap<String, IList<GraphQL__Schema_Field>> Function(
+            IMap<String, IList<GraphQL__Schema_Field>> prevExtra__)?
+        extra__,
   }) {
     return GraphQL__Schema(
-      ((fields == null) ? this.fields : fields(this.fields)),
-      name: ((name == null) ? this.name : name(this.name)),
+      ((typeName == null) ? this.typeName : typeName(this.typeName)),
+      ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      types: ((types == null) ? this.types : types(this.types)),
+      queryType:
+          ((queryType == null) ? this.queryType : queryType(this.queryType)),
+      mutationType: ((mutationType == null)
+          ? this.mutationType
+          : mutationType(this.mutationType)),
+      subscriptionType: ((subscriptionType == null)
+          ? this.subscriptionType
+          : subscriptionType(this.subscriptionType)),
+      directives: ((directives == null)
+          ? this.directives
+          : directives(this.directives)),
     );
   }
 
@@ -652,8 +795,14 @@ final class GraphQL__Schema implements query_string.GraphQLObjectType {
   @useResult
   int get hashCode {
     return Object.hash(
-      fields,
-      name,
+      typeName,
+      description,
+      types,
+      queryType,
+      mutationType,
+      subscriptionType,
+      directives,
+      extra__,
     );
   }
 
@@ -662,14 +811,21 @@ final class GraphQL__Schema implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return (((other is GraphQL__Schema) && (fields == other.fields)) &&
-        (name == other.name));
+    return (((((((((other is GraphQL__Schema) &&
+                                    (typeName == other.typeName)) &&
+                                (description == other.description)) &&
+                            (types == other.types)) &&
+                        (queryType == other.queryType)) &&
+                    (mutationType == other.mutationType)) &&
+                (subscriptionType == other.subscriptionType)) &&
+            (directives == other.directives)) &&
+        (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'GraphQL__Schema(${fields}, name: ${name}, )';
+    return 'GraphQL__Schema(${typeName}, ${extra__}, description: ${description}, types: ${types}, queryType: ${queryType}, mutationType: ${mutationType}, subscriptionType: ${subscriptionType}, directives: ${directives}, )';
   }
 
   @override
@@ -1083,36 +1239,135 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
   ///
   /// Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
   const GraphQL__Type(
-    this.fields, {
-    this.name = 'GraphQL__Type',
+    this.typeName,
+    this.extra__, {
+    required this.kind,
+    required this.name,
+    required this.description,
+    required this.specifiedByURL,
+    required this.fields,
+    required this.interfaces,
+    required this.possibleTypes,
+    required this.enumValues,
+    required this.inputFields,
+    required this.ofType,
   });
-  final IList<GraphQL__Type_Field> fields;
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
-  final String name;
+  final String typeName;
+
+  final GraphQL__Type_kind? kind;
+
+  final GraphQL__Type_name? name;
+
+  final GraphQL__Type_description? description;
+
+  final GraphQL__Type_specifiedByURL? specifiedByURL;
+
+  final GraphQL__Type_fields? fields;
+
+  final GraphQL__Type_interfaces? interfaces;
+
+  final GraphQL__Type_possibleTypes? possibleTypes;
+
+  final GraphQL__Type_enumValues? enumValues;
+
+  final GraphQL__Type_inputFields? inputFields;
+
+  final GraphQL__Type_ofType? ofType;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, IList<GraphQL__Type_Field>> extra__;
 
   /// `GraphQL__Type` を複製する
   @useResult
   GraphQL__Type copyWith({
-    IList<GraphQL__Type_Field>? fields,
-    String? name,
+    String? typeName,
+    (GraphQL__Type_kind?,)? kind,
+    (GraphQL__Type_name?,)? name,
+    (GraphQL__Type_description?,)? description,
+    (GraphQL__Type_specifiedByURL?,)? specifiedByURL,
+    (GraphQL__Type_fields?,)? fields,
+    (GraphQL__Type_interfaces?,)? interfaces,
+    (GraphQL__Type_possibleTypes?,)? possibleTypes,
+    (GraphQL__Type_enumValues?,)? enumValues,
+    (GraphQL__Type_inputFields?,)? inputFields,
+    (GraphQL__Type_ofType?,)? ofType,
+    IMap<String, IList<GraphQL__Type_Field>>? extra__,
   }) {
     return GraphQL__Type(
-      (fields ?? this.fields),
-      name: (name ?? this.name),
+      (typeName ?? this.typeName),
+      (extra__ ?? this.extra__),
+      kind: ((kind == null) ? this.kind : kind.$1),
+      name: ((name == null) ? this.name : name.$1),
+      description: ((description == null) ? this.description : description.$1),
+      specifiedByURL:
+          ((specifiedByURL == null) ? this.specifiedByURL : specifiedByURL.$1),
+      fields: ((fields == null) ? this.fields : fields.$1),
+      interfaces: ((interfaces == null) ? this.interfaces : interfaces.$1),
+      possibleTypes:
+          ((possibleTypes == null) ? this.possibleTypes : possibleTypes.$1),
+      enumValues: ((enumValues == null) ? this.enumValues : enumValues.$1),
+      inputFields: ((inputFields == null) ? this.inputFields : inputFields.$1),
+      ofType: ((ofType == null) ? this.ofType : ofType.$1),
     );
   }
 
   /// `GraphQL__Type` のフィールドを変更したものを新しく返す
   @useResult
   GraphQL__Type updateFields({
-    IList<GraphQL__Type_Field> Function(IList<GraphQL__Type_Field> prevFields)?
-        fields,
-    String Function(String prevName)? name,
+    String Function(String prevTypeName)? typeName,
+    GraphQL__Type_kind? Function(GraphQL__Type_kind? prevKind)? kind,
+    GraphQL__Type_name? Function(GraphQL__Type_name? prevName)? name,
+    GraphQL__Type_description? Function(
+            GraphQL__Type_description? prevDescription)?
+        description,
+    GraphQL__Type_specifiedByURL? Function(
+            GraphQL__Type_specifiedByURL? prevSpecifiedByURL)?
+        specifiedByURL,
+    GraphQL__Type_fields? Function(GraphQL__Type_fields? prevFields)? fields,
+    GraphQL__Type_interfaces? Function(
+            GraphQL__Type_interfaces? prevInterfaces)?
+        interfaces,
+    GraphQL__Type_possibleTypes? Function(
+            GraphQL__Type_possibleTypes? prevPossibleTypes)?
+        possibleTypes,
+    GraphQL__Type_enumValues? Function(
+            GraphQL__Type_enumValues? prevEnumValues)?
+        enumValues,
+    GraphQL__Type_inputFields? Function(
+            GraphQL__Type_inputFields? prevInputFields)?
+        inputFields,
+    GraphQL__Type_ofType? Function(GraphQL__Type_ofType? prevOfType)? ofType,
+    IMap<String, IList<GraphQL__Type_Field>> Function(
+            IMap<String, IList<GraphQL__Type_Field>> prevExtra__)?
+        extra__,
   }) {
     return GraphQL__Type(
-      ((fields == null) ? this.fields : fields(this.fields)),
+      ((typeName == null) ? this.typeName : typeName(this.typeName)),
+      ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
+      kind: ((kind == null) ? this.kind : kind(this.kind)),
       name: ((name == null) ? this.name : name(this.name)),
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      specifiedByURL: ((specifiedByURL == null)
+          ? this.specifiedByURL
+          : specifiedByURL(this.specifiedByURL)),
+      fields: ((fields == null) ? this.fields : fields(this.fields)),
+      interfaces: ((interfaces == null)
+          ? this.interfaces
+          : interfaces(this.interfaces)),
+      possibleTypes: ((possibleTypes == null)
+          ? this.possibleTypes
+          : possibleTypes(this.possibleTypes)),
+      enumValues: ((enumValues == null)
+          ? this.enumValues
+          : enumValues(this.enumValues)),
+      inputFields: ((inputFields == null)
+          ? this.inputFields
+          : inputFields(this.inputFields)),
+      ofType: ((ofType == null) ? this.ofType : ofType(this.ofType)),
     );
   }
 
@@ -1120,8 +1375,18 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
   @useResult
   int get hashCode {
     return Object.hash(
-      fields,
+      typeName,
+      kind,
       name,
+      description,
+      specifiedByURL,
+      fields,
+      interfaces,
+      possibleTypes,
+      enumValues,
+      inputFields,
+      ofType,
+      extra__,
     );
   }
 
@@ -1130,14 +1395,26 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return (((other is GraphQL__Type) && (fields == other.fields)) &&
-        (name == other.name));
+    return (((((((((((((other is GraphQL__Type) &&
+                                                    (typeName ==
+                                                        other.typeName)) &&
+                                                (kind == other.kind)) &&
+                                            (name == other.name)) &&
+                                        (description == other.description)) &&
+                                    (specifiedByURL == other.specifiedByURL)) &&
+                                (fields == other.fields)) &&
+                            (interfaces == other.interfaces)) &&
+                        (possibleTypes == other.possibleTypes)) &&
+                    (enumValues == other.enumValues)) &&
+                (inputFields == other.inputFields)) &&
+            (ofType == other.ofType)) &&
+        (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'GraphQL__Type(${fields}, name: ${name}, )';
+    return 'GraphQL__Type(${typeName}, ${extra__}, kind: ${kind}, name: ${name}, description: ${description}, specifiedByURL: ${specifiedByURL}, fields: ${fields}, interfaces: ${interfaces}, possibleTypes: ${possibleTypes}, enumValues: ${enumValues}, inputFields: ${inputFields}, ofType: ${ofType}, )';
   }
 
   @override
@@ -1870,37 +2147,96 @@ final class GraphQL__Type_ofType implements GraphQL__Type_Field {
 final class GraphQL__Field implements query_string.GraphQLObjectType {
   /// Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.
   const GraphQL__Field(
-    this.fields, {
-    this.name = 'GraphQL__Field',
+    this.typeName,
+    this.extra__, {
+    required this.name,
+    required this.description,
+    required this.args,
+    required this.type,
+    required this.isDeprecated,
+    required this.deprecationReason,
   });
-  final IList<GraphQL__Field_Field> fields;
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
-  final String name;
+  final String typeName;
+
+  final GraphQL__Field_name? name;
+
+  final GraphQL__Field_description? description;
+
+  final GraphQL__Field_args? args;
+
+  final GraphQL__Field_type? type;
+
+  final GraphQL__Field_isDeprecated? isDeprecated;
+
+  final GraphQL__Field_deprecationReason? deprecationReason;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, IList<GraphQL__Field_Field>> extra__;
 
   /// `GraphQL__Field` を複製する
   @useResult
   GraphQL__Field copyWith({
-    IList<GraphQL__Field_Field>? fields,
-    String? name,
+    String? typeName,
+    (GraphQL__Field_name?,)? name,
+    (GraphQL__Field_description?,)? description,
+    (GraphQL__Field_args?,)? args,
+    (GraphQL__Field_type?,)? type,
+    (GraphQL__Field_isDeprecated?,)? isDeprecated,
+    (GraphQL__Field_deprecationReason?,)? deprecationReason,
+    IMap<String, IList<GraphQL__Field_Field>>? extra__,
   }) {
     return GraphQL__Field(
-      (fields ?? this.fields),
-      name: (name ?? this.name),
+      (typeName ?? this.typeName),
+      (extra__ ?? this.extra__),
+      name: ((name == null) ? this.name : name.$1),
+      description: ((description == null) ? this.description : description.$1),
+      args: ((args == null) ? this.args : args.$1),
+      type: ((type == null) ? this.type : type.$1),
+      isDeprecated:
+          ((isDeprecated == null) ? this.isDeprecated : isDeprecated.$1),
+      deprecationReason: ((deprecationReason == null)
+          ? this.deprecationReason
+          : deprecationReason.$1),
     );
   }
 
   /// `GraphQL__Field` のフィールドを変更したものを新しく返す
   @useResult
   GraphQL__Field updateFields({
-    IList<GraphQL__Field_Field> Function(
-            IList<GraphQL__Field_Field> prevFields)?
-        fields,
-    String Function(String prevName)? name,
+    String Function(String prevTypeName)? typeName,
+    GraphQL__Field_name? Function(GraphQL__Field_name? prevName)? name,
+    GraphQL__Field_description? Function(
+            GraphQL__Field_description? prevDescription)?
+        description,
+    GraphQL__Field_args? Function(GraphQL__Field_args? prevArgs)? args,
+    GraphQL__Field_type? Function(GraphQL__Field_type? prevType)? type,
+    GraphQL__Field_isDeprecated? Function(
+            GraphQL__Field_isDeprecated? prevIsDeprecated)?
+        isDeprecated,
+    GraphQL__Field_deprecationReason? Function(
+            GraphQL__Field_deprecationReason? prevDeprecationReason)?
+        deprecationReason,
+    IMap<String, IList<GraphQL__Field_Field>> Function(
+            IMap<String, IList<GraphQL__Field_Field>> prevExtra__)?
+        extra__,
   }) {
     return GraphQL__Field(
-      ((fields == null) ? this.fields : fields(this.fields)),
+      ((typeName == null) ? this.typeName : typeName(this.typeName)),
+      ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
       name: ((name == null) ? this.name : name(this.name)),
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      args: ((args == null) ? this.args : args(this.args)),
+      type: ((type == null) ? this.type : type(this.type)),
+      isDeprecated: ((isDeprecated == null)
+          ? this.isDeprecated
+          : isDeprecated(this.isDeprecated)),
+      deprecationReason: ((deprecationReason == null)
+          ? this.deprecationReason
+          : deprecationReason(this.deprecationReason)),
     );
   }
 
@@ -1908,8 +2244,14 @@ final class GraphQL__Field implements query_string.GraphQLObjectType {
   @useResult
   int get hashCode {
     return Object.hash(
-      fields,
+      typeName,
       name,
+      description,
+      args,
+      type,
+      isDeprecated,
+      deprecationReason,
+      extra__,
     );
   }
 
@@ -1918,14 +2260,20 @@ final class GraphQL__Field implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return (((other is GraphQL__Field) && (fields == other.fields)) &&
-        (name == other.name));
+    return (((((((((other is GraphQL__Field) && (typeName == other.typeName)) &&
+                                (name == other.name)) &&
+                            (description == other.description)) &&
+                        (args == other.args)) &&
+                    (type == other.type)) &&
+                (isDeprecated == other.isDeprecated)) &&
+            (deprecationReason == other.deprecationReason)) &&
+        (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'GraphQL__Field(${fields}, name: ${name}, )';
+    return 'GraphQL__Field(${typeName}, ${extra__}, name: ${name}, description: ${description}, args: ${args}, type: ${type}, isDeprecated: ${isDeprecated}, deprecationReason: ${deprecationReason}, )';
   }
 
   @override
@@ -2309,37 +2657,104 @@ final class GraphQL__Field_deprecationReason implements GraphQL__Field_Field {
 final class GraphQL__InputValue implements query_string.GraphQLObjectType {
   /// Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.
   const GraphQL__InputValue(
-    this.fields, {
-    this.name = 'GraphQL__InputValue',
+    this.typeName,
+    this.extra__, {
+    required this.name,
+    required this.description,
+    required this.type,
+    required this.defaultValue,
+    required this.isDeprecated,
+    required this.deprecationReason,
   });
-  final IList<GraphQL__InputValue_Field> fields;
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
-  final String name;
+  final String typeName;
+
+  final GraphQL__InputValue_name? name;
+
+  final GraphQL__InputValue_description? description;
+
+  final GraphQL__InputValue_type? type;
+
+  /// A GraphQL-formatted string representing the default value for this input value.
+  final GraphQL__InputValue_defaultValue? defaultValue;
+
+  final GraphQL__InputValue_isDeprecated? isDeprecated;
+
+  final GraphQL__InputValue_deprecationReason? deprecationReason;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, IList<GraphQL__InputValue_Field>> extra__;
 
   /// `GraphQL__InputValue` を複製する
   @useResult
   GraphQL__InputValue copyWith({
-    IList<GraphQL__InputValue_Field>? fields,
-    String? name,
+    String? typeName,
+    (GraphQL__InputValue_name?,)? name,
+    (GraphQL__InputValue_description?,)? description,
+    (GraphQL__InputValue_type?,)? type,
+    (GraphQL__InputValue_defaultValue?,)? defaultValue,
+    (GraphQL__InputValue_isDeprecated?,)? isDeprecated,
+    (GraphQL__InputValue_deprecationReason?,)? deprecationReason,
+    IMap<String, IList<GraphQL__InputValue_Field>>? extra__,
   }) {
     return GraphQL__InputValue(
-      (fields ?? this.fields),
-      name: (name ?? this.name),
+      (typeName ?? this.typeName),
+      (extra__ ?? this.extra__),
+      name: ((name == null) ? this.name : name.$1),
+      description: ((description == null) ? this.description : description.$1),
+      type: ((type == null) ? this.type : type.$1),
+      defaultValue:
+          ((defaultValue == null) ? this.defaultValue : defaultValue.$1),
+      isDeprecated:
+          ((isDeprecated == null) ? this.isDeprecated : isDeprecated.$1),
+      deprecationReason: ((deprecationReason == null)
+          ? this.deprecationReason
+          : deprecationReason.$1),
     );
   }
 
   /// `GraphQL__InputValue` のフィールドを変更したものを新しく返す
   @useResult
   GraphQL__InputValue updateFields({
-    IList<GraphQL__InputValue_Field> Function(
-            IList<GraphQL__InputValue_Field> prevFields)?
-        fields,
-    String Function(String prevName)? name,
+    String Function(String prevTypeName)? typeName,
+    GraphQL__InputValue_name? Function(GraphQL__InputValue_name? prevName)?
+        name,
+    GraphQL__InputValue_description? Function(
+            GraphQL__InputValue_description? prevDescription)?
+        description,
+    GraphQL__InputValue_type? Function(GraphQL__InputValue_type? prevType)?
+        type,
+    GraphQL__InputValue_defaultValue? Function(
+            GraphQL__InputValue_defaultValue? prevDefaultValue)?
+        defaultValue,
+    GraphQL__InputValue_isDeprecated? Function(
+            GraphQL__InputValue_isDeprecated? prevIsDeprecated)?
+        isDeprecated,
+    GraphQL__InputValue_deprecationReason? Function(
+            GraphQL__InputValue_deprecationReason? prevDeprecationReason)?
+        deprecationReason,
+    IMap<String, IList<GraphQL__InputValue_Field>> Function(
+            IMap<String, IList<GraphQL__InputValue_Field>> prevExtra__)?
+        extra__,
   }) {
     return GraphQL__InputValue(
-      ((fields == null) ? this.fields : fields(this.fields)),
+      ((typeName == null) ? this.typeName : typeName(this.typeName)),
+      ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
       name: ((name == null) ? this.name : name(this.name)),
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      type: ((type == null) ? this.type : type(this.type)),
+      defaultValue: ((defaultValue == null)
+          ? this.defaultValue
+          : defaultValue(this.defaultValue)),
+      isDeprecated: ((isDeprecated == null)
+          ? this.isDeprecated
+          : isDeprecated(this.isDeprecated)),
+      deprecationReason: ((deprecationReason == null)
+          ? this.deprecationReason
+          : deprecationReason(this.deprecationReason)),
     );
   }
 
@@ -2347,8 +2762,14 @@ final class GraphQL__InputValue implements query_string.GraphQLObjectType {
   @useResult
   int get hashCode {
     return Object.hash(
-      fields,
+      typeName,
       name,
+      description,
+      type,
+      defaultValue,
+      isDeprecated,
+      deprecationReason,
+      extra__,
     );
   }
 
@@ -2357,14 +2778,21 @@ final class GraphQL__InputValue implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return (((other is GraphQL__InputValue) && (fields == other.fields)) &&
-        (name == other.name));
+    return (((((((((other is GraphQL__InputValue) &&
+                                    (typeName == other.typeName)) &&
+                                (name == other.name)) &&
+                            (description == other.description)) &&
+                        (type == other.type)) &&
+                    (defaultValue == other.defaultValue)) &&
+                (isDeprecated == other.isDeprecated)) &&
+            (deprecationReason == other.deprecationReason)) &&
+        (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'GraphQL__InputValue(${fields}, name: ${name}, )';
+    return 'GraphQL__InputValue(${typeName}, ${extra__}, name: ${name}, description: ${description}, type: ${type}, defaultValue: ${defaultValue}, isDeprecated: ${isDeprecated}, deprecationReason: ${deprecationReason}, )';
   }
 
   @override
@@ -2691,37 +3119,82 @@ final class GraphQL__InputValue_deprecationReason
 final class GraphQL__EnumValue implements query_string.GraphQLObjectType {
   /// One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.
   const GraphQL__EnumValue(
-    this.fields, {
-    this.name = 'GraphQL__EnumValue',
+    this.typeName,
+    this.extra__, {
+    required this.name,
+    required this.description,
+    required this.isDeprecated,
+    required this.deprecationReason,
   });
-  final IList<GraphQL__EnumValue_Field> fields;
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
-  final String name;
+  final String typeName;
+
+  final GraphQL__EnumValue_name? name;
+
+  final GraphQL__EnumValue_description? description;
+
+  final GraphQL__EnumValue_isDeprecated? isDeprecated;
+
+  final GraphQL__EnumValue_deprecationReason? deprecationReason;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, IList<GraphQL__EnumValue_Field>> extra__;
 
   /// `GraphQL__EnumValue` を複製する
   @useResult
   GraphQL__EnumValue copyWith({
-    IList<GraphQL__EnumValue_Field>? fields,
-    String? name,
+    String? typeName,
+    (GraphQL__EnumValue_name?,)? name,
+    (GraphQL__EnumValue_description?,)? description,
+    (GraphQL__EnumValue_isDeprecated?,)? isDeprecated,
+    (GraphQL__EnumValue_deprecationReason?,)? deprecationReason,
+    IMap<String, IList<GraphQL__EnumValue_Field>>? extra__,
   }) {
     return GraphQL__EnumValue(
-      (fields ?? this.fields),
-      name: (name ?? this.name),
+      (typeName ?? this.typeName),
+      (extra__ ?? this.extra__),
+      name: ((name == null) ? this.name : name.$1),
+      description: ((description == null) ? this.description : description.$1),
+      isDeprecated:
+          ((isDeprecated == null) ? this.isDeprecated : isDeprecated.$1),
+      deprecationReason: ((deprecationReason == null)
+          ? this.deprecationReason
+          : deprecationReason.$1),
     );
   }
 
   /// `GraphQL__EnumValue` のフィールドを変更したものを新しく返す
   @useResult
   GraphQL__EnumValue updateFields({
-    IList<GraphQL__EnumValue_Field> Function(
-            IList<GraphQL__EnumValue_Field> prevFields)?
-        fields,
-    String Function(String prevName)? name,
+    String Function(String prevTypeName)? typeName,
+    GraphQL__EnumValue_name? Function(GraphQL__EnumValue_name? prevName)? name,
+    GraphQL__EnumValue_description? Function(
+            GraphQL__EnumValue_description? prevDescription)?
+        description,
+    GraphQL__EnumValue_isDeprecated? Function(
+            GraphQL__EnumValue_isDeprecated? prevIsDeprecated)?
+        isDeprecated,
+    GraphQL__EnumValue_deprecationReason? Function(
+            GraphQL__EnumValue_deprecationReason? prevDeprecationReason)?
+        deprecationReason,
+    IMap<String, IList<GraphQL__EnumValue_Field>> Function(
+            IMap<String, IList<GraphQL__EnumValue_Field>> prevExtra__)?
+        extra__,
   }) {
     return GraphQL__EnumValue(
-      ((fields == null) ? this.fields : fields(this.fields)),
+      ((typeName == null) ? this.typeName : typeName(this.typeName)),
+      ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
       name: ((name == null) ? this.name : name(this.name)),
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      isDeprecated: ((isDeprecated == null)
+          ? this.isDeprecated
+          : isDeprecated(this.isDeprecated)),
+      deprecationReason: ((deprecationReason == null)
+          ? this.deprecationReason
+          : deprecationReason(this.deprecationReason)),
     );
   }
 
@@ -2729,8 +3202,12 @@ final class GraphQL__EnumValue implements query_string.GraphQLObjectType {
   @useResult
   int get hashCode {
     return Object.hash(
-      fields,
+      typeName,
       name,
+      description,
+      isDeprecated,
+      deprecationReason,
+      extra__,
     );
   }
 
@@ -2739,14 +3216,19 @@ final class GraphQL__EnumValue implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return (((other is GraphQL__EnumValue) && (fields == other.fields)) &&
-        (name == other.name));
+    return (((((((other is GraphQL__EnumValue) &&
+                            (typeName == other.typeName)) &&
+                        (name == other.name)) &&
+                    (description == other.description)) &&
+                (isDeprecated == other.isDeprecated)) &&
+            (deprecationReason == other.deprecationReason)) &&
+        (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'GraphQL__EnumValue(${fields}, name: ${name}, )';
+    return 'GraphQL__EnumValue(${typeName}, ${extra__}, name: ${name}, description: ${description}, isDeprecated: ${isDeprecated}, deprecationReason: ${deprecationReason}, )';
   }
 
   @override
@@ -2964,37 +3446,86 @@ final class GraphQL__Directive implements query_string.GraphQLObjectType {
   ///
   /// In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
   const GraphQL__Directive(
-    this.fields, {
-    this.name = 'GraphQL__Directive',
+    this.typeName,
+    this.extra__, {
+    required this.name,
+    required this.description,
+    required this.isRepeatable,
+    required this.locations,
+    required this.args,
   });
-  final IList<GraphQL__Directive_Field> fields;
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
-  final String name;
+  final String typeName;
+
+  final GraphQL__Directive_name? name;
+
+  final GraphQL__Directive_description? description;
+
+  final GraphQL__Directive_isRepeatable? isRepeatable;
+
+  final GraphQL__Directive_locations? locations;
+
+  final GraphQL__Directive_args? args;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, IList<GraphQL__Directive_Field>> extra__;
 
   /// `GraphQL__Directive` を複製する
   @useResult
   GraphQL__Directive copyWith({
-    IList<GraphQL__Directive_Field>? fields,
-    String? name,
+    String? typeName,
+    (GraphQL__Directive_name?,)? name,
+    (GraphQL__Directive_description?,)? description,
+    (GraphQL__Directive_isRepeatable?,)? isRepeatable,
+    (GraphQL__Directive_locations?,)? locations,
+    (GraphQL__Directive_args?,)? args,
+    IMap<String, IList<GraphQL__Directive_Field>>? extra__,
   }) {
     return GraphQL__Directive(
-      (fields ?? this.fields),
-      name: (name ?? this.name),
+      (typeName ?? this.typeName),
+      (extra__ ?? this.extra__),
+      name: ((name == null) ? this.name : name.$1),
+      description: ((description == null) ? this.description : description.$1),
+      isRepeatable:
+          ((isRepeatable == null) ? this.isRepeatable : isRepeatable.$1),
+      locations: ((locations == null) ? this.locations : locations.$1),
+      args: ((args == null) ? this.args : args.$1),
     );
   }
 
   /// `GraphQL__Directive` のフィールドを変更したものを新しく返す
   @useResult
   GraphQL__Directive updateFields({
-    IList<GraphQL__Directive_Field> Function(
-            IList<GraphQL__Directive_Field> prevFields)?
-        fields,
-    String Function(String prevName)? name,
+    String Function(String prevTypeName)? typeName,
+    GraphQL__Directive_name? Function(GraphQL__Directive_name? prevName)? name,
+    GraphQL__Directive_description? Function(
+            GraphQL__Directive_description? prevDescription)?
+        description,
+    GraphQL__Directive_isRepeatable? Function(
+            GraphQL__Directive_isRepeatable? prevIsRepeatable)?
+        isRepeatable,
+    GraphQL__Directive_locations? Function(
+            GraphQL__Directive_locations? prevLocations)?
+        locations,
+    GraphQL__Directive_args? Function(GraphQL__Directive_args? prevArgs)? args,
+    IMap<String, IList<GraphQL__Directive_Field>> Function(
+            IMap<String, IList<GraphQL__Directive_Field>> prevExtra__)?
+        extra__,
   }) {
     return GraphQL__Directive(
-      ((fields == null) ? this.fields : fields(this.fields)),
+      ((typeName == null) ? this.typeName : typeName(this.typeName)),
+      ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
       name: ((name == null) ? this.name : name(this.name)),
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      isRepeatable: ((isRepeatable == null)
+          ? this.isRepeatable
+          : isRepeatable(this.isRepeatable)),
+      locations:
+          ((locations == null) ? this.locations : locations(this.locations)),
+      args: ((args == null) ? this.args : args(this.args)),
     );
   }
 
@@ -3002,8 +3533,13 @@ final class GraphQL__Directive implements query_string.GraphQLObjectType {
   @useResult
   int get hashCode {
     return Object.hash(
-      fields,
+      typeName,
       name,
+      description,
+      isRepeatable,
+      locations,
+      args,
+      extra__,
     );
   }
 
@@ -3012,14 +3548,20 @@ final class GraphQL__Directive implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return (((other is GraphQL__Directive) && (fields == other.fields)) &&
-        (name == other.name));
+    return ((((((((other is GraphQL__Directive) &&
+                                (typeName == other.typeName)) &&
+                            (name == other.name)) &&
+                        (description == other.description)) &&
+                    (isRepeatable == other.isRepeatable)) &&
+                (locations == other.locations)) &&
+            (args == other.args)) &&
+        (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'GraphQL__Directive(${fields}, name: ${name}, )';
+    return 'GraphQL__Directive(${typeName}, ${extra__}, name: ${name}, description: ${description}, isRepeatable: ${isRepeatable}, locations: ${locations}, args: ${args}, )';
   }
 
   @override

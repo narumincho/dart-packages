@@ -51,7 +51,7 @@ IList<Declaration> _graphQLTypeListToQueryCode(
         return [];
       case GraphQLTypeBodyObject() && final object:
         return [
-          _graphQLTypeQueryClass(type),
+          _graphQLTypeQueryClass(type, object.fields, typeMap),
           _graphQLTypeAbstractFieldClass(type),
           for (final field in object.fields)
             _graphQLTypeFieldClass(type, field, typeMap),
@@ -70,27 +70,34 @@ String _fieldAbstractClassName(String typeName) {
   return escapeFirstUnderLine('${typeName}_Field');
 }
 
-ClassDeclaration _graphQLTypeQueryClass(GraphQLTypeDeclaration type) {
+ClassDeclaration _graphQLTypeQueryClass(
+  GraphQLTypeDeclaration type,
+  IList<GraphQLField> fields,
+  IMap<String, GraphQLTypeDeclaration> typeMap,
+) {
   final typeName = escapeFirstUnderLine(type.name);
   return ClassDeclaration(
     name: typeName,
     documentationComments: type.documentationComments,
     fields: IList([
-      Field(
-        name: 'fields',
-        documentationComments: '',
-        type: wellknown_type.IList(TypeNormal(
-          name: _fieldAbstractClassName(type.name),
-        )),
-        parameterPattern: const ParameterPatternPositional(),
-      ),
-      Field(
-        name: 'name',
+      const Field(
+        name: 'typeName',
         documentationComments: 'この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!',
         type: wellknown_type.String,
-        parameterPattern: ParameterPatternNamedWithDefault(
-          ExprStringLiteral(IList([StringLiteralItemNormal(typeName)])),
+        parameterPattern: ParameterPatternPositional(),
+      ),
+      for (final field in fields) _fieldInputField(type.name, field, typeMap),
+      Field(
+        name: 'extra__',
+        documentationComments:
+            'フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases',
+        type: wellknown_type.IMap(
+          wellknown_type.String,
+          wellknown_type.IList(TypeNormal(
+            name: _fieldAbstractClassName(type.name),
+          )),
         ),
+        parameterPattern: const ParameterPatternPositional(),
       ),
     ]),
     modifier: ClassModifier.final_,
@@ -270,6 +277,21 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
         ]),
       ),
     ]),
+  );
+}
+
+Field _fieldInputField(
+  String typeName,
+  GraphQLField field,
+  IMap<String, GraphQLTypeDeclaration> typeMap,
+) {
+  // final fieldTypeBody = typeMap.get(field.type.name)?.body;
+  return Field(
+    name: field.name,
+    documentationComments: field.description,
+    type: TypeNormal(
+        name: _fieldClassName(typeName, field.name), isNullable: true),
+    parameterPattern: const ParameterPatternNamed(),
   );
 }
 
