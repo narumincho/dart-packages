@@ -6,6 +6,56 @@ import 'package:narumincho_json/narumincho_json.dart' as narumincho_json;
 import 'package:simple_graphql_client_gen/query_string.dart' as query_string;
 import 'package:simple_graphql_client_gen/text.dart' as text;
 
+/// The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+@immutable
+final class ID implements query_string.IntoQueryInput {
+  /// The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+  const ID._(
+    this.value,
+  );
+
+  /// 文字列. Int の場合もあるが, とりあえず考えない
+  final String value;
+
+  @override
+  @useResult
+  int get hashCode {
+    return value.hashCode;
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((other is ID) && (value == other.value));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'ID(${value}, )';
+  }
+
+  @override
+  @useResult
+  query_string.QueryInput toQueryInput() {
+    return query_string.QueryInputString(value);
+  }
+
+  @override
+  @useResult
+  narumincho_json.JsonValue toJsonValue() {
+    return narumincho_json.JsonString(value);
+  }
+
+  static ID fromJsonValue(
+    narumincho_json.JsonValue jsonValue,
+  ) {
+    return ID._(jsonValue.asStringOrThrow());
+  }
+}
+
 /// An enum describing what kind of type a given `__Type` is.
 enum GraphQL__TypeKind implements query_string.IntoQueryInput {
   /// Indicates this type is a scalar.
