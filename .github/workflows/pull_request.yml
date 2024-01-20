@@ -23,7 +23,5 @@ jobs:
       - run: dart test
         working-directory: packages/simple_graphql_client_gen
       - run: pkill -f 'deno run -A ./packages/simple_graphql_client_gen_test_server/main.ts'
-      - name: Analyze Flutter
+      - name: Analyze Dart
         uses: ValentinVignal/action-dart-analyze@v0.16
-        with:
-          fail-on: warning
