@@ -1,6 +1,7 @@
 import * as g from "npm:graphql";
 import { hello } from "./query/hello.ts";
 import { now } from "./query/now.ts";
+import { account } from "./query/account.ts";
 
 const query = new g.GraphQLObjectType({
   name: "Query",
@@ -8,6 +9,7 @@ const query = new g.GraphQLObjectType({
   fields: {
     now,
     hello,
+    account,
   },
 });
 

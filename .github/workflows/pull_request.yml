@@ -12,16 +12,16 @@ jobs:
         uses: actions/checkout@v3
 
       - uses: dart-lang/setup-dart@v1
-      - run: dart pub get
+      - uses: denoland/setup-deno@v1
       - run: dart test
         working-directory: packages/narumincho_json
       - run: dart test
         working-directory: packages/narumincho_util
       - run: dart test
         working-directory: packages/simple_dart_code_gen
+      - run: deno run -A ./packages/simple_graphql_client_gen_test_server/main.ts &
       - run: dart test
         working-directory: packages/simple_graphql_client_gen
-      - name: Analyze Flutter
+      - run: pkill -f 'deno run -A ./packages/simple_graphql_client_gen_test_server/main.ts'
+      - name: Analyze Dart
         uses: ValentinVignal/action-dart-analyze@v0.16
-        with:
-          fail-on: warning

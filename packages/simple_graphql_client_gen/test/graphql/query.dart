@@ -190,6 +190,286 @@ final class Query_hello implements Query_Field {
   }
 }
 
+/// IDからアカウントを取得
+///
+/// type: `type.Account?`
+@immutable
+final class Query_account implements Query_Field {
+  /// IDからアカウントを取得
+  ///
+  /// type: `type.Account?`
+  const Query_account(
+    this.return_, {
+    required this.id,
+  });
+
+  /// 取得するアカウントのID
+  final query_string.VariableOrStaticValue<type.ID> id;
+
+  final Account return_;
+
+  /// `Query_account` を複製する
+  @useResult
+  Query_account copyWith({
+    query_string.VariableOrStaticValue<type.ID>? id,
+    Account? return_,
+  }) {
+    return Query_account(
+      (return_ ?? this.return_),
+      id: (id ?? this.id),
+    );
+  }
+
+  /// `Query_account` のフィールドを変更したものを新しく返す
+  @useResult
+  Query_account updateFields({
+    query_string.VariableOrStaticValue<type.ID> Function(
+            query_string.VariableOrStaticValue<type.ID> prevId)?
+        id,
+    Account Function(Account prevReturn_)? return_,
+  }) {
+    return Query_account(
+      ((return_ == null) ? this.return_ : return_(this.return_)),
+      id: ((id == null) ? this.id : id(this.id)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      id,
+      return_,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (((other is Query_account) && (id == other.id)) &&
+        (return_ == other.return_));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Query_account(${return_}, id: ${id}, )';
+  }
+
+  @override
+  @useResult
+  query_string.QueryField toField() {
+    return query_string.QueryFieldField(
+      'account',
+      args: IList([
+        query_string.QueryFieldArg(
+          name: 'id',
+          input: idToQueryInput(),
+        )
+      ]),
+      description: 'IDからアカウントを取得',
+      return_: query_string.GraphQLOutputTypeConsiderListNull(
+        query_string.GraphQLOutputTypeObject(return_),
+        graphql_type.ListType.notList,
+        true,
+      ),
+    );
+  }
+
+  @useResult
+  query_string.QueryInput idToQueryInput() {
+    return id.toQueryInput(
+      type: const graphql_type.GraphQLType(
+        name: 'ID',
+        isNullable: false,
+        listType: graphql_type.ListType.notList,
+      ),
+      staticValueToQueryInputFunc: (staticValue) {
+        return staticValue.toQueryInput();
+      },
+    );
+  }
+}
+
+/// よくあるアカウントの型
+@immutable
+final class Account implements query_string.GraphQLObjectType {
+  /// よくあるアカウントの型
+  const Account(
+    this.fields, {
+    this.name = 'Account',
+  });
+  final IList<Account_Field> fields;
+
+  /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
+  final String name;
+
+  /// `Account` を複製する
+  @useResult
+  Account copyWith({
+    IList<Account_Field>? fields,
+    String? name,
+  }) {
+    return Account(
+      (fields ?? this.fields),
+      name: (name ?? this.name),
+    );
+  }
+
+  /// `Account` のフィールドを変更したものを新しく返す
+  @useResult
+  Account updateFields({
+    IList<Account_Field> Function(IList<Account_Field> prevFields)? fields,
+    String Function(String prevName)? name,
+  }) {
+    return Account(
+      ((fields == null) ? this.fields : fields(this.fields)),
+      name: ((name == null) ? this.name : name(this.name)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      fields,
+      name,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (((other is Account) && (fields == other.fields)) &&
+        (name == other.name));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Account(${fields}, name: ${name}, )';
+  }
+
+  @override
+  @useResult
+  IList<query_string.QueryField> toFieldList() {
+    return IList(fields.map((field) {
+      return field.toField();
+    }));
+  }
+
+  @override
+  @useResult
+  String getTypeName() {
+    return name;
+  }
+
+  @override
+  @useResult
+  String getDescription() {
+    return 'よくあるアカウントの型';
+  }
+}
+
+/// よくあるアカウントの型
+@immutable
+sealed class Account_Field implements query_string.IntoGraphQLField {
+  /// よくあるアカウントの型
+  const Account_Field();
+}
+
+/// 識別するためのID
+///
+/// type: `type.ID`
+@immutable
+final class Account_id implements Account_Field {
+  /// 識別するためのID
+  ///
+  /// type: `type.ID`
+  const Account_id();
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hashAll([]);
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (other is Account_id);
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Account_id()';
+  }
+
+  @override
+  @useResult
+  query_string.QueryField toField() {
+    return const query_string.QueryFieldField(
+      'id',
+      description: '識別するためのID',
+      return_: query_string.GraphQLOutputTypeConsiderListNull(
+        query_string.GraphQLOutputTypeNotObject('ID'),
+        graphql_type.ListType.notList,
+        false,
+      ),
+    );
+  }
+}
+
+/// 名前
+///
+/// type: `String?`
+@immutable
+final class Account_name implements Account_Field {
+  /// 名前
+  ///
+  /// type: `String?`
+  const Account_name();
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hashAll([]);
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (other is Account_name);
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Account_name()';
+  }
+
+  @override
+  @useResult
+  query_string.QueryField toField() {
+    return const query_string.QueryFieldField(
+      'name',
+      description: '名前',
+      return_: query_string.GraphQLOutputTypeConsiderListNull(
+        query_string.GraphQLOutputTypeString(),
+        graphql_type.ListType.notList,
+        true,
+      ),
+    );
+  }
+}
+
 /// データを作成、更新ができる
 @immutable
 final class Mutation implements query_string.GraphQLRootObject {
