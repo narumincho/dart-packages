@@ -81,7 +81,7 @@ ClassDeclaration _graphQLTypeQueryClass(
     documentationComments: type.documentationComments,
     fields: IList([
       const Field(
-        name: 'typeName',
+        name: 'typeName__',
         documentationComments: 'この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!',
         type: wellknown_type.String,
         parameterPattern: ParameterPatternPositional(),
@@ -119,18 +119,34 @@ ClassDeclaration _graphQLTypeQueryClass(
         )),
         statements: IList([
           StatementReturn(wellknown_expr.IList(
-            wellknown_expr.iterableMap(
-              iterable: const ExprVariable('fields'),
-              itemVariableName: 'field',
-              lambdaStatements: const IListConst([
-                StatementReturn(
-                  ExprMethodCall(
-                    variable: ExprVariable('field'),
-                    methodName: 'toField',
+            ExprListLiteral(IList([
+              ...fields.map(
+                (field) => ExprSwitch(
+                    ExprVariable(field.name),
+                    const IListConst([
+                      (PatternNullLiteral(), ExprListLiteral(IListConst([]))),
+                      (
+                        PatternFinal('field'),
+                        ExprMethodCall(
+                          variable: ExprVariable('field'),
+                          methodName: 'toField',
+                        )
+                      )
+                    ])),
+              ),
+              wellknown_expr.iterableMap(
+                iterable: const ExprVariable('extra__'),
+                itemVariableName: 'field',
+                lambdaStatements: const IListConst([
+                  StatementReturn(
+                    ExprMethodCall(
+                      variable: ExprVariable('field'),
+                      methodName: 'toField',
+                    ),
                   ),
-                ),
-              ]),
-            ),
+                ]),
+              ),
+            ])),
           ))
         ]),
       ),
@@ -141,7 +157,7 @@ ClassDeclaration _graphQLTypeQueryClass(
         useResultAnnotation: true,
         parameters: IListConst([]),
         returnType: wellknown_type.String,
-        statements: IListConst([StatementReturn(ExprVariable('name'))]),
+        statements: IListConst([StatementReturn(ExprVariable('typeName__'))]),
       ),
       Method(
         methodType: MethodType.override,
