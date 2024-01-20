@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       - uses: dart-lang/setup-dart@v1
-      - run: dart pub get
+      - uses: denoland/setup-deno@v1
       - run: dart test
         working-directory: packages/narumincho_json
       - run: dart test
