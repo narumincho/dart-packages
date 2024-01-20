@@ -1,3 +1,7 @@
+## 0.6.1
+
+- add IMap in wellknown
+
 ## 0.6.0
 
 - add List spread

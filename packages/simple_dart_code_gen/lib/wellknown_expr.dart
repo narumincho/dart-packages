@@ -12,6 +12,14 @@ Expr IList(Expr expr) {
   );
 }
 
+Expr IMap(Expr mapExpr) {
+  return ExprConstructor(
+    className: 'IMap',
+    isConst: false,
+    positionalArguments: ic.IList([mapExpr]),
+  );
+}
+
 Expr iterableMap({
   required Expr iterable,
   required String itemVariableName,

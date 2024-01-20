@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
-import 'package:fast_immutable_collections/fast_immutable_collections.dart' as ic;
+import 'package:fast_immutable_collections/fast_immutable_collections.dart'
+    as ic;
 import 'package:simple_dart_code_gen/simple_dart_code_gen.dart';
 
 const Type String = TypeNormal(name: 'String');
@@ -17,4 +18,8 @@ const Type Uri = TypeNormal(name: 'Uri');
 
 Type IList(Type itemType) {
   return TypeNormal(name: 'IList', arguments: ic.IList([itemType]));
+}
+
+Type IMap(Type keyType, Type vakueType) {
+  return TypeNormal(name: 'IMap', arguments: ic.IList([keyType, vakueType]));
 }
