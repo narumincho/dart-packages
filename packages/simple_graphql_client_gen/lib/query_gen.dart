@@ -121,30 +121,36 @@ ClassDeclaration _graphQLTypeQueryClass(
           StatementReturn(wellknown_expr.IList(
             ExprListLiteral(IList([
               ...fields.map(
-                (field) => ExprSwitch(
-                    ExprVariable(field.name),
-                    const IListConst([
-                      (PatternNullLiteral(), ExprListLiteral(IListConst([]))),
-                      (
-                        PatternFinal('field'),
-                        ExprMethodCall(
-                          variable: ExprVariable('field'),
-                          methodName: 'toField',
+                (field) => (
+                  ExprSwitch(
+                      ExprVariable(field.name),
+                      const IListConst([
+                        (PatternNullLiteral(), ExprListLiteral(IListConst([]))),
+                        (
+                          PatternFinal('field'),
+                          ExprMethodCall(
+                            variable: ExprVariable('field'),
+                            methodName: 'toField',
+                          )
                         )
-                      )
-                    ])),
+                      ])),
+                  spread: true,
+                ),
               ),
-              wellknown_expr.iterableMap(
-                iterable: const ExprVariable('extra__'),
-                itemVariableName: 'field',
-                lambdaStatements: const IListConst([
-                  StatementReturn(
-                    ExprMethodCall(
-                      variable: ExprVariable('field'),
-                      methodName: 'toField',
+              (
+                wellknown_expr.iterableMap(
+                  iterable: const ExprVariable('extra__'),
+                  itemVariableName: 'field',
+                  lambdaStatements: const IListConst([
+                    StatementReturn(
+                      ExprMethodCall(
+                        variable: ExprVariable('field'),
+                        methodName: 'toField',
+                      ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
+                spread: true,
               ),
             ])),
           ))
@@ -238,33 +244,39 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
         )),
         statements: IList([
           StatementReturn(wellknown_expr.IList(ExprListLiteral(IList([
-            _queryFieldFieldExprConstructor(
-              '__typename',
-              description: '',
-              return_: _fieldMethodReturnObject(
-                ListType.notList,
-                false,
-                const ExprConstructor(
-                  className: 'query_string.GraphQLOutputTypeString',
-                  isConst: true,
+            (
+              _queryFieldFieldExprConstructor(
+                '__typename',
+                description: '',
+                return_: _fieldMethodReturnObject(
+                  ListType.notList,
+                  false,
+                  const ExprConstructor(
+                    className: 'query_string.GraphQLOutputTypeString',
+                    isConst: true,
+                  ),
                 ),
               ),
+              spread: false,
             ),
             ...union.possibleTypes.map(
-              (possibleType) => ExprCall(
-                functionName: 'query_string.QueryFieldOn',
-                namedArguments: IList([
-                  (
-                    name: 'typeName',
-                    argument: ExprStringLiteral(
-                      IList([StringLiteralItemNormal(possibleType)]),
+              (possibleType) => (
+                ExprCall(
+                  functionName: 'query_string.QueryFieldOn',
+                  namedArguments: IList([
+                    (
+                      name: 'typeName',
+                      argument: ExprStringLiteral(
+                        IList([StringLiteralItemNormal(possibleType)]),
+                      ),
                     ),
-                  ),
-                  (
-                    name: 'return_',
-                    argument: ExprVariable(toFirstLowercase(possibleType)),
-                  ),
-                ]),
+                    (
+                      name: 'return_',
+                      argument: ExprVariable(toFirstLowercase(possibleType)),
+                    ),
+                  ]),
+                ),
+                spread: false,
               ),
             )
           ]))))
@@ -406,23 +418,27 @@ Method _toFieldMethod(
           args: field.args.isNotEmpty
               ? wellknown_expr.IList(ExprListLiteral(IList(
                   field.args.map(
-                    (arg) => ExprConstructor(
-                      className: 'query_string.QueryFieldArg',
-                      isConst: false,
-                      namedArguments: IList([
-                        (
-                          name: 'name',
-                          argument: ExprStringLiteral(
-                            IList([StringLiteralItemNormal(arg.name)]),
+                    (arg) => (
+                      ExprConstructor(
+                        className: 'query_string.QueryFieldArg',
+                        isConst: false,
+                        namedArguments: IList([
+                          (
+                            name: 'name',
+                            argument: ExprStringLiteral(
+                              IList([StringLiteralItemNormal(arg.name)]),
+                            ),
                           ),
-                        ),
-                        (
-                          name: 'input',
-                          argument: ExprCall(
-                            functionName: _fieldQueryInputMethodName(arg.name),
+                          (
+                            name: 'input',
+                            argument: ExprCall(
+                              functionName:
+                                  _fieldQueryInputMethodName(arg.name),
+                            ),
                           ),
-                        ),
-                      ]),
+                        ]),
+                      ),
+                      spread: false,
                     ),
                   ),
                 )))
