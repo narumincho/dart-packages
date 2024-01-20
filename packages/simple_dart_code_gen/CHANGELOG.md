@@ -1,3 +1,7 @@
+## 0.6.0
+
+- add List spread
+
 ## 0.5.4
 
 - add PatternObject
