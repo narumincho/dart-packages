@@ -105,8 +105,14 @@ fragment TypeRef on __Type {
     throw Exception('data is null');
   }
   final schema = data.getValueByKeyOrThrow('__schema');
-  final queryTypeName = schema.getObjectValueOrThrow('queryType').getObjectValueOrThrow('name').asStringOrThrow();
-  final mutationTypeName = schema.getObjectValueOrThrow('mutationType').getObjectValueOrThrow('name').asStringOrThrow();
+  final queryTypeName = schema
+      .getObjectValueOrThrow('queryType')
+      .getObjectValueOrThrow('name')
+      .asStringOrThrow();
+  final mutationTypeName = schema
+      .getObjectValueOrThrow('mutationType')
+      .getObjectValueOrThrow('name')
+      .asStringOrThrow();
   final typeList = schema.getObjectValueOrThrow('types');
   return IList(
     typeList.getAsArrayWithDecoder(
@@ -127,7 +133,8 @@ GraphQLTypeDeclaration _graphQLTypeToDartClassDeclaration({
   final name = value.getObjectValueOrThrow('name').asStringOrThrow();
   return GraphQLTypeDeclaration(
     name: name,
-    documentationComments: value.getObjectValueOrThrow('description').asStringOrNull() ?? '',
+    documentationComments:
+        value.getObjectValueOrThrow('description').asStringOrNull() ?? '',
     body: parseGraphQLTypeBody(value),
     type: name == queryTypeName
         ? GraphQLRootObjectType.query
@@ -154,7 +161,8 @@ GraphQLTypeBody parseGraphQLTypeBody(JsonValue value) {
         value.getObjectValueOrThrow('enumValues').asArrayOrThrow(
               (e) => EnumValue(
                 name: e.getObjectValueOrThrow('name').asStringOrThrow(),
-                documentationComments: e.getObjectValueOrThrow('description').asStringOrThrow(),
+                documentationComments:
+                    e.getObjectValueOrThrow('description').asStringOrThrow(),
               ),
             ),
       ));
