@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "test GraphQL server",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": [
+        "run",
+        // "--watch", // ファイルの変更を監視して自動で再起動したかったが, なぜか動かない
+        "--inspect",
+        "--check",
+        "--allow-all"
+      ],
+      "program": "${workspaceFolder}/packages/simple_graphql_client_gen_test_server/main.ts",
+      "attachSimplePort": 9229
+    }
+  ]
+}
