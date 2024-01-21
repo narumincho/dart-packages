@@ -28,11 +28,11 @@ abstract class Api {
       query: 'query {\n  hello\n}\n',
     );
     final errors = response.errors;
-    if ((errors != null)) {
+    if (errors != null) {
       throw errors;
     }
     final data = response.data;
-    if ((data == null)) {
+    if (data == null) {
       throw Exception('hello response data empty');
     }
     return QueryHello.fromJsonValue(data);
@@ -59,11 +59,11 @@ abstract class Api {
       variables: IMap({'id': id.toJsonValue()}),
     );
     final errors = response.errors;
-    if ((errors != null)) {
+    if (errors != null) {
       throw errors;
     }
     final data = response.data;
-    if ((data == null)) {
+    if (data == null) {
       throw Exception('account response data empty');
     }
     return QueryAccount.fromJsonValue(data);
@@ -97,11 +97,11 @@ abstract class Api {
       }),
     );
     final errors = response.errors;
-    if ((errors != null)) {
+    if (errors != null) {
       throw errors;
     }
     final data = response.data;
-    if ((data == null)) {
+    if (data == null) {
       throw Exception('withAlias response data empty');
     }
     return QueryAccountWithAlias.fromJsonValue(data);
@@ -124,7 +124,7 @@ final class QueryHello {
   QueryHello copyWith({
     String? hello,
   }) {
-    return QueryHello(hello: (hello ?? this.hello));
+    return QueryHello(hello: hello ?? this.hello);
   }
 
   /// `QueryHello` のフィールドを変更したものを新しく返す
@@ -147,7 +147,7 @@ final class QueryHello {
   bool operator ==(
     Object other,
   ) {
-    return ((other is QueryHello) && (hello == other.hello));
+    return (other is QueryHello) && (hello == other.hello);
   }
 
   @override
@@ -187,7 +187,7 @@ final class Account {
     (String?,)? name,
   }) {
     return Account(
-      id: (id ?? this.id),
+      id: id ?? this.id,
       name: ((name == null) ? this.name : name.$1),
     );
   }
@@ -218,7 +218,7 @@ final class Account {
   bool operator ==(
     Object other,
   ) {
-    return (((other is Account) && (id == other.id)) && (name == other.name));
+    return ((other is Account) && (id == other.id)) && (name == other.name);
   }
 
   @override
@@ -233,10 +233,10 @@ final class Account {
   ) {
     return Account(
       id: type.ID.fromJsonValue(value.getObjectValueOrThrow('id')),
-      name: (switch (value.getObjectValueOrThrow('name')) {
+      name: switch (value.getObjectValueOrThrow('name')) {
         narumincho_json.JsonNull() => null,
         final jsonValue => jsonValue.asStringOrThrow(),
-      }),
+      },
     );
   }
 }
@@ -281,7 +281,7 @@ final class QueryAccount {
   bool operator ==(
     Object other,
   ) {
-    return ((other is QueryAccount) && (account == other.account));
+    return (other is QueryAccount) && (account == other.account);
   }
 
   @override
@@ -295,10 +295,10 @@ final class QueryAccount {
     narumincho_json.JsonValue value,
   ) {
     return QueryAccount(
-        account: (switch (value.getObjectValueOrThrow('account')) {
+        account: switch (value.getObjectValueOrThrow('account')) {
       narumincho_json.JsonNull() => null,
       final jsonValue => Account.fromJsonValue(jsonValue),
-    }));
+    });
   }
 }
 
@@ -341,7 +341,7 @@ final class AccountOnlyName {
   bool operator ==(
     Object other,
   ) {
-    return ((other is AccountOnlyName) && (name == other.name));
+    return (other is AccountOnlyName) && (name == other.name);
   }
 
   @override
@@ -355,10 +355,10 @@ final class AccountOnlyName {
     narumincho_json.JsonValue value,
   ) {
     return AccountOnlyName(
-        name: (switch (value.getObjectValueOrThrow('name')) {
+        name: switch (value.getObjectValueOrThrow('name')) {
       narumincho_json.JsonNull() => null,
       final jsonValue => jsonValue.asStringOrThrow(),
-    }));
+    });
   }
 }
 
@@ -418,8 +418,8 @@ final class QueryAccountWithAlias {
   bool operator ==(
     Object other,
   ) {
-    return (((other is QueryAccountWithAlias) && (account == other.account)) &&
-        (accountOne == other.accountOne));
+    return ((other is QueryAccountWithAlias) && (account == other.account)) &&
+        (accountOne == other.accountOne);
   }
 
   @override
@@ -433,14 +433,14 @@ final class QueryAccountWithAlias {
     narumincho_json.JsonValue value,
   ) {
     return QueryAccountWithAlias(
-      account: (switch (value.getObjectValueOrThrow('account')) {
+      account: switch (value.getObjectValueOrThrow('account')) {
         narumincho_json.JsonNull() => null,
         final jsonValue => Account.fromJsonValue(jsonValue),
-      }),
-      accountOne: (switch (value.getObjectValueOrThrow('accountOne')) {
+      },
+      accountOne: switch (value.getObjectValueOrThrow('accountOne')) {
         narumincho_json.JsonNull() => null,
         final jsonValue => AccountOnlyName.fromJsonValue(jsonValue),
-      }),
+      },
     );
   }
 }

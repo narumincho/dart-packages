@@ -63,3 +63,4 @@ analyzer:
     strict-raw-types: true
   errors:
     parameter_assignments: error
+  exclude: [packages/simple_graphql_client_gen/test/graphql/**]

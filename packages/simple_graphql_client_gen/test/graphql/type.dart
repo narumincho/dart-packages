@@ -4,7 +4,6 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 import 'package:narumincho_json/narumincho_json.dart' as narumincho_json;
 import 'package:simple_graphql_client_gen/query_string.dart' as query_string;
-import 'package:simple_graphql_client_gen/text.dart' as text;
 
 /// The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
 @immutable
@@ -22,7 +21,7 @@ final class ID implements query_string.IntoQueryInput {
   ID copyWith({
     String? value,
   }) {
-    return ID((value ?? this.value));
+    return ID(value ?? this.value);
   }
 
   /// `ID` のフィールドを変更したものを新しく返す
@@ -30,7 +29,7 @@ final class ID implements query_string.IntoQueryInput {
   ID updateFields({
     String Function(String prevValue)? value,
   }) {
-    return ID(((value == null) ? this.value : value(this.value)));
+    return ID((value == null) ? this.value : value(this.value));
   }
 
   @override
@@ -44,7 +43,7 @@ final class ID implements query_string.IntoQueryInput {
   bool operator ==(
     Object other,
   ) {
-    return ((other is ID) && (value == other.value));
+    return (other is ID) && (value == other.value);
   }
 
   @override
@@ -114,7 +113,7 @@ enum GraphQL__TypeKind implements query_string.IntoQueryInput {
   static GraphQL__TypeKind fromJsonValue(
     narumincho_json.JsonValue jsonValue,
   ) {
-    return (switch (jsonValue.asStringOrNull()) {
+    return switch (jsonValue.asStringOrNull()) {
       'SCALAR' => GraphQL__TypeKind.SCALAR,
       'OBJECT' => GraphQL__TypeKind.OBJECT,
       'INTERFACE' => GraphQL__TypeKind.INTERFACE,
@@ -123,9 +122,9 @@ enum GraphQL__TypeKind implements query_string.IntoQueryInput {
       'INPUT_OBJECT' => GraphQL__TypeKind.INPUT_OBJECT,
       'LIST' => GraphQL__TypeKind.LIST,
       'NON_NULL' => GraphQL__TypeKind.NON_NULL,
-      _ => (throw Exception(
-          'unknown Enum Value. typeName __TypeKind. expected "SCALAR" or "OBJECT" or "INTERFACE" or "UNION" or "ENUM" or "INPUT_OBJECT" or "LIST" or "NON_NULL". but got ${jsonValue.encode()}')),
-    });
+      _ => throw Exception(
+          'unknown Enum Value. typeName __TypeKind. expected "SCALAR" or "OBJECT" or "INTERFACE" or "UNION" or "ENUM" or "INPUT_OBJECT" or "LIST" or "NON_NULL". but got ${jsonValue.encode()}'),
+    };
   }
 }
 
@@ -204,7 +203,7 @@ enum GraphQL__DirectiveLocation implements query_string.IntoQueryInput {
   static GraphQL__DirectiveLocation fromJsonValue(
     narumincho_json.JsonValue jsonValue,
   ) {
-    return (switch (jsonValue.asStringOrNull()) {
+    return switch (jsonValue.asStringOrNull()) {
       'QUERY' => GraphQL__DirectiveLocation.QUERY,
       'MUTATION' => GraphQL__DirectiveLocation.MUTATION,
       'SUBSCRIPTION' => GraphQL__DirectiveLocation.SUBSCRIPTION,
@@ -225,8 +224,8 @@ enum GraphQL__DirectiveLocation implements query_string.IntoQueryInput {
       'INPUT_OBJECT' => GraphQL__DirectiveLocation.INPUT_OBJECT,
       'INPUT_FIELD_DEFINITION' =>
         GraphQL__DirectiveLocation.INPUT_FIELD_DEFINITION,
-      _ => (throw Exception(
-          'unknown Enum Value. typeName __DirectiveLocation. expected "QUERY" or "MUTATION" or "SUBSCRIPTION" or "FIELD" or "FRAGMENT_DEFINITION" or "FRAGMENT_SPREAD" or "INLINE_FRAGMENT" or "VARIABLE_DEFINITION" or "SCHEMA" or "SCALAR" or "OBJECT" or "FIELD_DEFINITION" or "ARGUMENT_DEFINITION" or "INTERFACE" or "UNION" or "ENUM" or "ENUM_VALUE" or "INPUT_OBJECT" or "INPUT_FIELD_DEFINITION". but got ${jsonValue.encode()}')),
-    });
+      _ => throw Exception(
+          'unknown Enum Value. typeName __DirectiveLocation. expected "QUERY" or "MUTATION" or "SUBSCRIPTION" or "FIELD" or "FRAGMENT_DEFINITION" or "FRAGMENT_SPREAD" or "INLINE_FRAGMENT" or "VARIABLE_DEFINITION" or "SCHEMA" or "SCALAR" or "OBJECT" or "FIELD_DEFINITION" or "ARGUMENT_DEFINITION" or "INTERFACE" or "UNION" or "ENUM" or "ENUM_VALUE" or "INPUT_OBJECT" or "INPUT_FIELD_DEFINITION". but got ${jsonValue.encode()}'),
+    };
   }
 }
