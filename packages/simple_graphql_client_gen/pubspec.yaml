@@ -10,6 +10,6 @@ dependencies:
   meta: ">=1.9.1 <2.0.0"
   narumincho_json: ^0.1.0
   narumincho_util: ^0.1.2
-  simple_dart_code_gen: ^0.6.0
+  simple_dart_code_gen: ^0.6.1
 dev_dependencies:
   test: ^1.24.2

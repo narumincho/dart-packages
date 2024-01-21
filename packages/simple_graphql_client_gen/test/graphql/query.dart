@@ -14,9 +14,9 @@ final class Query implements query_string.GraphQLRootObject {
   const Query(
     this.typeName__,
     this.extra__, {
-    required this.now,
-    required this.hello,
-    required this.account,
+    this.now,
+    this.hello,
+    this.account,
   });
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
@@ -32,7 +32,7 @@ final class Query implements query_string.GraphQLRootObject {
   final Query_account? account;
 
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
-  final IMap<String, IList<Query_Field>> extra__;
+  final IMap<String, Query_Field> extra__;
 
   /// `Query` を複製する
   @useResult
@@ -41,7 +41,7 @@ final class Query implements query_string.GraphQLRootObject {
     (Query_now?,)? now,
     (Query_hello?,)? hello,
     (Query_account?,)? account,
-    IMap<String, IList<Query_Field>>? extra__,
+    IMap<String, Query_Field>? extra__,
   }) {
     return Query(
       (typeName__ ?? this.typeName__),
@@ -59,8 +59,7 @@ final class Query implements query_string.GraphQLRootObject {
     Query_now? Function(Query_now? prevNow)? now,
     Query_hello? Function(Query_hello? prevHello)? hello,
     Query_account? Function(Query_account? prevAccount)? account,
-    IMap<String, IList<Query_Field>> Function(
-            IMap<String, IList<Query_Field>> prevExtra__)?
+    IMap<String, Query_Field> Function(IMap<String, Query_Field> prevExtra__)?
         extra__,
   }) {
     return Query(
@@ -106,20 +105,20 @@ final class Query implements query_string.GraphQLRootObject {
   @useResult
   IList<query_string.QueryField> toFieldList() {
     return IList([
-      (switch (now) {
+      ...(switch (now) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (hello) {
+      ...(switch (hello) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (account) {
+      ...(switch (account) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      extra__.map((field) {
-        return field.toField();
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
       }),
     ]);
   }
@@ -181,7 +180,7 @@ final class Query_now implements Query_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'now',
       description: 'サーバーでの現在時刻を取得する',
@@ -225,7 +224,7 @@ final class Query_hello implements Query_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'hello',
       description: '挨拶をする',
@@ -308,7 +307,7 @@ final class Query_account implements Query_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'account',
       args: IList([
@@ -348,8 +347,8 @@ final class Account implements query_string.GraphQLObjectType {
   const Account(
     this.typeName__,
     this.extra__, {
-    required this.id,
-    required this.name,
+    this.id,
+    this.name,
   });
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
@@ -362,7 +361,7 @@ final class Account implements query_string.GraphQLObjectType {
   final Account_name? name;
 
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
-  final IMap<String, IList<Account_Field>> extra__;
+  final IMap<String, Account_Field> extra__;
 
   /// `Account` を複製する
   @useResult
@@ -370,7 +369,7 @@ final class Account implements query_string.GraphQLObjectType {
     String? typeName__,
     (Account_id?,)? id,
     (Account_name?,)? name,
-    IMap<String, IList<Account_Field>>? extra__,
+    IMap<String, Account_Field>? extra__,
   }) {
     return Account(
       (typeName__ ?? this.typeName__),
@@ -386,8 +385,8 @@ final class Account implements query_string.GraphQLObjectType {
     String Function(String prevTypeName__)? typeName__,
     Account_id? Function(Account_id? prevId)? id,
     Account_name? Function(Account_name? prevName)? name,
-    IMap<String, IList<Account_Field>> Function(
-            IMap<String, IList<Account_Field>> prevExtra__)?
+    IMap<String, Account_Field> Function(
+            IMap<String, Account_Field> prevExtra__)?
         extra__,
   }) {
     return Account(
@@ -430,16 +429,16 @@ final class Account implements query_string.GraphQLObjectType {
   @useResult
   IList<query_string.QueryField> toFieldList() {
     return IList([
-      (switch (id) {
+      ...(switch (id) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (name) {
+      ...(switch (name) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      extra__.map((field) {
-        return field.toField();
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
       }),
     ]);
   }
@@ -495,7 +494,7 @@ final class Account_id implements Account_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'id',
       description: '識別するためのID',
@@ -539,7 +538,7 @@ final class Account_name implements Account_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'name',
       description: '名前',
@@ -559,7 +558,7 @@ final class Mutation implements query_string.GraphQLRootObject {
   const Mutation(
     this.typeName__,
     this.extra__, {
-    required this.now,
+    this.now,
   });
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
@@ -569,14 +568,14 @@ final class Mutation implements query_string.GraphQLRootObject {
   final Mutation_now? now;
 
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
-  final IMap<String, IList<Mutation_Field>> extra__;
+  final IMap<String, Mutation_Field> extra__;
 
   /// `Mutation` を複製する
   @useResult
   Mutation copyWith({
     String? typeName__,
     (Mutation_now?,)? now,
-    IMap<String, IList<Mutation_Field>>? extra__,
+    IMap<String, Mutation_Field>? extra__,
   }) {
     return Mutation(
       (typeName__ ?? this.typeName__),
@@ -590,8 +589,8 @@ final class Mutation implements query_string.GraphQLRootObject {
   Mutation updateFields({
     String Function(String prevTypeName__)? typeName__,
     Mutation_now? Function(Mutation_now? prevNow)? now,
-    IMap<String, IList<Mutation_Field>> Function(
-            IMap<String, IList<Mutation_Field>> prevExtra__)?
+    IMap<String, Mutation_Field> Function(
+            IMap<String, Mutation_Field> prevExtra__)?
         extra__,
   }) {
     return Mutation(
@@ -631,12 +630,12 @@ final class Mutation implements query_string.GraphQLRootObject {
   @useResult
   IList<query_string.QueryField> toFieldList() {
     return IList([
-      (switch (now) {
+      ...(switch (now) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      extra__.map((field) {
-        return field.toField();
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
       }),
     ]);
   }
@@ -698,7 +697,7 @@ final class Mutation_now implements Mutation_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'now',
       description: 'サーバーでの現在時刻を取得する',
@@ -718,12 +717,12 @@ final class GraphQL__Schema implements query_string.GraphQLObjectType {
   const GraphQL__Schema(
     this.typeName__,
     this.extra__, {
-    required this.description,
-    required this.types,
-    required this.queryType,
-    required this.mutationType,
-    required this.subscriptionType,
-    required this.directives,
+    this.description,
+    this.types,
+    this.queryType,
+    this.mutationType,
+    this.subscriptionType,
+    this.directives,
   });
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
@@ -747,7 +746,7 @@ final class GraphQL__Schema implements query_string.GraphQLObjectType {
   final GraphQL__Schema_directives? directives;
 
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
-  final IMap<String, IList<GraphQL__Schema_Field>> extra__;
+  final IMap<String, GraphQL__Schema_Field> extra__;
 
   /// `GraphQL__Schema` を複製する
   @useResult
@@ -759,7 +758,7 @@ final class GraphQL__Schema implements query_string.GraphQLObjectType {
     (GraphQL__Schema_mutationType?,)? mutationType,
     (GraphQL__Schema_subscriptionType?,)? subscriptionType,
     (GraphQL__Schema_directives?,)? directives,
-    IMap<String, IList<GraphQL__Schema_Field>>? extra__,
+    IMap<String, GraphQL__Schema_Field>? extra__,
   }) {
     return GraphQL__Schema(
       (typeName__ ?? this.typeName__),
@@ -796,8 +795,8 @@ final class GraphQL__Schema implements query_string.GraphQLObjectType {
     GraphQL__Schema_directives? Function(
             GraphQL__Schema_directives? prevDirectives)?
         directives,
-    IMap<String, IList<GraphQL__Schema_Field>> Function(
-            IMap<String, IList<GraphQL__Schema_Field>> prevExtra__)?
+    IMap<String, GraphQL__Schema_Field> Function(
+            IMap<String, GraphQL__Schema_Field> prevExtra__)?
         extra__,
   }) {
     return GraphQL__Schema(
@@ -862,32 +861,32 @@ final class GraphQL__Schema implements query_string.GraphQLObjectType {
   @useResult
   IList<query_string.QueryField> toFieldList() {
     return IList([
-      (switch (description) {
+      ...(switch (description) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (types) {
+      ...(switch (types) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (queryType) {
+      ...(switch (queryType) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (mutationType) {
+      ...(switch (mutationType) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (subscriptionType) {
+      ...(switch (subscriptionType) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (directives) {
+      ...(switch (directives) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      extra__.map((field) {
-        return field.toField();
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
       }),
     ]);
   }
@@ -943,7 +942,7 @@ final class GraphQL__Schema_description implements GraphQL__Schema_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'description',
       description: '',
@@ -1008,7 +1007,7 @@ final class GraphQL__Schema_types implements GraphQL__Schema_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'types',
       description: 'A list of all types supported by this server.',
@@ -1073,7 +1072,7 @@ final class GraphQL__Schema_queryType implements GraphQL__Schema_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'queryType',
       description: 'The type that query operations will be rooted at.',
@@ -1139,7 +1138,7 @@ final class GraphQL__Schema_mutationType implements GraphQL__Schema_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'mutationType',
       description:
@@ -1206,7 +1205,7 @@ final class GraphQL__Schema_subscriptionType implements GraphQL__Schema_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'subscriptionType',
       description:
@@ -1273,7 +1272,7 @@ final class GraphQL__Schema_directives implements GraphQL__Schema_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'directives',
       description: 'A list of all directives supported by this server.',
@@ -1297,16 +1296,16 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
   const GraphQL__Type(
     this.typeName__,
     this.extra__, {
-    required this.kind,
-    required this.name,
-    required this.description,
-    required this.specifiedByURL,
-    required this.fields,
-    required this.interfaces,
-    required this.possibleTypes,
-    required this.enumValues,
-    required this.inputFields,
-    required this.ofType,
+    this.kind,
+    this.name,
+    this.description,
+    this.specifiedByURL,
+    this.fields,
+    this.interfaces,
+    this.possibleTypes,
+    this.enumValues,
+    this.inputFields,
+    this.ofType,
   });
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
@@ -1333,7 +1332,7 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
   final GraphQL__Type_ofType? ofType;
 
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
-  final IMap<String, IList<GraphQL__Type_Field>> extra__;
+  final IMap<String, GraphQL__Type_Field> extra__;
 
   /// `GraphQL__Type` を複製する
   @useResult
@@ -1349,7 +1348,7 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
     (GraphQL__Type_enumValues?,)? enumValues,
     (GraphQL__Type_inputFields?,)? inputFields,
     (GraphQL__Type_ofType?,)? ofType,
-    IMap<String, IList<GraphQL__Type_Field>>? extra__,
+    IMap<String, GraphQL__Type_Field>? extra__,
   }) {
     return GraphQL__Type(
       (typeName__ ?? this.typeName__),
@@ -1395,8 +1394,8 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
             GraphQL__Type_inputFields? prevInputFields)?
         inputFields,
     GraphQL__Type_ofType? Function(GraphQL__Type_ofType? prevOfType)? ofType,
-    IMap<String, IList<GraphQL__Type_Field>> Function(
-            IMap<String, IList<GraphQL__Type_Field>> prevExtra__)?
+    IMap<String, GraphQL__Type_Field> Function(
+            IMap<String, GraphQL__Type_Field> prevExtra__)?
         extra__,
   }) {
     return GraphQL__Type(
@@ -1477,48 +1476,48 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
   @useResult
   IList<query_string.QueryField> toFieldList() {
     return IList([
-      (switch (kind) {
+      ...(switch (kind) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (name) {
+      ...(switch (name) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (description) {
+      ...(switch (description) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (specifiedByURL) {
+      ...(switch (specifiedByURL) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (fields) {
+      ...(switch (fields) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (interfaces) {
+      ...(switch (interfaces) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (possibleTypes) {
+      ...(switch (possibleTypes) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (enumValues) {
+      ...(switch (enumValues) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (inputFields) {
+      ...(switch (inputFields) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (ofType) {
+      ...(switch (ofType) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      extra__.map((field) {
-        return field.toField();
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
       }),
     ]);
   }
@@ -1578,7 +1577,7 @@ final class GraphQL__Type_kind implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'kind',
       description: '',
@@ -1622,7 +1621,7 @@ final class GraphQL__Type_name implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'name',
       description: '',
@@ -1666,7 +1665,7 @@ final class GraphQL__Type_description implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'description',
       description: '',
@@ -1710,7 +1709,7 @@ final class GraphQL__Type_specifiedByURL implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'specifiedByURL',
       description: '',
@@ -1794,7 +1793,7 @@ final class GraphQL__Type_fields implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'fields',
       args: IList([
@@ -1882,7 +1881,7 @@ final class GraphQL__Type_interfaces implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'interfaces',
       description: '',
@@ -1948,7 +1947,7 @@ final class GraphQL__Type_possibleTypes implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'possibleTypes',
       description: '',
@@ -2032,7 +2031,7 @@ final class GraphQL__Type_enumValues implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'enumValues',
       args: IList([
@@ -2139,7 +2138,7 @@ final class GraphQL__Type_inputFields implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'inputFields',
       args: IList([
@@ -2227,7 +2226,7 @@ final class GraphQL__Type_ofType implements GraphQL__Type_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'ofType',
       description: '',
@@ -2247,12 +2246,12 @@ final class GraphQL__Field implements query_string.GraphQLObjectType {
   const GraphQL__Field(
     this.typeName__,
     this.extra__, {
-    required this.name,
-    required this.description,
-    required this.args,
-    required this.type,
-    required this.isDeprecated,
-    required this.deprecationReason,
+    this.name,
+    this.description,
+    this.args,
+    this.type,
+    this.isDeprecated,
+    this.deprecationReason,
   });
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
@@ -2271,7 +2270,7 @@ final class GraphQL__Field implements query_string.GraphQLObjectType {
   final GraphQL__Field_deprecationReason? deprecationReason;
 
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
-  final IMap<String, IList<GraphQL__Field_Field>> extra__;
+  final IMap<String, GraphQL__Field_Field> extra__;
 
   /// `GraphQL__Field` を複製する
   @useResult
@@ -2283,7 +2282,7 @@ final class GraphQL__Field implements query_string.GraphQLObjectType {
     (GraphQL__Field_type?,)? type,
     (GraphQL__Field_isDeprecated?,)? isDeprecated,
     (GraphQL__Field_deprecationReason?,)? deprecationReason,
-    IMap<String, IList<GraphQL__Field_Field>>? extra__,
+    IMap<String, GraphQL__Field_Field>? extra__,
   }) {
     return GraphQL__Field(
       (typeName__ ?? this.typeName__),
@@ -2316,8 +2315,8 @@ final class GraphQL__Field implements query_string.GraphQLObjectType {
     GraphQL__Field_deprecationReason? Function(
             GraphQL__Field_deprecationReason? prevDeprecationReason)?
         deprecationReason,
-    IMap<String, IList<GraphQL__Field_Field>> Function(
-            IMap<String, IList<GraphQL__Field_Field>> prevExtra__)?
+    IMap<String, GraphQL__Field_Field> Function(
+            IMap<String, GraphQL__Field_Field> prevExtra__)?
         extra__,
   }) {
     return GraphQL__Field(
@@ -2379,32 +2378,32 @@ final class GraphQL__Field implements query_string.GraphQLObjectType {
   @useResult
   IList<query_string.QueryField> toFieldList() {
     return IList([
-      (switch (name) {
+      ...(switch (name) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (description) {
+      ...(switch (description) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (args) {
+      ...(switch (args) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (type) {
+      ...(switch (type) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (isDeprecated) {
+      ...(switch (isDeprecated) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (deprecationReason) {
+      ...(switch (deprecationReason) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      extra__.map((field) {
-        return field.toField();
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
       }),
     ]);
   }
@@ -2460,7 +2459,7 @@ final class GraphQL__Field_name implements GraphQL__Field_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'name',
       description: '',
@@ -2504,7 +2503,7 @@ final class GraphQL__Field_description implements GraphQL__Field_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'description',
       description: '',
@@ -2588,7 +2587,7 @@ final class GraphQL__Field_args implements GraphQL__Field_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'args',
       args: IList([
@@ -2676,7 +2675,7 @@ final class GraphQL__Field_type implements GraphQL__Field_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'type',
       description: '',
@@ -2720,7 +2719,7 @@ final class GraphQL__Field_isDeprecated implements GraphQL__Field_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'isDeprecated',
       description: '',
@@ -2764,7 +2763,7 @@ final class GraphQL__Field_deprecationReason implements GraphQL__Field_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'deprecationReason',
       description: '',
@@ -2784,12 +2783,12 @@ final class GraphQL__InputValue implements query_string.GraphQLObjectType {
   const GraphQL__InputValue(
     this.typeName__,
     this.extra__, {
-    required this.name,
-    required this.description,
-    required this.type,
-    required this.defaultValue,
-    required this.isDeprecated,
-    required this.deprecationReason,
+    this.name,
+    this.description,
+    this.type,
+    this.defaultValue,
+    this.isDeprecated,
+    this.deprecationReason,
   });
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
@@ -2809,7 +2808,7 @@ final class GraphQL__InputValue implements query_string.GraphQLObjectType {
   final GraphQL__InputValue_deprecationReason? deprecationReason;
 
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
-  final IMap<String, IList<GraphQL__InputValue_Field>> extra__;
+  final IMap<String, GraphQL__InputValue_Field> extra__;
 
   /// `GraphQL__InputValue` を複製する
   @useResult
@@ -2821,7 +2820,7 @@ final class GraphQL__InputValue implements query_string.GraphQLObjectType {
     (GraphQL__InputValue_defaultValue?,)? defaultValue,
     (GraphQL__InputValue_isDeprecated?,)? isDeprecated,
     (GraphQL__InputValue_deprecationReason?,)? deprecationReason,
-    IMap<String, IList<GraphQL__InputValue_Field>>? extra__,
+    IMap<String, GraphQL__InputValue_Field>? extra__,
   }) {
     return GraphQL__InputValue(
       (typeName__ ?? this.typeName__),
@@ -2859,8 +2858,8 @@ final class GraphQL__InputValue implements query_string.GraphQLObjectType {
     GraphQL__InputValue_deprecationReason? Function(
             GraphQL__InputValue_deprecationReason? prevDeprecationReason)?
         deprecationReason,
-    IMap<String, IList<GraphQL__InputValue_Field>> Function(
-            IMap<String, IList<GraphQL__InputValue_Field>> prevExtra__)?
+    IMap<String, GraphQL__InputValue_Field> Function(
+            IMap<String, GraphQL__InputValue_Field> prevExtra__)?
         extra__,
   }) {
     return GraphQL__InputValue(
@@ -2924,32 +2923,32 @@ final class GraphQL__InputValue implements query_string.GraphQLObjectType {
   @useResult
   IList<query_string.QueryField> toFieldList() {
     return IList([
-      (switch (name) {
+      ...(switch (name) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (description) {
+      ...(switch (description) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (type) {
+      ...(switch (type) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (defaultValue) {
+      ...(switch (defaultValue) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (isDeprecated) {
+      ...(switch (isDeprecated) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (deprecationReason) {
+      ...(switch (deprecationReason) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      extra__.map((field) {
-        return field.toField();
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
       }),
     ]);
   }
@@ -3006,7 +3005,7 @@ final class GraphQL__InputValue_name implements GraphQL__InputValue_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'name',
       description: '',
@@ -3051,7 +3050,7 @@ final class GraphQL__InputValue_description
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'description',
       description: '',
@@ -3116,7 +3115,7 @@ final class GraphQL__InputValue_type implements GraphQL__InputValue_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'type',
       description: '',
@@ -3161,7 +3160,7 @@ final class GraphQL__InputValue_defaultValue
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'defaultValue',
       description:
@@ -3207,7 +3206,7 @@ final class GraphQL__InputValue_isDeprecated
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'isDeprecated',
       description: '',
@@ -3252,7 +3251,7 @@ final class GraphQL__InputValue_deprecationReason
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'deprecationReason',
       description: '',
@@ -3272,10 +3271,10 @@ final class GraphQL__EnumValue implements query_string.GraphQLObjectType {
   const GraphQL__EnumValue(
     this.typeName__,
     this.extra__, {
-    required this.name,
-    required this.description,
-    required this.isDeprecated,
-    required this.deprecationReason,
+    this.name,
+    this.description,
+    this.isDeprecated,
+    this.deprecationReason,
   });
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
@@ -3290,7 +3289,7 @@ final class GraphQL__EnumValue implements query_string.GraphQLObjectType {
   final GraphQL__EnumValue_deprecationReason? deprecationReason;
 
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
-  final IMap<String, IList<GraphQL__EnumValue_Field>> extra__;
+  final IMap<String, GraphQL__EnumValue_Field> extra__;
 
   /// `GraphQL__EnumValue` を複製する
   @useResult
@@ -3300,7 +3299,7 @@ final class GraphQL__EnumValue implements query_string.GraphQLObjectType {
     (GraphQL__EnumValue_description?,)? description,
     (GraphQL__EnumValue_isDeprecated?,)? isDeprecated,
     (GraphQL__EnumValue_deprecationReason?,)? deprecationReason,
-    IMap<String, IList<GraphQL__EnumValue_Field>>? extra__,
+    IMap<String, GraphQL__EnumValue_Field>? extra__,
   }) {
     return GraphQL__EnumValue(
       (typeName__ ?? this.typeName__),
@@ -3329,8 +3328,8 @@ final class GraphQL__EnumValue implements query_string.GraphQLObjectType {
     GraphQL__EnumValue_deprecationReason? Function(
             GraphQL__EnumValue_deprecationReason? prevDeprecationReason)?
         deprecationReason,
-    IMap<String, IList<GraphQL__EnumValue_Field>> Function(
-            IMap<String, IList<GraphQL__EnumValue_Field>> prevExtra__)?
+    IMap<String, GraphQL__EnumValue_Field> Function(
+            IMap<String, GraphQL__EnumValue_Field> prevExtra__)?
         extra__,
   }) {
     return GraphQL__EnumValue(
@@ -3386,24 +3385,24 @@ final class GraphQL__EnumValue implements query_string.GraphQLObjectType {
   @useResult
   IList<query_string.QueryField> toFieldList() {
     return IList([
-      (switch (name) {
+      ...(switch (name) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (description) {
+      ...(switch (description) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (isDeprecated) {
+      ...(switch (isDeprecated) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (deprecationReason) {
+      ...(switch (deprecationReason) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      extra__.map((field) {
-        return field.toField();
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
       }),
     ]);
   }
@@ -3459,7 +3458,7 @@ final class GraphQL__EnumValue_name implements GraphQL__EnumValue_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'name',
       description: '',
@@ -3503,7 +3502,7 @@ final class GraphQL__EnumValue_description implements GraphQL__EnumValue_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'description',
       description: '',
@@ -3548,7 +3547,7 @@ final class GraphQL__EnumValue_isDeprecated
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'isDeprecated',
       description: '',
@@ -3593,7 +3592,7 @@ final class GraphQL__EnumValue_deprecationReason
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'deprecationReason',
       description: '',
@@ -3617,11 +3616,11 @@ final class GraphQL__Directive implements query_string.GraphQLObjectType {
   const GraphQL__Directive(
     this.typeName__,
     this.extra__, {
-    required this.name,
-    required this.description,
-    required this.isRepeatable,
-    required this.locations,
-    required this.args,
+    this.name,
+    this.description,
+    this.isRepeatable,
+    this.locations,
+    this.args,
   });
 
   /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
@@ -3638,7 +3637,7 @@ final class GraphQL__Directive implements query_string.GraphQLObjectType {
   final GraphQL__Directive_args? args;
 
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
-  final IMap<String, IList<GraphQL__Directive_Field>> extra__;
+  final IMap<String, GraphQL__Directive_Field> extra__;
 
   /// `GraphQL__Directive` を複製する
   @useResult
@@ -3649,7 +3648,7 @@ final class GraphQL__Directive implements query_string.GraphQLObjectType {
     (GraphQL__Directive_isRepeatable?,)? isRepeatable,
     (GraphQL__Directive_locations?,)? locations,
     (GraphQL__Directive_args?,)? args,
-    IMap<String, IList<GraphQL__Directive_Field>>? extra__,
+    IMap<String, GraphQL__Directive_Field>? extra__,
   }) {
     return GraphQL__Directive(
       (typeName__ ?? this.typeName__),
@@ -3678,8 +3677,8 @@ final class GraphQL__Directive implements query_string.GraphQLObjectType {
             GraphQL__Directive_locations? prevLocations)?
         locations,
     GraphQL__Directive_args? Function(GraphQL__Directive_args? prevArgs)? args,
-    IMap<String, IList<GraphQL__Directive_Field>> Function(
-            IMap<String, IList<GraphQL__Directive_Field>> prevExtra__)?
+    IMap<String, GraphQL__Directive_Field> Function(
+            IMap<String, GraphQL__Directive_Field> prevExtra__)?
         extra__,
   }) {
     return GraphQL__Directive(
@@ -3737,28 +3736,28 @@ final class GraphQL__Directive implements query_string.GraphQLObjectType {
   @useResult
   IList<query_string.QueryField> toFieldList() {
     return IList([
-      (switch (name) {
+      ...(switch (name) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (description) {
+      ...(switch (description) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (isRepeatable) {
+      ...(switch (isRepeatable) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (locations) {
+      ...(switch (locations) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      (switch (args) {
+      ...(switch (args) {
         null => const [],
-        final field => field.toField(),
+        final field => [field.toField()],
       }),
-      extra__.map((field) {
-        return field.toField();
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
       }),
     ]);
   }
@@ -3818,7 +3817,7 @@ final class GraphQL__Directive_name implements GraphQL__Directive_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'name',
       description: '',
@@ -3862,7 +3861,7 @@ final class GraphQL__Directive_description implements GraphQL__Directive_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'description',
       description: '',
@@ -3907,7 +3906,7 @@ final class GraphQL__Directive_isRepeatable
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'isRepeatable',
       description: '',
@@ -3951,7 +3950,7 @@ final class GraphQL__Directive_locations implements GraphQL__Directive_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return const query_string.QueryFieldField(
       'locations',
       description: '',
@@ -4035,7 +4034,7 @@ final class GraphQL__Directive_args implements GraphQL__Directive_Field {
 
   @override
   @useResult
-  query_string.QueryField toField() {
+  query_string.QueryFieldField toField() {
     return query_string.QueryFieldField(
       'args',
       args: IList([

@@ -93,9 +93,7 @@ ClassDeclaration _graphQLTypeQueryClass(
             'フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases',
         type: wellknown_type.IMap(
           wellknown_type.String,
-          wellknown_type.IList(TypeNormal(
-            name: _fieldAbstractClassName(type.name),
-          )),
+          TypeNormal(name: _fieldAbstractClassName(type.name)),
         ),
         parameterPattern: const ParameterPatternPositional(),
       ),
@@ -128,26 +126,41 @@ ClassDeclaration _graphQLTypeQueryClass(
                         (PatternNullLiteral(), ExprListLiteral(IListConst([]))),
                         (
                           PatternFinal('field'),
-                          ExprMethodCall(
-                            variable: ExprVariable('field'),
-                            methodName: 'toField',
-                          )
-                        )
+                          ExprListLiteral(IListConst([
+                            (
+                              ExprMethodCall(
+                                variable: ExprVariable('field'),
+                                methodName: 'toField',
+                              ),
+                              spread: false,
+                            )
+                          ]))
+                        ),
                       ])),
                   spread: true,
                 ),
               ),
               (
-                wellknown_expr.iterableMap(
-                  iterable: const ExprVariable('extra__'),
-                  itemVariableName: 'field',
-                  lambdaStatements: const IListConst([
-                    StatementReturn(
-                      ExprMethodCall(
-                        variable: ExprVariable('field'),
-                        methodName: 'toField',
-                      ),
-                    ),
+                ExprMethodCall(
+                  variable: const ExprVariable('extra__'),
+                  methodName: 'mapTo',
+                  positionalArguments: IList([
+                    const ExprLambda(
+                      parameterNames: IListConst(['aliasName', 'field']),
+                      statements: IListConst([
+                        StatementReturn(
+                          ExprMethodCall(
+                            variable: ExprMethodCall(
+                              variable: ExprVariable('field'),
+                              methodName: 'toField',
+                            ),
+                            methodName: 'setAliasName',
+                            positionalArguments:
+                                IListConst([ExprVariable('aliasName')]),
+                          ),
+                        ),
+                      ]),
+                    )
                   ]),
                 ),
                 spread: true,
@@ -319,7 +332,7 @@ Field _fieldInputField(
     documentationComments: field.description,
     type: TypeNormal(
         name: _fieldClassName(typeName, field.name), isNullable: true),
-    parameterPattern: const ParameterPatternNamed(),
+    parameterPattern: const ParameterPatternNamedWithDefault(ExprNull()),
   );
 }
 
@@ -406,7 +419,7 @@ Method _toFieldMethod(
     documentationComments: '',
     useResultAnnotation: true,
     returnType: const TypeNormal(
-      name: 'query_string.QueryField',
+      name: 'query_string.QueryFieldField',
     ),
     parameters: const IListConst([]),
     methodType: MethodType.override,

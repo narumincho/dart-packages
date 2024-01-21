@@ -68,6 +68,44 @@ abstract class Api {
     }
     return QueryAccount.fromJsonValue(data);
   }
+
+  /// ```
+  /// query ($id: ID!, $subId: ID!) {
+  ///   account(id: $id) {
+  ///     id
+  ///     name
+  ///   }
+  ///   account(id: $subId) {
+  ///     name
+  ///   }
+  /// }
+  /// ```
+  static Future<QueryAccountWithAlias> withAlias(
+    Uri url,
+    String? auth, {
+    required type.ID id,
+    required type.ID subId,
+  }) async {
+    final response = await graphql_post.graphQLPost(
+      uri: url,
+      auth: auth,
+      query:
+          'query (\$id: ID!, \$subId: ID!) {\n  account(id: \$id) {\n    id\n    name\n  }\n  account(id: \$subId) {\n    name\n  }\n}\n',
+      variables: IMap({
+        'id': id.toJsonValue(),
+        'subId': subId.toJsonValue(),
+      }),
+    );
+    final errors = response.errors;
+    if ((errors != null)) {
+      throw errors;
+    }
+    final data = response.data;
+    if ((data == null)) {
+      throw Exception('withAlias response data empty');
+    }
+    return QueryAccountWithAlias.fromJsonValue(data);
+  }
 }
 
 /// データを取得できる. データを取得するのみで, データを変更しない
@@ -261,5 +299,145 @@ final class QueryAccount {
       narumincho_json.JsonNull() => null,
       final jsonValue => Account.fromJsonValue(jsonValue),
     }));
+  }
+}
+
+/// よくあるアカウントの型
+@immutable
+final class AccountOnlyName {
+  /// よくあるアカウントの型
+  const AccountOnlyName({
+    required this.name,
+  });
+
+  /// 名前
+  final String? name;
+
+  /// `AccountOnlyName` を複製する
+  @useResult
+  AccountOnlyName copyWith({
+    (String?,)? name,
+  }) {
+    return AccountOnlyName(name: ((name == null) ? this.name : name.$1));
+  }
+
+  /// `AccountOnlyName` のフィールドを変更したものを新しく返す
+  @useResult
+  AccountOnlyName updateFields({
+    String? Function(String? prevName)? name,
+  }) {
+    return AccountOnlyName(
+        name: ((name == null) ? this.name : name(this.name)));
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return name.hashCode;
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((other is AccountOnlyName) && (name == other.name));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'AccountOnlyName(name: ${name}, )';
+  }
+
+  /// JsonValue から AccountOnlyNameを生成する. 失敗した場合はエラーが発生する
+  static AccountOnlyName fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return AccountOnlyName(
+        name: (switch (value.getObjectValueOrThrow('name')) {
+      narumincho_json.JsonNull() => null,
+      final jsonValue => jsonValue.asStringOrThrow(),
+    }));
+  }
+}
+
+/// データを取得できる. データを取得するのみで, データを変更しない
+@immutable
+final class QueryAccountWithAlias {
+  /// データを取得できる. データを取得するのみで, データを変更しない
+  const QueryAccountWithAlias({
+    required this.account,
+    required this.account,
+  });
+
+  /// IDからアカウントを取得
+  final Account? account;
+
+  /// IDからアカウントを取得
+  final AccountOnlyName? account;
+
+  /// `QueryAccountWithAlias` を複製する
+  @useResult
+  QueryAccountWithAlias copyWith({
+    (Account?,)? account,
+    (AccountOnlyName?,)? account,
+  }) {
+    return QueryAccountWithAlias(
+      account: ((account == null) ? this.account : account.$1),
+      account: ((account == null) ? this.account : account.$1),
+    );
+  }
+
+  /// `QueryAccountWithAlias` のフィールドを変更したものを新しく返す
+  @useResult
+  QueryAccountWithAlias updateFields({
+    Account? Function(Account? prevAccount)? account,
+    AccountOnlyName? Function(AccountOnlyName? prevAccount)? account,
+  }) {
+    return QueryAccountWithAlias(
+      account: ((account == null) ? this.account : account(this.account)),
+      account: ((account == null) ? this.account : account(this.account)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      account,
+      account,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (((other is QueryAccountWithAlias) && (account == other.account)) &&
+        (account == other.account));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'QueryAccountWithAlias(account: ${account}, account: ${account}, )';
+  }
+
+  /// JsonValue から QueryAccountWithAliasを生成する. 失敗した場合はエラーが発生する
+  static QueryAccountWithAlias fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return QueryAccountWithAlias(
+      account: (switch (value.getObjectValueOrThrow('account')) {
+        narumincho_json.JsonNull() => null,
+        final jsonValue => Account.fromJsonValue(jsonValue),
+      }),
+      account: (switch (value.getObjectValueOrThrow('account')) {
+        narumincho_json.JsonNull() => null,
+        final jsonValue => AccountOnlyName.fromJsonValue(jsonValue),
+      }),
+    );
   }
 }

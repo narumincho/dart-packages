@@ -11,18 +11,29 @@ sealed class QueryField {
   const QueryField();
 }
 
-@immutable
 final class QueryFieldField implements QueryField {
   const QueryFieldField(
     this.fieldName, {
     this.args = const IListConst([]),
+    String? aliasName,
     required this.description,
     required this.return_,
-  });
+  }) : aliasName = aliasName ?? fieldName;
   final String fieldName;
+  final String aliasName;
   final String description;
   final IList<QueryFieldArg> args;
   final GraphQLOutputTypeConsiderListNull return_;
+
+  QueryFieldField setAliasName(String aliasName) {
+    return QueryFieldField(
+      fieldName,
+      args: args,
+      aliasName: aliasName,
+      description: description,
+      return_: return_,
+    );
+  }
 }
 
 @immutable
@@ -372,7 +383,7 @@ abstract class GraphQLObjectType {
 abstract class IntoGraphQLField {
   const IntoGraphQLField();
 
-  QueryField toField();
+  QueryFieldField toField();
 }
 
 @immutable

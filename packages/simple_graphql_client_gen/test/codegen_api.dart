@@ -8,22 +8,44 @@ import './graphql/query.dart' as query;
 
 const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
   'hello': query.Query(
-    name: 'QueryHello',
-    IListConst([query.Query_hello()]),
+    'QueryHello',
+    IMapConst({}),
+    hello: query.Query_hello(),
   ),
   'account': query.Query(
-    name: 'QueryAccount',
-    IListConst([
-      query.Query_account(
-        id: Variable('id'),
+    'QueryAccount',
+    IMapConst({}),
+    account: query.Query_account(
+      id: Variable('id'),
+      query.Account(
+        'Account',
+        IMapConst({}),
+        id: query.Account_id(),
+        name: query.Account_name(),
+      ),
+    ),
+  ),
+  'withAlias': query.Query(
+    'QueryAccountWithAlias',
+    IMapConst({
+      'accountOne': query.Query_account(
+        id: Variable('subId'),
         query.Account(
-          IListConst([
-            query.Account_id(),
-            query.Account_name(),
-          ]),
+          'AccountOnlyName',
+          IMapConst({}),
+          name: query.Account_name(),
         ),
       ),
-    ]),
+    }),
+    account: query.Query_account(
+      id: Variable('id'),
+      query.Account(
+        'Account',
+        IMapConst({}),
+        id: query.Account_id(),
+        name: query.Account_name(),
+      ),
+    ),
   ),
 });
 

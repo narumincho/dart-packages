@@ -137,22 +137,18 @@ Method _createApiCallMethod(
             if (variableList.isNotEmpty)
               (
                 name: 'variables',
-                argument: ExprConstructor(
-                  className: 'IMap',
-                  isConst: false,
-                  positionalArguments: IList([
-                    ExprMapLiteral(
-                      IList(variableList.map(
-                        (variable) => (
-                          key: ExprStringLiteral(
-                            IList([StringLiteralItemNormal(variable.name)]),
-                          ),
-                          value: toJsonValueExpr(
-                              variable.type, ExprVariable(variable.name)),
+                argument: wellknown_expr.IMap(
+                  ExprMapLiteral(
+                    IList(variableList.map(
+                      (variable) => (
+                        key: ExprStringLiteral(
+                          IList([StringLiteralItemNormal(variable.name)]),
                         ),
-                      )),
-                    )
-                  ]),
+                        value: toJsonValueExpr(
+                            variable.type, ExprVariable(variable.name)),
+                      ),
+                    )),
+                  ),
                 ),
               ),
           ]),

@@ -277,10 +277,10 @@ packages:
     dependency: "direct main"
     description:
       name: simple_dart_code_gen
-      sha256: ad7b07996208ee3b66df6f31e9c83c98148865a176912168e95004f7e1e19665
+      sha256: "44789d9d52ce9ddf5982b71b221bf0829e968f3581a52d88b114bc3f13221a7a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.0"
+    version: "0.6.1"
   source_map_stack_trace:
     dependency: transitive
     description:
