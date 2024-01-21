@@ -368,24 +368,25 @@ final class QueryAccountWithAlias {
   /// データを取得できる. データを取得するのみで, データを変更しない
   const QueryAccountWithAlias({
     required this.account,
-    required this.account,
+    required this.accountOne,
   });
 
   /// IDからアカウントを取得
   final Account? account;
 
+  /// alias account → accountOne
   /// IDからアカウントを取得
-  final AccountOnlyName? account;
+  final AccountOnlyName? accountOne;
 
   /// `QueryAccountWithAlias` を複製する
   @useResult
   QueryAccountWithAlias copyWith({
     (Account?,)? account,
-    (AccountOnlyName?,)? account,
+    (AccountOnlyName?,)? accountOne,
   }) {
     return QueryAccountWithAlias(
       account: ((account == null) ? this.account : account.$1),
-      account: ((account == null) ? this.account : account.$1),
+      accountOne: ((accountOne == null) ? this.accountOne : accountOne.$1),
     );
   }
 
@@ -393,11 +394,13 @@ final class QueryAccountWithAlias {
   @useResult
   QueryAccountWithAlias updateFields({
     Account? Function(Account? prevAccount)? account,
-    AccountOnlyName? Function(AccountOnlyName? prevAccount)? account,
+    AccountOnlyName? Function(AccountOnlyName? prevAccountOne)? accountOne,
   }) {
     return QueryAccountWithAlias(
       account: ((account == null) ? this.account : account(this.account)),
-      account: ((account == null) ? this.account : account(this.account)),
+      accountOne: ((accountOne == null)
+          ? this.accountOne
+          : accountOne(this.accountOne)),
     );
   }
 
@@ -406,7 +409,7 @@ final class QueryAccountWithAlias {
   int get hashCode {
     return Object.hash(
       account,
-      account,
+      accountOne,
     );
   }
 
@@ -416,13 +419,13 @@ final class QueryAccountWithAlias {
     Object other,
   ) {
     return (((other is QueryAccountWithAlias) && (account == other.account)) &&
-        (account == other.account));
+        (accountOne == other.accountOne));
   }
 
   @override
   @useResult
   String toString() {
-    return 'QueryAccountWithAlias(account: ${account}, account: ${account}, )';
+    return 'QueryAccountWithAlias(account: ${account}, accountOne: ${accountOne}, )';
   }
 
   /// JsonValue から QueryAccountWithAliasを生成する. 失敗した場合はエラーが発生する
@@ -434,7 +437,7 @@ final class QueryAccountWithAlias {
         narumincho_json.JsonNull() => null,
         final jsonValue => Account.fromJsonValue(jsonValue),
       }),
-      account: (switch (value.getObjectValueOrThrow('account')) {
+      accountOne: (switch (value.getObjectValueOrThrow('accountOne')) {
         narumincho_json.JsonNull() => null,
         final jsonValue => AccountOnlyName.fromJsonValue(jsonValue),
       }),

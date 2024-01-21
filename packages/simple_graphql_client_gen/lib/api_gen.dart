@@ -224,8 +224,11 @@ IList<ClassDeclaration> _objectTypeClassDeclaration(
         modifier: ClassModifier.final_,
         fields: IList(fieldList.map(
           (field) => Field(
-            name: field.fieldName,
-            documentationComments: field.description,
+            name: field.aliasName,
+            documentationComments: (field.aliasName == field.fieldName
+                    ? ''
+                    : 'alias ${field.fieldName} → ${field.aliasName}\n') +
+                field.description,
             type: _graphQLOutputTypeToStringToDartTypeConsiderListNull(
                 field.return_),
             parameterPattern: const ParameterPatternNamed(),
@@ -270,7 +273,7 @@ Method _fromJsonValueMethodObject(
           isConst: true,
           namedArguments: IList(fieldList.map(
             (field) => (
-              name: field.fieldName,
+              name: field.aliasName,
               argument: _graphQLOutputTypeToFromJsonValueExprConsiderListNull(
                 field.return_,
                 ExprMethodCall(
@@ -278,7 +281,7 @@ Method _fromJsonValueMethodObject(
                   methodName: 'getObjectValueOrThrow',
                   positionalArguments: IList([
                     ExprStringLiteral(
-                      IList([StringLiteralItemNormal(field.fieldName)]),
+                      IList([StringLiteralItemNormal(field.aliasName)]),
                     )
                   ]),
                 ),
