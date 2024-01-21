@@ -147,8 +147,13 @@ String _queryFieldToString(
 ) {
   return ('  ' * indent) +
       (switch (queryField) {
-        QueryFieldField(:final fieldName, :final return_, :final args) =>
-          fieldName +
+        QueryFieldField(
+          :final fieldName,
+          :final aliasName,
+          :final return_,
+          :final args
+        ) =>
+          (fieldName == aliasName ? fieldName : aliasName + ': ' + fieldName) +
               (args.isEmpty
                   ? ''
                   : '(' +

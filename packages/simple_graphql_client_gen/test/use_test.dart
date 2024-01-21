@@ -35,7 +35,7 @@ void main() {
 
     expect(
       response.accountOne,
-      const Account(id: ID('b'), name: 'sample account name'),
+      const AccountOnlyName(name: 'sample account name'),
     );
   });
 }

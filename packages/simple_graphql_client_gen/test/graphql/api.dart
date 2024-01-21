@@ -75,7 +75,7 @@ abstract class Api {
   ///     id
   ///     name
   ///   }
-  ///   account(id: $subId) {
+  ///   accountOne: account(id: $subId) {
   ///     name
   ///   }
   /// }
@@ -90,7 +90,7 @@ abstract class Api {
       uri: url,
       auth: auth,
       query:
-          'query (\$id: ID!, \$subId: ID!) {\n  account(id: \$id) {\n    id\n    name\n  }\n  account(id: \$subId) {\n    name\n  }\n}\n',
+          'query (\$id: ID!, \$subId: ID!) {\n  account(id: \$id) {\n    id\n    name\n  }\n  accountOne: account(id: \$subId) {\n    name\n  }\n}\n',
       variables: IMap({
         'id': id.toJsonValue(),
         'subId': subId.toJsonValue(),
