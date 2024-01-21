@@ -165,7 +165,6 @@ ClassDeclaration? _graphQLScalarTypeClass(GraphQLTypeDeclaration type) {
         ),
       ]),
       modifier: ClassModifier.final_,
-      isPrivateConstructor: true,
       implementsClassList: const IListConst([queryStringIntoQueryInput]),
       methods: IList([
         const Method(
@@ -212,7 +211,7 @@ ClassDeclaration? _graphQLScalarTypeClass(GraphQLTypeDeclaration type) {
           returnType: TypeNormal(name: escapeFirstUnderLine(type.name)),
           statements: IList([
             StatementReturn(ExprConstructor(
-              className: '${escapeFirstUnderLine(type.name)}._',
+              className: escapeFirstUnderLine(type.name),
               isConst: true,
               positionalArguments: const IListConst([
                 ExprMethodCall(
@@ -292,24 +291,20 @@ ClassDeclaration _graphQLTypeInputObjectClass(
             className: 'query_string.QueryInputObject',
             isConst: true,
             positionalArguments: IList([
-              ExprConstructor(
-                className: 'IMap',
-                isConst: false,
-                positionalArguments: IList([
-                  ExprMapLiteral(IList(
-                    inputObject.fields.map(
-                      (field) => (
-                        key: ExprStringLiteral(
-                          IList([StringLiteralItemNormal(field.name)]),
-                        ),
-                        value: fieldQueryInputMethodFuncReturnExpr(
-                          field.type,
-                          ExprVariable(field.name),
-                        ),
+              wellknown_expr.IMap(
+                ExprMapLiteral(IList(
+                  inputObject.fields.map(
+                    (field) => (
+                      key: ExprStringLiteral(
+                        IList([StringLiteralItemNormal(field.name)]),
+                      ),
+                      value: fieldQueryInputMethodFuncReturnExpr(
+                        field.type,
+                        ExprVariable(field.name),
                       ),
                     ),
-                  )),
-                ]),
+                  ),
+                )),
               )
             ]),
           ))
@@ -335,27 +330,21 @@ ClassDeclaration _graphQLTypeInputObjectClass(
             className: 'narumincho_json.JsonObject',
             isConst: true,
             positionalArguments: IList([
-              ExprConstructor(
-                className: 'IMap',
-                isConst: false,
-                positionalArguments: IList([
-                  ExprMapLiteral(IList(
-                    inputObject.fields.map(
-                      (field) => (
-                        key: ExprStringLiteral(
-                          IList([StringLiteralItemNormal(field.name)]),
-                        ),
-                        value: toJsonValueExpr(
-                          field.type,
-                          ExprVariable(field.type.isNullable
-                              ? getValueName(field.name)
-                              : field.name),
-                        ),
-                      ),
+              wellknown_expr.IMap(ExprMapLiteral(IList(
+                inputObject.fields.map(
+                  (field) => (
+                    key: ExprStringLiteral(
+                      IList([StringLiteralItemNormal(field.name)]),
                     ),
-                  ))
-                ]),
-              )
+                    value: toJsonValueExpr(
+                      field.type,
+                      ExprVariable(field.type.isNullable
+                          ? getValueName(field.name)
+                          : field.name),
+                    ),
+                  ),
+                ),
+              )))
             ]),
           ))
         ]),

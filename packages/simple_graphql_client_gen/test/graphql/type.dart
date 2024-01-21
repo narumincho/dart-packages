@@ -10,12 +10,28 @@ import 'package:simple_graphql_client_gen/text.dart' as text;
 @immutable
 final class ID implements query_string.IntoQueryInput {
   /// The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-  const ID._(
+  const ID(
     this.value,
   );
 
   /// 文字列. Int の場合もあるが, とりあえず考えない
   final String value;
+
+  /// `ID` を複製する
+  @useResult
+  ID copyWith({
+    String? value,
+  }) {
+    return ID((value ?? this.value));
+  }
+
+  /// `ID` のフィールドを変更したものを新しく返す
+  @useResult
+  ID updateFields({
+    String Function(String prevValue)? value,
+  }) {
+    return ID(((value == null) ? this.value : value(this.value)));
+  }
 
   @override
   @useResult
@@ -52,7 +68,7 @@ final class ID implements query_string.IntoQueryInput {
   static ID fromJsonValue(
     narumincho_json.JsonValue jsonValue,
   ) {
-    return ID._(jsonValue.asStringOrThrow());
+    return ID(jsonValue.asStringOrThrow());
   }
 }
 

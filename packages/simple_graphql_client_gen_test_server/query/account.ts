@@ -16,7 +16,7 @@ export const account: g.GraphQLFieldConfig<
   resolve: (_, { id }): Account => {
     return {
       id,
-      name: "sample account",
+      name: "sample account name",
     };
   },
   description: "IDからアカウントを取得",

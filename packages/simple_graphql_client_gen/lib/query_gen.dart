@@ -51,7 +51,7 @@ IList<Declaration> _graphQLTypeListToQueryCode(
         return [];
       case GraphQLTypeBodyObject() && final object:
         return [
-          _graphQLTypeQueryClass(type),
+          _graphQLTypeQueryClass(type, object.fields, typeMap),
           _graphQLTypeAbstractFieldClass(type),
           for (final field in object.fields)
             _graphQLTypeFieldClass(type, field, typeMap),
@@ -70,27 +70,32 @@ String _fieldAbstractClassName(String typeName) {
   return escapeFirstUnderLine('${typeName}_Field');
 }
 
-ClassDeclaration _graphQLTypeQueryClass(GraphQLTypeDeclaration type) {
+ClassDeclaration _graphQLTypeQueryClass(
+  GraphQLTypeDeclaration type,
+  IList<GraphQLField> fields,
+  IMap<String, GraphQLTypeDeclaration> typeMap,
+) {
   final typeName = escapeFirstUnderLine(type.name);
   return ClassDeclaration(
     name: typeName,
     documentationComments: type.documentationComments,
     fields: IList([
-      Field(
-        name: 'fields',
-        documentationComments: '',
-        type: wellknown_type.IList(TypeNormal(
-          name: _fieldAbstractClassName(type.name),
-        )),
-        parameterPattern: const ParameterPatternPositional(),
-      ),
-      Field(
-        name: 'name',
+      const Field(
+        name: 'typeName__',
         documentationComments: 'この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!',
         type: wellknown_type.String,
-        parameterPattern: ParameterPatternNamedWithDefault(
-          ExprStringLiteral(IList([StringLiteralItemNormal(typeName)])),
+        parameterPattern: ParameterPatternPositional(),
+      ),
+      for (final field in fields) _fieldInputField(type.name, field, typeMap),
+      Field(
+        name: 'extra__',
+        documentationComments:
+            'フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases',
+        type: wellknown_type.IMap(
+          wellknown_type.String,
+          TypeNormal(name: _fieldAbstractClassName(type.name)),
         ),
+        parameterPattern: const ParameterPatternPositional(),
       ),
     ]),
     modifier: ClassModifier.final_,
@@ -112,18 +117,55 @@ ClassDeclaration _graphQLTypeQueryClass(GraphQLTypeDeclaration type) {
         )),
         statements: IList([
           StatementReturn(wellknown_expr.IList(
-            wellknown_expr.iterableMap(
-              iterable: const ExprVariable('fields'),
-              itemVariableName: 'field',
-              lambdaStatements: const IListConst([
-                StatementReturn(
-                  ExprMethodCall(
-                    variable: ExprVariable('field'),
-                    methodName: 'toField',
-                  ),
+            ExprListLiteral(IList([
+              ...fields.map(
+                (field) => (
+                  ExprSwitch(
+                      ExprVariable(field.name),
+                      const IListConst([
+                        (PatternNullLiteral(), ExprListLiteral(IListConst([]))),
+                        (
+                          PatternFinal('field'),
+                          ExprListLiteral(IListConst([
+                            (
+                              ExprMethodCall(
+                                variable: ExprVariable('field'),
+                                methodName: 'toField',
+                              ),
+                              spread: false,
+                            )
+                          ]))
+                        ),
+                      ])),
+                  spread: true,
                 ),
-              ]),
-            ),
+              ),
+              (
+                ExprMethodCall(
+                  variable: const ExprVariable('extra__'),
+                  methodName: 'mapTo',
+                  positionalArguments: IList([
+                    const ExprLambda(
+                      parameterNames: IListConst(['aliasName', 'field']),
+                      statements: IListConst([
+                        StatementReturn(
+                          ExprMethodCall(
+                            variable: ExprMethodCall(
+                              variable: ExprVariable('field'),
+                              methodName: 'toField',
+                            ),
+                            methodName: 'setAliasName',
+                            positionalArguments:
+                                IListConst([ExprVariable('aliasName')]),
+                          ),
+                        ),
+                      ]),
+                    )
+                  ]),
+                ),
+                spread: true,
+              ),
+            ])),
           ))
         ]),
       ),
@@ -134,7 +176,7 @@ ClassDeclaration _graphQLTypeQueryClass(GraphQLTypeDeclaration type) {
         useResultAnnotation: true,
         parameters: IListConst([]),
         returnType: wellknown_type.String,
-        statements: IListConst([StatementReturn(ExprVariable('name'))]),
+        statements: IListConst([StatementReturn(ExprVariable('typeName__'))]),
       ),
       Method(
         methodType: MethodType.override,
@@ -215,33 +257,39 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
         )),
         statements: IList([
           StatementReturn(wellknown_expr.IList(ExprListLiteral(IList([
-            _queryFieldFieldExprConstructor(
-              '__typename',
-              description: '',
-              return_: _fieldMethodReturnObject(
-                ListType.notList,
-                false,
-                const ExprConstructor(
-                  className: 'query_string.GraphQLOutputTypeString',
-                  isConst: true,
+            (
+              _queryFieldFieldExprConstructor(
+                '__typename',
+                description: '',
+                return_: _fieldMethodReturnObject(
+                  ListType.notList,
+                  false,
+                  const ExprConstructor(
+                    className: 'query_string.GraphQLOutputTypeString',
+                    isConst: true,
+                  ),
                 ),
               ),
+              spread: false,
             ),
             ...union.possibleTypes.map(
-              (possibleType) => ExprCall(
-                functionName: 'query_string.QueryFieldOn',
-                namedArguments: IList([
-                  (
-                    name: 'typeName',
-                    argument: ExprStringLiteral(
-                      IList([StringLiteralItemNormal(possibleType)]),
+              (possibleType) => (
+                ExprCall(
+                  functionName: 'query_string.QueryFieldOn',
+                  namedArguments: IList([
+                    (
+                      name: 'typeName',
+                      argument: ExprStringLiteral(
+                        IList([StringLiteralItemNormal(possibleType)]),
+                      ),
                     ),
-                  ),
-                  (
-                    name: 'return_',
-                    argument: ExprVariable(toFirstLowercase(possibleType)),
-                  ),
-                ]),
+                    (
+                      name: 'return_',
+                      argument: ExprVariable(toFirstLowercase(possibleType)),
+                    ),
+                  ]),
+                ),
+                spread: false,
               ),
             )
           ]))))
@@ -270,6 +318,21 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
         ]),
       ),
     ]),
+  );
+}
+
+Field _fieldInputField(
+  String typeName,
+  GraphQLField field,
+  IMap<String, GraphQLTypeDeclaration> typeMap,
+) {
+  // final fieldTypeBody = typeMap.get(field.type.name)?.body;
+  return Field(
+    name: field.name,
+    documentationComments: field.description,
+    type: TypeNormal(
+        name: _fieldClassName(typeName, field.name), isNullable: true),
+    parameterPattern: const ParameterPatternNamedWithDefault(ExprNull()),
   );
 }
 
@@ -356,7 +419,7 @@ Method _toFieldMethod(
     documentationComments: '',
     useResultAnnotation: true,
     returnType: const TypeNormal(
-      name: 'query_string.QueryField',
+      name: 'query_string.QueryFieldField',
     ),
     parameters: const IListConst([]),
     methodType: MethodType.override,
@@ -368,23 +431,27 @@ Method _toFieldMethod(
           args: field.args.isNotEmpty
               ? wellknown_expr.IList(ExprListLiteral(IList(
                   field.args.map(
-                    (arg) => ExprConstructor(
-                      className: 'query_string.QueryFieldArg',
-                      isConst: false,
-                      namedArguments: IList([
-                        (
-                          name: 'name',
-                          argument: ExprStringLiteral(
-                            IList([StringLiteralItemNormal(arg.name)]),
+                    (arg) => (
+                      ExprConstructor(
+                        className: 'query_string.QueryFieldArg',
+                        isConst: false,
+                        namedArguments: IList([
+                          (
+                            name: 'name',
+                            argument: ExprStringLiteral(
+                              IList([StringLiteralItemNormal(arg.name)]),
+                            ),
                           ),
-                        ),
-                        (
-                          name: 'input',
-                          argument: ExprCall(
-                            functionName: _fieldQueryInputMethodName(arg.name),
+                          (
+                            name: 'input',
+                            argument: ExprCall(
+                              functionName:
+                                  _fieldQueryInputMethodName(arg.name),
+                            ),
                           ),
-                        ),
-                      ]),
+                        ]),
+                      ),
+                      spread: false,
                     ),
                   ),
                 )))

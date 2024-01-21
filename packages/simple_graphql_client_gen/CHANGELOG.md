@@ -1,6 +1,8 @@
 ## 0.8.0
 
 - Delete id and token annotation support
+- Easier to specify query
+- Support Alias
 
 ## 0.7.9
 
