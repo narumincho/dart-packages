@@ -1,3 +1,7 @@
+## 0.2.0
+
+- update fast_immutable_collections v9 → v10
+
 ## 0.1.5
 
 - rename toNotNullable → allNonNullOrNull

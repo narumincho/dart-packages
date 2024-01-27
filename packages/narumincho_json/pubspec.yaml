@@ -1,11 +1,11 @@
 name: narumincho_json
 description: narumincho_json
 repository: https://github.com/narumincho/dart-packages/tree/main/packages/narumincho_json
-version: "0.1.0"
+version: "0.2.0"
 environment:
   sdk: ">=3.2.0 <4.0.0"
 dependencies:
-  fast_immutable_collections: ^9.1.1
+  fast_immutable_collections: ">=10.0.0 <11.0.0"
   meta: ">=1.9.1 <2.0.0"
 dev_dependencies:
   test: ^1.24.2
