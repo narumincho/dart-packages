@@ -85,10 +85,10 @@ packages:
     dependency: "direct main"
     description:
       name: fast_immutable_collections
-      sha256: "3eb1d7495c70598964add20e10666003fad6e855b108fe684ebcbf8ad0c8e120"
+      sha256: "062bc1eacb6e09c4a67ba5d6387c85b44c21b9e3ed91f8d35691712c00aa559f"
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.0"
+    version: "10.0.0"
   file:
     dependency: transitive
     description:
@@ -181,10 +181,10 @@ packages:
     dependency: "direct main"
     description:
       name: narumincho_util
-      sha256: ece30f6faf5a46e87ded35389b77641e87687ce0093b421229aa945d548af450
+      sha256: daa9b3a513dd4cc1d8a988f76e6ef84be9208b05bb5ee7cef492664e55ea9eeb
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.5"
+    version: "0.2.0"
   node_preamble:
     dependency: transitive
     description:
