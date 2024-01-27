@@ -1,3 +1,7 @@
+## 0.7.0
+
+- update fast_immutable_collections v9 → v10
+
 ## 0.6.1
 
 - add IMap in wellknown
