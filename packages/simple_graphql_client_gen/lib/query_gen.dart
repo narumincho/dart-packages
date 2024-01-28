@@ -95,7 +95,13 @@ ClassDeclaration _graphQLTypeQueryClass(
           wellknown_type.String,
           TypeNormal(name: _fieldAbstractClassName(type.name)),
         ),
-        parameterPattern: const ParameterPatternPositional(),
+        parameterPattern: const ParameterPatternNamedWithDefault(
+          ExprConstructor(
+            className: 'IMapConst',
+            isConst: true,
+            positionalArguments: IListConst([ExprMapLiteral(IListConst([]))]),
+          ),
+        ),
       ),
     ]),
     modifier: ClassModifier.final_,

@@ -1,5 +1,6 @@
 ## 0.9.0
 
+- query extra__ field Positional → Named
 - Update fast_immutable_collections v10
 
 ## 0.8.0

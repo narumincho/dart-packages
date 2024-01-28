@@ -9,17 +9,14 @@ import './graphql/query.dart' as query;
 const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
   'hello': query.Query(
     'QueryHello',
-    IMapConst({}),
     hello: query.Query_hello(),
   ),
   'account': query.Query(
     'QueryAccount',
-    IMapConst({}),
     account: query.Query_account(
       id: Variable('id'),
       query.Account(
         'Account',
-        IMapConst({}),
         id: query.Account_id(),
         name: query.Account_name(),
       ),
@@ -27,12 +24,11 @@ const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
   ),
   'withAlias': query.Query(
     'QueryAccountWithAlias',
-    IMapConst({
+    extra__: IMapConst({
       'accountOne': query.Query_account(
         id: Variable('subId'),
         query.Account(
           'AccountOnlyName',
-          IMapConst({}),
           name: query.Account_name(),
         ),
       ),
@@ -41,7 +37,6 @@ const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
       id: Variable('id'),
       query.Account(
         'Account',
-        IMapConst({}),
         id: query.Account_id(),
         name: query.Account_name(),
       ),
