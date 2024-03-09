@@ -37,6 +37,10 @@ click simple_graphql_client_gen "https://github.com/narumincho/dart-packages/tre
 
 ## Development
 
+```sh
+deno run ./packages/simple_graphql_client_gen_test_server/main.ts
+```
+
 ### lint
 
 ```sh

@@ -1,4 +1,4 @@
-import { DateTime } from "npm:@narumincho/simple-graphql-server-common";
+import { DateTime } from "jsr:@narumincho/simple-graphql-server";
 import * as g from "npm:graphql";
 
 export const now: g.GraphQLFieldConfig<void, unknown, unknown> = {
