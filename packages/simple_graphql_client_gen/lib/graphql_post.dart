@@ -34,13 +34,37 @@ final class GraphqlError implements Exception {
   });
 
   final String message;
-  final IList<String> path;
+  final IList<PathItem> path;
   final String? extensionsCode;
 
   @override
   String toString() {
     return '[$extensionsCode] $message ($path)';
   }
+}
+
+@immutable
+sealed class PathItem {
+  const PathItem();
+}
+
+class PathItemString implements PathItem {
+  const PathItemString(this.value);
+
+  final String value;
+
+  @override
+  String toString() =>
+      '"${value.replaceAll(r'\', r'\\').replaceAll('"', r'\"').replaceAll('\n', r'\n')}"';
+}
+
+class PathItemInt implements PathItem {
+  const PathItemInt(this.value);
+
+  final int value;
+
+  @override
+  String toString() => value.toString();
 }
 
 Future<GraphqlResponse> graphQLPost({
@@ -75,7 +99,17 @@ Future<GraphqlResponse> graphQLPost({
         final path = IList(errorJson
             .getObjectValueOrNull('path')
             ?.getAsArray()
-            ?.map((element) => element.asStringOrThrow()));
+            ?.map((element) {
+          switch (element.asStringOrNull()) {
+            case final v?:
+              return PathItemString(v);
+          }
+          switch (element.asDoubleOrNull()) {
+            case final v?:
+              return PathItemInt(v.toInt());
+          }
+          throw Exception('expected error path string or int but got $element');
+        }));
         final extensionsCode = errorJson
             .getObjectValueOrNull('extensions')
             ?.getObjectValueOrNull('code')
