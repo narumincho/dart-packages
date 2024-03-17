@@ -1,3 +1,7 @@
+## 0.9.1
+
+- fix error in GraphQLError path include int
+
 ## 0.9.0
 
 - query extra__ field Positional → Named

@@ -43,14 +43,18 @@ void main() {
     expect(
       const GraphqlError(
         message: 'error message',
-        path: IListConst(['path', 'to', 'error']),
+        path: IListConst([
+          PathItemString('path'),
+          PathItemString('to'),
+          PathItemString('error')
+        ]),
         extensionsCode: 'sampleCode',
       ).toString(),
       '''
 [sampleCode] error message ([
-   path,
-   to,
-   error
+   "path",
+   "to",
+   "error"
 ])''',
     );
   });
@@ -61,25 +65,33 @@ void main() {
       GraphqlErrors(IList([
         const GraphqlError(
           message: 'messageA',
-          path: IListConst(['path', 'to', 'error']),
+          path: IListConst([
+            PathItemString('path'),
+            PathItemString('to'),
+            PathItemString('error')
+          ]),
           extensionsCode: 'sampleCodeA',
         ),
         const GraphqlError(
           message: 'messageB',
-          path: IListConst(['path', 'to', 'error']),
+          path: IListConst([
+            PathItemString('path'),
+            PathItemInt(2),
+            PathItemString('error')
+          ]),
           extensionsCode: 'sampleCodeB',
         ),
       ])).toString(),
       '''
 [sampleCodeA] messageA ([
-   path,
-   to,
-   error
+   "path",
+   "to",
+   "error"
 ])
 [sampleCodeB] messageB ([
-   path,
-   to,
-   error
+   "path",
+   2,
+   "error"
 ])''',
     );
   });
