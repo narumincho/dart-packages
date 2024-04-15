@@ -3,7 +3,7 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
 extension NaruminchoUtilIterable<T> on Iterable<T> {
-//  先頭から関数を適用し, null だった場合は破棄する
+  ///  先頭から関数を適用し, null だった場合は破棄する
   @useResult
   IList<Output> mapAndRemoveNull<Output>(Output? Function(T) func) {
     final List<Output> result = [];
@@ -60,6 +60,14 @@ extension NaruminchoUtilIterable<T> on Iterable<T> {
       return this;
     }
     return [...this, ...List.filled(minLength - this.length, fillValue)];
+  }
+
+  @useResult
+  Iterable<T> setLength(int length, T fillValue) {
+    if (this.length >= length) {
+      return this.take(length);
+    }
+    return this.followedBy(List.filled(length - this.length, fillValue));
   }
 }
 

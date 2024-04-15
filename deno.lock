@@ -4,7 +4,7 @@
     "specifiers": {
       "jsr:@narumincho/simple-graphql-server": "jsr:@narumincho/simple-graphql-server@1.0.0",
       "npm:graphql": "npm:graphql@16.8.1",
-      "npm:graphql-http": "npm:graphql-http@1.22.0_graphql@16.8.1",
+      "npm:graphql-http": "npm:graphql-http@1.22.1_graphql@16.8.1",
       "npm:graphql@16": "npm:graphql@16.8.1"
     },
     "jsr": {
@@ -16,8 +16,8 @@
       }
     },
     "npm": {
-      "graphql-http@1.22.0_graphql@16.8.1": {
-        "integrity": "sha512-9RBUlGJWBFqz9LwfpmAbjJL/8j/HCNkZwPBU5+Bfmwez+1Ay43DocMNQYpIWsWqH0Ftv6PTNAh2aRnnMCBJgLw==",
+      "graphql-http@1.22.1_graphql@16.8.1": {
+        "integrity": "sha512-4Jor+LRbA7SfSaw7dfDUs2UBzvWg3cKrykfHRgKsOIvQaLuf+QOcG2t3Mx5N9GzSNJcuqMqJWz0ta5+BryEmXg==",
         "dependencies": {
           "graphql": "graphql@16.8.1"
         }

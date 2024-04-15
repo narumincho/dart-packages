@@ -108,4 +108,39 @@ void main() {
       const IListConst(['a', 'b', 'c']),
     );
   });
+
+  test('setLength 0', () {
+    expect(
+      IList(const IListConst(['a', 'b', 'c']).setLength(0, 'fill')),
+      const IListConst([]),
+    );
+  });
+
+  test('setLength 1', () {
+    expect(
+      IList(const IListConst(['a', 'b', 'c']).setLength(1, 'fill')),
+      const IListConst(['a']),
+    );
+  });
+
+  test('setLength 3', () {
+    expect(
+      IList(const IListConst(['a', 'b', 'c']).setLength(3, 'fill')),
+      const IListConst(['a', 'b', 'c']),
+    );
+  });
+
+  test('setLength 4', () {
+    expect(
+      IList(const IListConst(['a', 'b', 'c']).setLength(4, 'fill')),
+      const IListConst(['a', 'b', 'c', 'fill']),
+    );
+  });
+
+  test('setLength 7', () {
+    expect(
+      IList(const IListConst(['a', 'b', 'c']).setLength(7, 'fill')),
+      const IListConst(['a', 'b', 'c', 'fill', 'fill', 'fill', 'fill']),
+    );
+  });
 }
