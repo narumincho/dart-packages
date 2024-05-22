@@ -6,6 +6,8 @@ import 'package:simple_graphql_client_gen/query_string.dart';
 import 'package:simple_graphql_client_gen/simple_graphql_client_gen.dart';
 import './graphql/query.dart' as query;
 
+const note = query.Note('Note', description: query.Note_description());
+
 const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
   'hello': query.Query(
     'QueryHello',
@@ -39,6 +41,26 @@ const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
         'Account',
         id: query.Account_id(),
         name: query.Account_name(),
+      ),
+    ),
+  ),
+  'union': query.Query(
+    'QueryUnion',
+    union: query.Query_union(
+      id: Variable('id'),
+      query.AccountOrNote(
+        account: query.Account(
+          'AccountInUnionA',
+          id: query.Account_id(),
+          name: query.Account_name(),
+        ),
+        note: query.Note(
+          'Note',
+          description: query.Note_description(),
+          subNotes: query.Note_subNotes(
+            query.Note('Note', description: query.Note_description()),
+          ),
+        ),
       ),
     ),
   ),

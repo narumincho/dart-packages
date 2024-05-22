@@ -16,6 +16,7 @@ final class Query implements query_string.GraphQLRootObject {
     this.now,
     this.hello,
     this.account,
+    this.union,
     this.extra__ = const IMapConst({}),
   });
 
@@ -31,6 +32,9 @@ final class Query implements query_string.GraphQLRootObject {
   /// IDからアカウントを取得
   final Query_account? account;
 
+  /// IDからアカウントもしくはノートを取得
+  final Query_union? union;
+
   /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
   final IMap<String, Query_Field> extra__;
 
@@ -41,6 +45,7 @@ final class Query implements query_string.GraphQLRootObject {
     (Query_now?,)? now,
     (Query_hello?,)? hello,
     (Query_account?,)? account,
+    (Query_union?,)? union,
     IMap<String, Query_Field>? extra__,
   }) {
     return Query(
@@ -48,6 +53,7 @@ final class Query implements query_string.GraphQLRootObject {
       now: ((now == null) ? this.now : now.$1),
       hello: ((hello == null) ? this.hello : hello.$1),
       account: ((account == null) ? this.account : account.$1),
+      union: ((union == null) ? this.union : union.$1),
       extra__: (extra__ ?? this.extra__),
     );
   }
@@ -59,6 +65,7 @@ final class Query implements query_string.GraphQLRootObject {
     Query_now? Function(Query_now? prevNow)? now,
     Query_hello? Function(Query_hello? prevHello)? hello,
     Query_account? Function(Query_account? prevAccount)? account,
+    Query_union? Function(Query_union? prevUnion)? union,
     IMap<String, Query_Field> Function(IMap<String, Query_Field> prevExtra__)?
         extra__,
   }) {
@@ -67,6 +74,7 @@ final class Query implements query_string.GraphQLRootObject {
       now: ((now == null) ? this.now : now(this.now)),
       hello: ((hello == null) ? this.hello : hello(this.hello)),
       account: ((account == null) ? this.account : account(this.account)),
+      union: ((union == null) ? this.union : union(this.union)),
       extra__: ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
     );
   }
@@ -79,6 +87,7 @@ final class Query implements query_string.GraphQLRootObject {
       now,
       hello,
       account,
+      union,
       extra__,
     );
   }
@@ -88,17 +97,18 @@ final class Query implements query_string.GraphQLRootObject {
   bool operator ==(
     Object other,
   ) {
-    return ((((((other is Query) && (typeName__ == other.typeName__)) &&
-                    (now == other.now)) &&
-                (hello == other.hello)) &&
-            (account == other.account)) &&
+    return (((((((other is Query) && (typeName__ == other.typeName__)) &&
+                        (now == other.now)) &&
+                    (hello == other.hello)) &&
+                (account == other.account)) &&
+            (union == other.union)) &&
         (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'Query(${typeName__}, now: ${now}, hello: ${hello}, account: ${account}, extra__: ${extra__}, )';
+    return 'Query(${typeName__}, now: ${now}, hello: ${hello}, account: ${account}, union: ${union}, extra__: ${extra__}, )';
   }
 
   @override
@@ -114,6 +124,10 @@ final class Query implements query_string.GraphQLRootObject {
         final field => [field.toField()],
       }),
       ...(switch (account) {
+        null => const [],
+        final field => [field.toField()],
+      }),
+      ...(switch (union) {
         null => const [],
         final field => [field.toField()],
       }),
@@ -340,6 +354,109 @@ final class Query_account implements Query_Field {
   }
 }
 
+/// IDからアカウントもしくはノートを取得
+///
+/// type: `type.AccountOrNote`
+@immutable
+final class Query_union implements Query_Field {
+  /// IDからアカウントもしくはノートを取得
+  ///
+  /// type: `type.AccountOrNote`
+  const Query_union(
+    this.return_, {
+    required this.id,
+  });
+
+  /// 取得するアカウントのID
+  final query_string.VariableOrStaticValue<type.ID> id;
+
+  final AccountOrNote return_;
+
+  /// `Query_union` を複製する
+  @useResult
+  Query_union copyWith({
+    query_string.VariableOrStaticValue<type.ID>? id,
+    AccountOrNote? return_,
+  }) {
+    return Query_union(
+      (return_ ?? this.return_),
+      id: (id ?? this.id),
+    );
+  }
+
+  /// `Query_union` のフィールドを変更したものを新しく返す
+  @useResult
+  Query_union updateFields({
+    query_string.VariableOrStaticValue<type.ID> Function(
+            query_string.VariableOrStaticValue<type.ID> prevId)?
+        id,
+    AccountOrNote Function(AccountOrNote prevReturn_)? return_,
+  }) {
+    return Query_union(
+      ((return_ == null) ? this.return_ : return_(this.return_)),
+      id: ((id == null) ? this.id : id(this.id)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      id,
+      return_,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (((other is Query_union) && (id == other.id)) &&
+        (return_ == other.return_));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Query_union(${return_}, id: ${id}, )';
+  }
+
+  @override
+  @useResult
+  query_string.QueryFieldField toField() {
+    return query_string.QueryFieldField(
+      'union',
+      args: IList([
+        query_string.QueryFieldArg(
+          name: 'id',
+          input: idToQueryInput(),
+        )
+      ]),
+      description: 'IDからアカウントもしくはノートを取得',
+      return_: query_string.GraphQLOutputTypeConsiderListNull(
+        query_string.GraphQLOutputTypeObject(return_),
+        graphql_type.ListType.notList,
+        false,
+      ),
+    );
+  }
+
+  @useResult
+  query_string.QueryInput idToQueryInput() {
+    return id.toQueryInput(
+      type: const graphql_type.GraphQLType(
+        name: 'ID',
+        isNullable: false,
+        listType: graphql_type.ListType.notList,
+      ),
+      staticValueToQueryInputFunc: (staticValue) {
+        return staticValue.toQueryInput();
+      },
+    );
+  }
+}
+
 /// よくあるアカウントの型
 @immutable
 final class Account implements query_string.GraphQLObjectType {
@@ -546,6 +663,347 @@ final class Account_name implements Account_Field {
         query_string.GraphQLOutputTypeString(),
         graphql_type.ListType.notList,
         true,
+      ),
+    );
+  }
+}
+
+@immutable
+final class AccountOrNote implements query_string.GraphQLObjectType {
+  const AccountOrNote({
+    this.name = 'AccountOrNote',
+    required this.account,
+    required this.note,
+  });
+
+  /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意! ※Nameという名前の型が定義されていた場合は...想定外
+  final String name;
+
+  /// よくあるアカウントの型
+  final Account account;
+
+  /// ノート
+  final Note note;
+
+  /// `AccountOrNote` を複製する
+  @useResult
+  AccountOrNote copyWith({
+    String? name,
+    Account? account,
+    Note? note,
+  }) {
+    return AccountOrNote(
+      name: (name ?? this.name),
+      account: (account ?? this.account),
+      note: (note ?? this.note),
+    );
+  }
+
+  /// `AccountOrNote` のフィールドを変更したものを新しく返す
+  @useResult
+  AccountOrNote updateFields({
+    String Function(String prevName)? name,
+    Account Function(Account prevAccount)? account,
+    Note Function(Note prevNote)? note,
+  }) {
+    return AccountOrNote(
+      name: ((name == null) ? this.name : name(this.name)),
+      account: ((account == null) ? this.account : account(this.account)),
+      note: ((note == null) ? this.note : note(this.note)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      name,
+      account,
+      note,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((((other is AccountOrNote) && (name == other.name)) &&
+            (account == other.account)) &&
+        (note == other.note));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'AccountOrNote(name: ${name}, account: ${account}, note: ${note}, )';
+  }
+
+  @override
+  @useResult
+  IList<query_string.QueryField> toFieldList() {
+    return IList([
+      const query_string.QueryFieldField(
+        '__typename',
+        description: '',
+        return_: query_string.GraphQLOutputTypeConsiderListNull(
+          query_string.GraphQLOutputTypeString(),
+          graphql_type.ListType.notList,
+          false,
+        ),
+      ),
+      query_string.QueryFieldOn(
+        typeName: 'Account',
+        return_: account,
+      ),
+      query_string.QueryFieldOn(
+        typeName: 'Note',
+        return_: note,
+      ),
+    ]);
+  }
+
+  @override
+  @useResult
+  String getTypeName() {
+    return name;
+  }
+
+  @override
+  @useResult
+  String getDescription() {
+    return '';
+  }
+}
+
+/// ノート
+@immutable
+final class Note implements query_string.GraphQLObjectType {
+  /// ノート
+  const Note(
+    this.typeName__, {
+    this.description,
+    this.subNotes,
+    this.extra__ = const IMapConst({}),
+  });
+
+  /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
+  final String typeName__;
+
+  /// 説明文
+  final Note_description? description;
+
+  /// 子ノート
+  final Note_subNotes? subNotes;
+
+  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  final IMap<String, Note_Field> extra__;
+
+  /// `Note` を複製する
+  @useResult
+  Note copyWith({
+    String? typeName__,
+    (Note_description?,)? description,
+    (Note_subNotes?,)? subNotes,
+    IMap<String, Note_Field>? extra__,
+  }) {
+    return Note(
+      (typeName__ ?? this.typeName__),
+      description: ((description == null) ? this.description : description.$1),
+      subNotes: ((subNotes == null) ? this.subNotes : subNotes.$1),
+      extra__: (extra__ ?? this.extra__),
+    );
+  }
+
+  /// `Note` のフィールドを変更したものを新しく返す
+  @useResult
+  Note updateFields({
+    String Function(String prevTypeName__)? typeName__,
+    Note_description? Function(Note_description? prevDescription)? description,
+    Note_subNotes? Function(Note_subNotes? prevSubNotes)? subNotes,
+    IMap<String, Note_Field> Function(IMap<String, Note_Field> prevExtra__)?
+        extra__,
+  }) {
+    return Note(
+      ((typeName__ == null) ? this.typeName__ : typeName__(this.typeName__)),
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      subNotes: ((subNotes == null) ? this.subNotes : subNotes(this.subNotes)),
+      extra__: ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      typeName__,
+      description,
+      subNotes,
+      extra__,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (((((other is Note) && (typeName__ == other.typeName__)) &&
+                (description == other.description)) &&
+            (subNotes == other.subNotes)) &&
+        (extra__ == other.extra__));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Note(${typeName__}, description: ${description}, subNotes: ${subNotes}, extra__: ${extra__}, )';
+  }
+
+  @override
+  @useResult
+  IList<query_string.QueryField> toFieldList() {
+    return IList([
+      ...(switch (description) {
+        null => const [],
+        final field => [field.toField()],
+      }),
+      ...(switch (subNotes) {
+        null => const [],
+        final field => [field.toField()],
+      }),
+      ...extra__.mapTo((aliasName, field) {
+        return field.toField().setAliasName(aliasName);
+      }),
+    ]);
+  }
+
+  @override
+  @useResult
+  String getTypeName() {
+    return typeName__;
+  }
+
+  @override
+  @useResult
+  String getDescription() {
+    return 'ノート';
+  }
+}
+
+/// ノート
+@immutable
+sealed class Note_Field implements query_string.IntoGraphQLField {
+  /// ノート
+  const Note_Field();
+}
+
+/// 説明文
+///
+/// type: `type.ID`
+@immutable
+final class Note_description implements Note_Field {
+  /// 説明文
+  ///
+  /// type: `type.ID`
+  const Note_description();
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hashAll([]);
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (other is Note_description);
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Note_description()';
+  }
+
+  @override
+  @useResult
+  query_string.QueryFieldField toField() {
+    return const query_string.QueryFieldField(
+      'description',
+      description: '説明文',
+      return_: query_string.GraphQLOutputTypeConsiderListNull(
+        query_string.GraphQLOutputTypeNotObject('ID'),
+        graphql_type.ListType.notList,
+        false,
+      ),
+    );
+  }
+}
+
+/// 子ノート
+///
+/// type: `IList<type.Note>`
+@immutable
+final class Note_subNotes implements Note_Field {
+  /// 子ノート
+  ///
+  /// type: `IList<type.Note>`
+  const Note_subNotes(
+    this.return_,
+  );
+  final Note return_;
+
+  /// `Note_subNotes` を複製する
+  @useResult
+  Note_subNotes copyWith({
+    Note? return_,
+  }) {
+    return Note_subNotes((return_ ?? this.return_));
+  }
+
+  /// `Note_subNotes` のフィールドを変更したものを新しく返す
+  @useResult
+  Note_subNotes updateFields({
+    Note Function(Note prevReturn_)? return_,
+  }) {
+    return Note_subNotes(
+        ((return_ == null) ? this.return_ : return_(this.return_)));
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return return_.hashCode;
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((other is Note_subNotes) && (return_ == other.return_));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Note_subNotes(${return_}, )';
+  }
+
+  @override
+  @useResult
+  query_string.QueryFieldField toField() {
+    return query_string.QueryFieldField(
+      'subNotes',
+      description: '子ノート',
+      return_: query_string.GraphQLOutputTypeConsiderListNull(
+        query_string.GraphQLOutputTypeObject(return_),
+        graphql_type.ListType.list,
+        false,
       ),
     );
   }
