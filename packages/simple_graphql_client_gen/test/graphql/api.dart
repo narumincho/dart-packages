@@ -28,11 +28,11 @@ abstract class Api {
       query: 'query {\n  hello\n}\n',
     );
     final errors = response.errors;
-    if (errors != null) {
+    if ((errors != null)) {
       throw errors;
     }
     final data = response.data;
-    if (data == null) {
+    if ((data == null)) {
       throw Exception('hello response data empty');
     }
     return QueryHello.fromJsonValue(data);
@@ -59,11 +59,11 @@ abstract class Api {
       variables: IMap({'id': id.toJsonValue()}),
     );
     final errors = response.errors;
-    if (errors != null) {
+    if ((errors != null)) {
       throw errors;
     }
     final data = response.data;
-    if (data == null) {
+    if ((data == null)) {
       throw Exception('account response data empty');
     }
     return QueryAccount.fromJsonValue(data);
@@ -97,14 +97,54 @@ abstract class Api {
       }),
     );
     final errors = response.errors;
-    if (errors != null) {
+    if ((errors != null)) {
       throw errors;
     }
     final data = response.data;
-    if (data == null) {
+    if ((data == null)) {
       throw Exception('withAlias response data empty');
     }
     return QueryAccountWithAlias.fromJsonValue(data);
+  }
+
+  /// ```
+  /// query ($id: ID!) {
+  ///   union(id: $id) {
+  ///     __typename
+  ///     ... on Account {
+  ///       id
+  ///       name
+  ///     }
+  ///     ... on Note {
+  ///       description
+  ///       subNotes {
+  ///         description
+  ///       }
+  ///     }
+  ///   }
+  /// }
+  /// ```
+  static Future<QueryUnion> union(
+    Uri url,
+    String? auth, {
+    required type.ID id,
+  }) async {
+    final response = await graphql_post.graphQLPost(
+      uri: url,
+      auth: auth,
+      query:
+          'query (\$id: ID!) {\n  union(id: \$id) {\n    __typename\n    ... on Account {\n      id\n      name\n    }\n    ... on Note {\n      description\n      subNotes {\n        description\n      }\n    }\n  }\n}\n',
+      variables: IMap({'id': id.toJsonValue()}),
+    );
+    final errors = response.errors;
+    if ((errors != null)) {
+      throw errors;
+    }
+    final data = response.data;
+    if ((data == null)) {
+      throw Exception('union response data empty');
+    }
+    return QueryUnion.fromJsonValue(data);
   }
 }
 
@@ -124,7 +164,7 @@ final class QueryHello {
   QueryHello copyWith({
     String? hello,
   }) {
-    return QueryHello(hello: hello ?? this.hello);
+    return QueryHello(hello: (hello ?? this.hello));
   }
 
   /// `QueryHello` のフィールドを変更したものを新しく返す
@@ -147,7 +187,7 @@ final class QueryHello {
   bool operator ==(
     Object other,
   ) {
-    return (other is QueryHello) && (hello == other.hello);
+    return ((other is QueryHello) && (hello == other.hello));
   }
 
   @override
@@ -187,7 +227,7 @@ final class Account {
     (String?,)? name,
   }) {
     return Account(
-      id: id ?? this.id,
+      id: (id ?? this.id),
       name: ((name == null) ? this.name : name.$1),
     );
   }
@@ -218,7 +258,7 @@ final class Account {
   bool operator ==(
     Object other,
   ) {
-    return ((other is Account) && (id == other.id)) && (name == other.name);
+    return (((other is Account) && (id == other.id)) && (name == other.name));
   }
 
   @override
@@ -233,10 +273,10 @@ final class Account {
   ) {
     return Account(
       id: type.ID.fromJsonValue(value.getObjectValueOrThrow('id')),
-      name: switch (value.getObjectValueOrThrow('name')) {
+      name: (switch (value.getObjectValueOrThrow('name')) {
         narumincho_json.JsonNull() => null,
         final jsonValue => jsonValue.asStringOrThrow(),
-      },
+      }),
     );
   }
 }
@@ -281,7 +321,7 @@ final class QueryAccount {
   bool operator ==(
     Object other,
   ) {
-    return (other is QueryAccount) && (account == other.account);
+    return ((other is QueryAccount) && (account == other.account));
   }
 
   @override
@@ -295,10 +335,10 @@ final class QueryAccount {
     narumincho_json.JsonValue value,
   ) {
     return QueryAccount(
-        account: switch (value.getObjectValueOrThrow('account')) {
+        account: (switch (value.getObjectValueOrThrow('account')) {
       narumincho_json.JsonNull() => null,
       final jsonValue => Account.fromJsonValue(jsonValue),
-    });
+    }));
   }
 }
 
@@ -341,7 +381,7 @@ final class AccountOnlyName {
   bool operator ==(
     Object other,
   ) {
-    return (other is AccountOnlyName) && (name == other.name);
+    return ((other is AccountOnlyName) && (name == other.name));
   }
 
   @override
@@ -355,10 +395,10 @@ final class AccountOnlyName {
     narumincho_json.JsonValue value,
   ) {
     return AccountOnlyName(
-        name: switch (value.getObjectValueOrThrow('name')) {
+        name: (switch (value.getObjectValueOrThrow('name')) {
       narumincho_json.JsonNull() => null,
       final jsonValue => jsonValue.asStringOrThrow(),
-    });
+    }));
   }
 }
 
@@ -418,8 +458,8 @@ final class QueryAccountWithAlias {
   bool operator ==(
     Object other,
   ) {
-    return ((other is QueryAccountWithAlias) && (account == other.account)) &&
-        (accountOne == other.accountOne);
+    return (((other is QueryAccountWithAlias) && (account == other.account)) &&
+        (accountOne == other.accountOne));
   }
 
   @override
@@ -433,14 +473,254 @@ final class QueryAccountWithAlias {
     narumincho_json.JsonValue value,
   ) {
     return QueryAccountWithAlias(
-      account: switch (value.getObjectValueOrThrow('account')) {
+      account: (switch (value.getObjectValueOrThrow('account')) {
         narumincho_json.JsonNull() => null,
         final jsonValue => Account.fromJsonValue(jsonValue),
-      },
-      accountOne: switch (value.getObjectValueOrThrow('accountOne')) {
+      }),
+      accountOne: (switch (value.getObjectValueOrThrow('accountOne')) {
         narumincho_json.JsonNull() => null,
         final jsonValue => AccountOnlyName.fromJsonValue(jsonValue),
-      },
+      }),
     );
+  }
+}
+
+/// よくあるアカウントの型
+@immutable
+final class AccountInUnionA implements AccountOrNote {
+  /// よくあるアカウントの型
+  const AccountInUnionA({
+    required this.id,
+    required this.name,
+  });
+
+  /// 識別するためのID
+  final type.ID id;
+
+  /// 名前
+  final String? name;
+
+  /// `AccountInUnionA` を複製する
+  @useResult
+  AccountInUnionA copyWith({
+    type.ID? id,
+    (String?,)? name,
+  }) {
+    return AccountInUnionA(
+      id: (id ?? this.id),
+      name: ((name == null) ? this.name : name.$1),
+    );
+  }
+
+  /// `AccountInUnionA` のフィールドを変更したものを新しく返す
+  @useResult
+  AccountInUnionA updateFields({
+    type.ID Function(type.ID prevId)? id,
+    String? Function(String? prevName)? name,
+  }) {
+    return AccountInUnionA(
+      id: ((id == null) ? this.id : id(this.id)),
+      name: ((name == null) ? this.name : name(this.name)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      id,
+      name,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (((other is AccountInUnionA) && (id == other.id)) &&
+        (name == other.name));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'AccountInUnionA(id: ${id}, name: ${name}, )';
+  }
+
+  /// JsonValue から AccountInUnionAを生成する. 失敗した場合はエラーが発生する
+  static AccountInUnionA fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return AccountInUnionA(
+      id: type.ID.fromJsonValue(value.getObjectValueOrThrow('id')),
+      name: (switch (value.getObjectValueOrThrow('name')) {
+        narumincho_json.JsonNull() => null,
+        final jsonValue => jsonValue.asStringOrThrow(),
+      }),
+    );
+  }
+}
+
+/// ノート
+@immutable
+final class Note implements AccountOrNote {
+  /// ノート
+  const Note({
+    required this.description,
+    required this.subNotes,
+  });
+
+  /// 説明文
+  final type.ID description;
+
+  /// 子ノート
+  final IList<Note> subNotes;
+
+  /// `Note` を複製する
+  @useResult
+  Note copyWith({
+    type.ID? description,
+    IList<Note>? subNotes,
+  }) {
+    return Note(
+      description: (description ?? this.description),
+      subNotes: (subNotes ?? this.subNotes),
+    );
+  }
+
+  /// `Note` のフィールドを変更したものを新しく返す
+  @useResult
+  Note updateFields({
+    type.ID Function(type.ID prevDescription)? description,
+    IList<Note> Function(IList<Note> prevSubNotes)? subNotes,
+  }) {
+    return Note(
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      subNotes: ((subNotes == null) ? this.subNotes : subNotes(this.subNotes)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      description,
+      subNotes,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (((other is Note) && (description == other.description)) &&
+        (subNotes == other.subNotes));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Note(description: ${description}, subNotes: ${subNotes}, )';
+  }
+
+  /// JsonValue から Noteを生成する. 失敗した場合はエラーが発生する
+  static Note fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return Note(
+      description:
+          type.ID.fromJsonValue(value.getObjectValueOrThrow('description')),
+      subNotes: value.getObjectValueOrThrow('subNotes').asArrayOrThrow((v) {
+        return Note.fromJsonValue(v);
+      }),
+    );
+  }
+}
+
+@immutable
+sealed class AccountOrNote {
+  const AccountOrNote();
+
+  /// JsonValue から AccountOrNoteを生成する. 失敗した場合はエラーが発生する
+  static AccountOrNote fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    final typeName =
+        value.getObjectValueOrThrow('__typename').asStringOrThrow();
+    switch (typeName) {
+      case 'Account':
+        {
+          return AccountInUnionA.fromJsonValue(value);
+        }
+
+      case 'Note':
+        {
+          return Note.fromJsonValue(value);
+        }
+    }
+    throw Exception(
+        'invalid __typename in AccountOrNote. __typename=${typeName}');
+  }
+}
+
+/// データを取得できる. データを取得するのみで, データを変更しない
+@immutable
+final class QueryUnion {
+  /// データを取得できる. データを取得するのみで, データを変更しない
+  const QueryUnion({
+    required this.union,
+  });
+
+  /// IDからアカウントもしくはノートを取得
+  final AccountOrNote union;
+
+  /// `QueryUnion` を複製する
+  @useResult
+  QueryUnion copyWith({
+    AccountOrNote? union,
+  }) {
+    return QueryUnion(union: (union ?? this.union));
+  }
+
+  /// `QueryUnion` のフィールドを変更したものを新しく返す
+  @useResult
+  QueryUnion updateFields({
+    AccountOrNote Function(AccountOrNote prevUnion)? union,
+  }) {
+    return QueryUnion(
+        union: ((union == null) ? this.union : union(this.union)));
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return union.hashCode;
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((other is QueryUnion) && (union == other.union));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'QueryUnion(union: ${union}, )';
+  }
+
+  /// JsonValue から QueryUnionを生成する. 失敗した場合はエラーが発生する
+  static QueryUnion fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return QueryUnion(
+        union:
+            AccountOrNote.fromJsonValue(value.getObjectValueOrThrow('union')));
   }
 }

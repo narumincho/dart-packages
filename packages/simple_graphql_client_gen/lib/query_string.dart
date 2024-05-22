@@ -375,6 +375,7 @@ abstract class GraphQLRootObject implements GraphQLObjectType {
   GraphQLRootObjectType getRootObjectType();
 }
 
+// これが比較可能であれば重複チェックがしやすい
 @immutable
 abstract class GraphQLObjectType {
   const GraphQLObjectType();

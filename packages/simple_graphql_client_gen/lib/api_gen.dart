@@ -67,6 +67,7 @@ SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
   );
 }
 
+///　 この集める段階ではまだ Map にしない
 IMap<String, GraphQLObjectType> _collectObjectType(GraphQLObjectType object) {
   return IMap<String, GraphQLObjectType>.fromEntries(
     object.toFieldList().expand((fieldOrOn) => switch (fieldOrOn) {
