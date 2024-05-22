@@ -1,3 +1,7 @@
+## 0.9.2
+
+- same type name error output structure in error message
+
 ## 0.9.1
 
 - fix error in GraphQLError path include int

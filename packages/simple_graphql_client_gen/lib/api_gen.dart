@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings
 
+import 'package:collection/collection.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:narumincho_util/narumincho_util.dart';
 import 'package:simple_dart_code_gen/simple_dart_code_gen.dart';
@@ -10,22 +11,19 @@ import 'package:simple_graphql_client_gen/query_string.dart';
 import 'package:simple_graphql_client_gen/to_json.dart';
 
 SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
-  // 同じ型の名前で構造が同じものかどうか調べるために Map を使う
   final objectTypeList = apiMap.values.expand(
-    (element) => _collectObjectType(element).toEntryList(),
+    (element) => _collectObjectType(element),
   );
-  final objectTypeMapMut = Map<String, GraphQLObjectType>();
-  for (final objectType in objectTypeList) {
-    final mapValue = objectTypeMapMut[objectType.key];
-    if (mapValue == null) {
-      objectTypeMapMut[objectType.key] = objectType.value;
-    } else {
-      if (mapValue != objectType.value) {
-        throw Exception('同じ型の名前なのに構造が違う ${objectType.key}');
-      }
+  final groupedSetMap = objectTypeList.groupSetsBy((tuple) => tuple.$1);
+
+  final objectTypeMap = IMap.fromEntries(groupedSetMap.entries.map((entry) {
+    if (1 < entry.value.length) {
+      throw Exception(
+        '同じ型の名前なのに構造が違う ${entry.key} \n${entry.value.mapIndexed((index, tuple) => '\n$index:\n' + queryFieldListToStringLoop(tuple.$2, 1)).safeJoin('\n')}',
+      );
     }
-  }
-  final objectTypeMap = objectTypeMapMut.lock;
+    return MapEntry(entry.key, entry.value.first.$2);
+  }));
 
   return SimpleDartCode(
     importPackageAndFileNames: IList([
@@ -68,18 +66,19 @@ SimpleDartCode generateApiCode(IMap<String, GraphQLRootObject> apiMap) {
 }
 
 ///　 この集める段階ではまだ Map にしない
-IMap<String, GraphQLObjectType> _collectObjectType(GraphQLObjectType object) {
-  return IMap<String, GraphQLObjectType>.fromEntries(
-    object.toFieldList().expand((fieldOrOn) => switch (fieldOrOn) {
+IList<(String, GraphQLObjectType)> _collectObjectType(
+    GraphQLObjectType object) {
+  return IList([
+    ...object.toFieldList().expand((fieldOrOn) => switch (fieldOrOn) {
           QueryFieldField(:final return_) => switch (return_.type) {
               GraphQLOutputTypeObject(:final objectType) =>
-                _collectObjectType(objectType).toEntryList(),
+                _collectObjectType(objectType),
               _ => [],
             },
-          QueryFieldOn(:final return_) =>
-            _collectObjectType(return_).toEntryList(),
+          QueryFieldOn(:final return_) => _collectObjectType(return_),
         }),
-  ).add(object.getTypeName(), object);
+    (object.getTypeName(), object)
+  ]);
 }
 
 Method _createApiCallMethod(

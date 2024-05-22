@@ -118,11 +118,11 @@ String queryFieldListToString(
                   )
                   .safeJoin(', ') +
               ')') +
-      _queryFieldListToStringLoop(objectType, 0) +
+      queryFieldListToStringLoop(objectType, 0) +
       '\n';
 }
 
-String _queryFieldListToStringLoop(
+String queryFieldListToStringLoop(
   GraphQLObjectType objectType,
   int indent,
 ) {
@@ -166,7 +166,7 @@ String _queryFieldToString(
                       ')') +
               switch (return_.type) {
                 GraphQLOutputTypeObject(:final objectType) =>
-                  _queryFieldListToStringLoop(objectType, indent),
+                  queryFieldListToStringLoop(objectType, indent),
                 _ => '',
               },
         QueryFieldOn(:final typeName, :final return_) =>
@@ -174,7 +174,7 @@ String _queryFieldToString(
               ? '# ... on ' + typeName + '{}'
               : '... on ' +
                   typeName +
-                  _queryFieldListToStringLoop(
+                  queryFieldListToStringLoop(
                     return_,
                     indent,
                   ),
@@ -375,7 +375,6 @@ abstract class GraphQLRootObject implements GraphQLObjectType {
   GraphQLRootObjectType getRootObjectType();
 }
 
-// これが比較可能であれば重複チェックがしやすい
 @immutable
 abstract class GraphQLObjectType {
   const GraphQLObjectType();
