@@ -564,6 +564,66 @@ final class AccountInUnionA implements AccountOrNote {
 
 /// ノート
 @immutable
+final class Note2 {
+  /// ノート
+  const Note2({
+    required this.description,
+  });
+
+  /// 説明文
+  final type.ID description;
+
+  /// `Note2` を複製する
+  @useResult
+  Note2 copyWith({
+    type.ID? description,
+  }) {
+    return Note2(description: (description ?? this.description));
+  }
+
+  /// `Note2` のフィールドを変更したものを新しく返す
+  @useResult
+  Note2 updateFields({
+    type.ID Function(type.ID prevDescription)? description,
+  }) {
+    return Note2(
+        description: ((description == null)
+            ? this.description
+            : description(this.description)));
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return description.hashCode;
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((other is Note2) && (description == other.description));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Note2(description: ${description}, )';
+  }
+
+  /// JsonValue から Note2を生成する. 失敗した場合はエラーが発生する
+  static Note2 fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return Note2(
+        description:
+            type.ID.fromJsonValue(value.getObjectValueOrThrow('description')));
+  }
+}
+
+/// ノート
+@immutable
 final class Note implements AccountOrNote {
   /// ノート
   const Note({
@@ -575,13 +635,13 @@ final class Note implements AccountOrNote {
   final type.ID description;
 
   /// 子ノート
-  final IList<Note> subNotes;
+  final IList<Note2> subNotes;
 
   /// `Note` を複製する
   @useResult
   Note copyWith({
     type.ID? description,
-    IList<Note>? subNotes,
+    IList<Note2>? subNotes,
   }) {
     return Note(
       description: (description ?? this.description),
@@ -593,7 +653,7 @@ final class Note implements AccountOrNote {
   @useResult
   Note updateFields({
     type.ID Function(type.ID prevDescription)? description,
-    IList<Note> Function(IList<Note> prevSubNotes)? subNotes,
+    IList<Note2> Function(IList<Note2> prevSubNotes)? subNotes,
   }) {
     return Note(
       description: ((description == null)
@@ -635,7 +695,7 @@ final class Note implements AccountOrNote {
       description:
           type.ID.fromJsonValue(value.getObjectValueOrThrow('description')),
       subNotes: value.getObjectValueOrThrow('subNotes').asArrayOrThrow((v) {
-        return Note.fromJsonValue(v);
+        return Note2.fromJsonValue(v);
       }),
     );
   }

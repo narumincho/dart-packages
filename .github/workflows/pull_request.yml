@@ -9,19 +9,32 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: dart-lang/setup-dart@v1
       - uses: denoland/setup-deno@v1
+
       - run: dart test
         working-directory: packages/narumincho_json
+      - run: dart pub publish --dry-run
+        working-directory: packages/narumincho_json
+
       - run: dart test
         working-directory: packages/narumincho_util
+      - run: dart pub publish --dry-run
+        working-directory: packages/narumincho_util
+
       - run: dart test
         working-directory: packages/simple_dart_code_gen
+      - run: dart pub publish --dry-run
+        working-directory: packages/simple_dart_code_gen
+
       - run: deno run -A ./packages/simple_graphql_client_gen_test_server/main.ts &
       - run: dart test
         working-directory: packages/simple_graphql_client_gen
       - run: pkill -f 'deno run -A ./packages/simple_graphql_client_gen_test_server/main.ts'
+      - run: dart pub publish --dry-run
+        working-directory: packages/simple_graphql_client_gen
+
       - name: Analyze Dart
-        uses: ValentinVignal/action-dart-analyze@v0.16
+        uses: ValentinVignal/action-dart-analyze@v0.17
