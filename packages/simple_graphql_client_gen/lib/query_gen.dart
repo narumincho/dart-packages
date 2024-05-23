@@ -230,14 +230,11 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
     name: type.name,
     documentationComments: type.documentationComments,
     fields: IList([
-      Field(
-        name: 'name',
-        documentationComments:
-            'この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意! ※Nameという名前の型が定義されていた場合は...想定外',
+      const Field(
+        name: 'typeName__',
+        documentationComments: 'この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!',
         type: wellknown_type.String,
-        parameterPattern: ParameterPatternNamedWithDefault(
-          ExprStringLiteral(IList([StringLiteralItemNormal(type.name)])),
-        ),
+        parameterPattern: ParameterPatternPositional(),
       ),
       ...union.possibleTypes.map(
         (possibleType) => Field(
@@ -308,7 +305,7 @@ ClassDeclaration _graphQLUnionTypeQueryClass(
         useResultAnnotation: true,
         parameters: IListConst([]),
         returnType: wellknown_type.String,
-        statements: IListConst([StatementReturn(ExprVariable('name'))]),
+        statements: IListConst([StatementReturn(ExprVariable('typeName__'))]),
       ),
       Method(
         methodType: MethodType.override,

@@ -49,6 +49,7 @@ const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
     union: query.Query_union(
       id: Variable('id'),
       query.AccountOrNote(
+        'AccountOrNote',
         account: query.Account(
           'AccountInUnionA',
           id: query.Account_id(),
@@ -58,7 +59,7 @@ const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
           'Note',
           description: query.Note_description(),
           subNotes: query.Note_subNotes(
-            query.Note('Note', description: query.Note_description()),
+            query.Note('Note2', description: query.Note_description()),
           ),
         ),
       ),

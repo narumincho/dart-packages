@@ -670,14 +670,14 @@ final class Account_name implements Account_Field {
 
 @immutable
 final class AccountOrNote implements query_string.GraphQLObjectType {
-  const AccountOrNote({
-    this.name = 'AccountOrNote',
+  const AccountOrNote(
+    this.typeName__, {
     required this.account,
     required this.note,
   });
 
-  /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意! ※Nameという名前の型が定義されていた場合は...想定外
-  final String name;
+  /// この構造の型につける型の名前. ※同じ名前で違う構造にするとエラーになるので注意!
+  final String typeName__;
 
   /// よくあるアカウントの型
   final Account account;
@@ -688,12 +688,12 @@ final class AccountOrNote implements query_string.GraphQLObjectType {
   /// `AccountOrNote` を複製する
   @useResult
   AccountOrNote copyWith({
-    String? name,
+    String? typeName__,
     Account? account,
     Note? note,
   }) {
     return AccountOrNote(
-      name: (name ?? this.name),
+      (typeName__ ?? this.typeName__),
       account: (account ?? this.account),
       note: (note ?? this.note),
     );
@@ -702,12 +702,12 @@ final class AccountOrNote implements query_string.GraphQLObjectType {
   /// `AccountOrNote` のフィールドを変更したものを新しく返す
   @useResult
   AccountOrNote updateFields({
-    String Function(String prevName)? name,
+    String Function(String prevTypeName__)? typeName__,
     Account Function(Account prevAccount)? account,
     Note Function(Note prevNote)? note,
   }) {
     return AccountOrNote(
-      name: ((name == null) ? this.name : name(this.name)),
+      ((typeName__ == null) ? this.typeName__ : typeName__(this.typeName__)),
       account: ((account == null) ? this.account : account(this.account)),
       note: ((note == null) ? this.note : note(this.note)),
     );
@@ -717,7 +717,7 @@ final class AccountOrNote implements query_string.GraphQLObjectType {
   @useResult
   int get hashCode {
     return Object.hash(
-      name,
+      typeName__,
       account,
       note,
     );
@@ -728,7 +728,7 @@ final class AccountOrNote implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return ((((other is AccountOrNote) && (name == other.name)) &&
+    return ((((other is AccountOrNote) && (typeName__ == other.typeName__)) &&
             (account == other.account)) &&
         (note == other.note));
   }
@@ -736,7 +736,7 @@ final class AccountOrNote implements query_string.GraphQLObjectType {
   @override
   @useResult
   String toString() {
-    return 'AccountOrNote(name: ${name}, account: ${account}, note: ${note}, )';
+    return 'AccountOrNote(${typeName__}, account: ${account}, note: ${note}, )';
   }
 
   @override
@@ -766,7 +766,7 @@ final class AccountOrNote implements query_string.GraphQLObjectType {
   @override
   @useResult
   String getTypeName() {
-    return name;
+    return typeName__;
   }
 
   @override
