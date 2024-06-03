@@ -90,7 +90,7 @@ ClassDeclaration _graphQLTypeQueryClass(
       Field(
         name: 'extra__',
         documentationComments:
-            'フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases',
+            'フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases',
         type: wellknown_type.IMap(
           wellknown_type.String,
           TypeNormal(name: _fieldAbstractClassName(type.name)),

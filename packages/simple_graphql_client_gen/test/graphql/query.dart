@@ -35,7 +35,7 @@ final class Query implements query_string.GraphQLRootObject {
   /// IDからアカウントもしくはノートを取得
   final Query_union? union;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, Query_Field> extra__;
 
   /// `Query` を複製する
@@ -477,7 +477,7 @@ final class Account implements query_string.GraphQLObjectType {
   /// 名前
   final Account_name? name;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, Account_Field> extra__;
 
   /// `Account` を複製する
@@ -796,7 +796,7 @@ final class Note implements query_string.GraphQLObjectType {
   /// 子ノート
   final Note_subNotes? subNotes;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, Note_Field> extra__;
 
   /// `Note` を複製する
@@ -1025,7 +1025,7 @@ final class Mutation implements query_string.GraphQLRootObject {
   /// サーバーでの現在時刻を取得する
   final Mutation_now? now;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, Mutation_Field> extra__;
 
   /// `Mutation` を複製する
@@ -1203,7 +1203,7 @@ final class GraphQL__Schema implements query_string.GraphQLObjectType {
   /// A list of all directives supported by this server.
   final GraphQL__Schema_directives? directives;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, GraphQL__Schema_Field> extra__;
 
   /// `GraphQL__Schema` を複製する
@@ -1789,7 +1789,7 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
 
   final GraphQL__Type_ofType? ofType;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, GraphQL__Type_Field> extra__;
 
   /// `GraphQL__Type` を複製する
@@ -2727,7 +2727,7 @@ final class GraphQL__Field implements query_string.GraphQLObjectType {
 
   final GraphQL__Field_deprecationReason? deprecationReason;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, GraphQL__Field_Field> extra__;
 
   /// `GraphQL__Field` を複製する
@@ -3265,7 +3265,7 @@ final class GraphQL__InputValue implements query_string.GraphQLObjectType {
 
   final GraphQL__InputValue_deprecationReason? deprecationReason;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, GraphQL__InputValue_Field> extra__;
 
   /// `GraphQL__InputValue` を複製する
@@ -3746,7 +3746,7 @@ final class GraphQL__EnumValue implements query_string.GraphQLObjectType {
 
   final GraphQL__EnumValue_deprecationReason? deprecationReason;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, GraphQL__EnumValue_Field> extra__;
 
   /// `GraphQL__EnumValue` を複製する
@@ -4094,7 +4094,7 @@ final class GraphQL__Directive implements query_string.GraphQLObjectType {
 
   final GraphQL__Directive_args? args;
 
-  /// フィールド名を変更する場合などに使う 未実装 https://graphql.org/learn/queries/#aliases
+  /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, GraphQL__Directive_Field> extra__;
 
   /// `GraphQL__Directive` を複製する
