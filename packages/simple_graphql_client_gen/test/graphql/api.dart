@@ -148,7 +148,7 @@ abstract class Api {
   }
 
   /// ```
-  /// mutation ($accountId: ID!, $id: ID!) {
+  /// mutation ($accountIdInner: ID!, $accountId: ID!, $id: ID!) {
   ///   union(id: $id) {
   ///     __typename
   ///     ... on Account {
@@ -172,6 +172,7 @@ abstract class Api {
   static Future<MutationInnerParameter> innerParameter(
     Uri url,
     String? auth, {
+    required type.ID accountIdInner,
     required type.ID accountId,
     required type.ID id,
   }) async {
@@ -179,8 +180,9 @@ abstract class Api {
       uri: url,
       auth: auth,
       query:
-          'mutation (\$accountId: ID!, \$id: ID!) {\n  union(id: \$id) {\n    __typename\n    ... on Account {\n      id\n      name\n    }\n    ... on Note {\n      description\n      subNotes {\n        description\n        subNotes {\n          description\n        }\n        isLiked(accountId: \$accountIdInner)\n      }\n      isLiked(accountId: \$accountId)\n    }\n  }\n}\n',
+          'mutation (\$accountIdInner: ID!, \$accountId: ID!, \$id: ID!) {\n  union(id: \$id) {\n    __typename\n    ... on Account {\n      id\n      name\n    }\n    ... on Note {\n      description\n      subNotes {\n        description\n        subNotes {\n          description\n        }\n        isLiked(accountId: \$accountIdInner)\n      }\n      isLiked(accountId: \$accountId)\n    }\n  }\n}\n',
       variables: IMap({
+        'accountIdInner': accountIdInner.toJsonValue(),
         'accountId': accountId.toJsonValue(),
         'id': id.toJsonValue(),
       }),

@@ -195,20 +195,29 @@ IList<QueryInputVariable> _collectVariableInQueryField(
   QueryField queryField,
 ) {
   return switch (queryField) {
-    QueryFieldField(:final args, :final return_) => IList(args.expand(
-        (arg) => [
-          ...switch (return_.type) {
-            GraphQLOutputTypeObject(:final objectType) =>
-              collectVariableInQueryFieldList(objectType),
-            _ => [],
-          },
-          ...switch (arg.input) {
-            QueryInputVariable() && final input => [input],
-            _ => [],
-          },
-        ],
-      )),
+    QueryFieldField(:final args, :final return_) => IList([
+        ...switch (return_.type) {
+          GraphQLOutputTypeObject(:final objectType) =>
+            collectVariableInQueryFieldList(objectType),
+          _ => [],
+        },
+        ...args.expand((arg) => _collectVariableInQueryInput(arg.input)),
+      ]),
     QueryFieldOn(:final return_) => collectVariableInQueryFieldList(return_),
+  };
+}
+
+IList<QueryInputVariable> _collectVariableInQueryInput(
+  QueryInput queryInput,
+) {
+  return switch (queryInput) {
+    QueryInputVariable() && final input => IList([input]),
+    QueryInputArray(:final items) =>
+      IList(items.expand((item) => _collectVariableInQueryInput(item))),
+    QueryInputObject(:final entries) => IList(
+        entries.values.expand((item) => _collectVariableInQueryInput(item)),
+      ),
+    _ => const IListConst([]),
   };
 }
 
@@ -366,6 +375,11 @@ final class QueryInputVariable extends QueryInput {
   @override
   String toQueryString() {
     return r'$' + name;
+  }
+
+  @override
+  String toString() {
+    return 'QueryInputVariable(name: $name, type: $type, )';
   }
 }
 
