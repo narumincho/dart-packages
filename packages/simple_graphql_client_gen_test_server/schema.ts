@@ -20,6 +20,7 @@ const mutation = new g.GraphQLObjectType({
   description: "データを作成、更新ができる",
   fields: {
     now,
+    union,
   },
 });
 

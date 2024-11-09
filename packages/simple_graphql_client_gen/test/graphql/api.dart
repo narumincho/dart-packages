@@ -146,6 +146,55 @@ abstract class Api {
     }
     return QueryUnion.fromJsonValue(data);
   }
+
+  /// ```
+  /// mutation ($accountId: ID!, $id: ID!) {
+  ///   union(id: $id) {
+  ///     __typename
+  ///     ... on Account {
+  ///       id
+  ///       name
+  ///     }
+  ///     ... on Note {
+  ///       description
+  ///       subNotes {
+  ///         description
+  ///         subNotes {
+  ///           description
+  ///         }
+  ///         isLiked(accountId: $accountIdInner)
+  ///       }
+  ///       isLiked(accountId: $accountId)
+  ///     }
+  ///   }
+  /// }
+  /// ```
+  static Future<MutationInnerParameter> innerParameter(
+    Uri url,
+    String? auth, {
+    required type.ID accountId,
+    required type.ID id,
+  }) async {
+    final response = await graphql_post.graphQLPost(
+      uri: url,
+      auth: auth,
+      query:
+          'mutation (\$accountId: ID!, \$id: ID!) {\n  union(id: \$id) {\n    __typename\n    ... on Account {\n      id\n      name\n    }\n    ... on Note {\n      description\n      subNotes {\n        description\n        subNotes {\n          description\n        }\n        isLiked(accountId: \$accountIdInner)\n      }\n      isLiked(accountId: \$accountId)\n    }\n  }\n}\n',
+      variables: IMap({
+        'accountId': accountId.toJsonValue(),
+        'id': id.toJsonValue(),
+      }),
+    );
+    final errors = response.errors;
+    if ((errors != null)) {
+      throw errors;
+    }
+    final data = response.data;
+    if ((data == null)) {
+      throw Exception('innerParameter response data empty');
+    }
+    return MutationInnerParameter.fromJsonValue(data);
+  }
 }
 
 /// データを取得できる. データを取得するのみで, データを変更しない
@@ -487,7 +536,8 @@ final class QueryAccountWithAlias {
 
 /// よくあるアカウントの型
 @immutable
-final class AccountInUnionA implements AccountOrNote {
+final class AccountInUnionA
+    implements AccountOrNote, AccountOrNoteInInnerParameter {
   /// よくあるアカウントの型
   const AccountInUnionA({
     required this.id,
@@ -782,5 +832,281 @@ final class QueryUnion {
     return QueryUnion(
         union:
             AccountOrNote.fromJsonValue(value.getObjectValueOrThrow('union')));
+  }
+}
+
+/// ノート
+@immutable
+final class NoteInInnerParameterInner {
+  /// ノート
+  const NoteInInnerParameterInner({
+    required this.description,
+    required this.subNotes,
+    required this.isLiked,
+  });
+
+  /// 説明文
+  final type.ID description;
+
+  /// 子ノート
+  final IList<Note2> subNotes;
+
+  /// いいねされているか
+  final bool? isLiked;
+
+  /// `NoteInInnerParameterInner` を複製する
+  @useResult
+  NoteInInnerParameterInner copyWith({
+    type.ID? description,
+    IList<Note2>? subNotes,
+    (bool?,)? isLiked,
+  }) {
+    return NoteInInnerParameterInner(
+      description: (description ?? this.description),
+      subNotes: (subNotes ?? this.subNotes),
+      isLiked: ((isLiked == null) ? this.isLiked : isLiked.$1),
+    );
+  }
+
+  /// `NoteInInnerParameterInner` のフィールドを変更したものを新しく返す
+  @useResult
+  NoteInInnerParameterInner updateFields({
+    type.ID Function(type.ID prevDescription)? description,
+    IList<Note2> Function(IList<Note2> prevSubNotes)? subNotes,
+    bool? Function(bool? prevIsLiked)? isLiked,
+  }) {
+    return NoteInInnerParameterInner(
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      subNotes: ((subNotes == null) ? this.subNotes : subNotes(this.subNotes)),
+      isLiked: ((isLiked == null) ? this.isLiked : isLiked(this.isLiked)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      description,
+      subNotes,
+      isLiked,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((((other is NoteInInnerParameterInner) &&
+                (description == other.description)) &&
+            (subNotes == other.subNotes)) &&
+        (isLiked == other.isLiked));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'NoteInInnerParameterInner(description: ${description}, subNotes: ${subNotes}, isLiked: ${isLiked}, )';
+  }
+
+  /// JsonValue から NoteInInnerParameterInnerを生成する. 失敗した場合はエラーが発生する
+  static NoteInInnerParameterInner fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return NoteInInnerParameterInner(
+      description:
+          type.ID.fromJsonValue(value.getObjectValueOrThrow('description')),
+      subNotes: value.getObjectValueOrThrow('subNotes').asArrayOrThrow((v) {
+        return Note2.fromJsonValue(v);
+      }),
+      isLiked: (switch (value.getObjectValueOrThrow('isLiked')) {
+        narumincho_json.JsonNull() => null,
+        final jsonValue => jsonValue.asBoolOrThrow(),
+      }),
+    );
+  }
+}
+
+/// ノート
+@immutable
+final class NoteInInnerParameter implements AccountOrNoteInInnerParameter {
+  /// ノート
+  const NoteInInnerParameter({
+    required this.description,
+    required this.subNotes,
+    required this.isLiked,
+  });
+
+  /// 説明文
+  final type.ID description;
+
+  /// 子ノート
+  final IList<NoteInInnerParameterInner> subNotes;
+
+  /// いいねされているか
+  final bool? isLiked;
+
+  /// `NoteInInnerParameter` を複製する
+  @useResult
+  NoteInInnerParameter copyWith({
+    type.ID? description,
+    IList<NoteInInnerParameterInner>? subNotes,
+    (bool?,)? isLiked,
+  }) {
+    return NoteInInnerParameter(
+      description: (description ?? this.description),
+      subNotes: (subNotes ?? this.subNotes),
+      isLiked: ((isLiked == null) ? this.isLiked : isLiked.$1),
+    );
+  }
+
+  /// `NoteInInnerParameter` のフィールドを変更したものを新しく返す
+  @useResult
+  NoteInInnerParameter updateFields({
+    type.ID Function(type.ID prevDescription)? description,
+    IList<NoteInInnerParameterInner> Function(
+            IList<NoteInInnerParameterInner> prevSubNotes)?
+        subNotes,
+    bool? Function(bool? prevIsLiked)? isLiked,
+  }) {
+    return NoteInInnerParameter(
+      description: ((description == null)
+          ? this.description
+          : description(this.description)),
+      subNotes: ((subNotes == null) ? this.subNotes : subNotes(this.subNotes)),
+      isLiked: ((isLiked == null) ? this.isLiked : isLiked(this.isLiked)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      description,
+      subNotes,
+      isLiked,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((((other is NoteInInnerParameter) &&
+                (description == other.description)) &&
+            (subNotes == other.subNotes)) &&
+        (isLiked == other.isLiked));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'NoteInInnerParameter(description: ${description}, subNotes: ${subNotes}, isLiked: ${isLiked}, )';
+  }
+
+  /// JsonValue から NoteInInnerParameterを生成する. 失敗した場合はエラーが発生する
+  static NoteInInnerParameter fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return NoteInInnerParameter(
+      description:
+          type.ID.fromJsonValue(value.getObjectValueOrThrow('description')),
+      subNotes: value.getObjectValueOrThrow('subNotes').asArrayOrThrow((v) {
+        return NoteInInnerParameterInner.fromJsonValue(v);
+      }),
+      isLiked: (switch (value.getObjectValueOrThrow('isLiked')) {
+        narumincho_json.JsonNull() => null,
+        final jsonValue => jsonValue.asBoolOrThrow(),
+      }),
+    );
+  }
+}
+
+@immutable
+sealed class AccountOrNoteInInnerParameter {
+  const AccountOrNoteInInnerParameter();
+
+  /// JsonValue から AccountOrNoteInInnerParameterを生成する. 失敗した場合はエラーが発生する
+  static AccountOrNoteInInnerParameter fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    final typeName =
+        value.getObjectValueOrThrow('__typename').asStringOrThrow();
+    switch (typeName) {
+      case 'Account':
+        {
+          return AccountInUnionA.fromJsonValue(value);
+        }
+
+      case 'Note':
+        {
+          return NoteInInnerParameter.fromJsonValue(value);
+        }
+    }
+    throw Exception(
+        'invalid __typename in AccountOrNoteInInnerParameter. __typename=${typeName}');
+  }
+}
+
+/// データを作成、更新ができる
+@immutable
+final class MutationInnerParameter {
+  /// データを作成、更新ができる
+  const MutationInnerParameter({
+    required this.union,
+  });
+
+  /// IDからアカウントもしくはノートを取得
+  final AccountOrNoteInInnerParameter union;
+
+  /// `MutationInnerParameter` を複製する
+  @useResult
+  MutationInnerParameter copyWith({
+    AccountOrNoteInInnerParameter? union,
+  }) {
+    return MutationInnerParameter(union: (union ?? this.union));
+  }
+
+  /// `MutationInnerParameter` のフィールドを変更したものを新しく返す
+  @useResult
+  MutationInnerParameter updateFields({
+    AccountOrNoteInInnerParameter Function(
+            AccountOrNoteInInnerParameter prevUnion)?
+        union,
+  }) {
+    return MutationInnerParameter(
+        union: ((union == null) ? this.union : union(this.union)));
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return union.hashCode;
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((other is MutationInnerParameter) && (union == other.union));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'MutationInnerParameter(union: ${union}, )';
+  }
+
+  /// JsonValue から MutationInnerParameterを生成する. 失敗した場合はエラーが発生する
+  static MutationInnerParameter fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return MutationInnerParameter(
+        union: AccountOrNoteInInnerParameter.fromJsonValue(
+            value.getObjectValueOrThrow('union')));
   }
 }
