@@ -1,6 +1,7 @@
 import * as g from "npm:graphql";
 
 export type Account = {
+  readonly __typename: "Account";
   readonly id: string;
   readonly name: string;
 };

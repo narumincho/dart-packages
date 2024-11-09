@@ -48,9 +48,8 @@ void main() {
       null,
     );
 
-    expect(
-      response.union,
-      const AccountInUnionA(id: ID('a'), name: 'sample account name'),
-    );
+    final AccountOrNoteInInnerParameter expected = const AccountInUnionA(
+        id: ID('a'), name: 'sample account name from union');
+    expect(response.union, expected);
   });
 }
