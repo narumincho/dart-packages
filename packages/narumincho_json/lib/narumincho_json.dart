@@ -121,7 +121,7 @@ sealed class JsonValue {
     final value = asStringOrNull();
     if (value == null) {
       throw Exception(
-        'json error: expected string but got ' + encode(),
+        'json error: expected string but got ${encode()}',
       );
     }
     return value;
@@ -132,7 +132,7 @@ sealed class JsonValue {
     final value = asBoolOrNull();
     if (value == null) {
       throw Exception(
-        'json error: expected boolean but got ' + encode(),
+        'json error: expected boolean but got ${encode()}',
       );
     }
     return value;
@@ -143,7 +143,7 @@ sealed class JsonValue {
     final value = asDoubleOrNull();
     if (value == null) {
       throw Exception(
-        'json error: expected number but got ' + encode(),
+        'json error: expected number but got ${encode()}',
       );
     }
     return value;
@@ -154,7 +154,7 @@ sealed class JsonValue {
     final value = asJsonObjectOrNull();
     if (value == null) {
       throw Exception(
-        'json error: expected object but got ' + encode(),
+        'json error: expected object but got ${encode()}',
       );
     }
     return value;
@@ -197,7 +197,7 @@ sealed class JsonValue {
   IList<T> asArrayOrThrow<T>(T Function(JsonValue) decoder) {
     final jsonArray = getAsArray();
     if (jsonArray == null) {
-      throw Exception('json decode error: expected array but got ' + encode());
+      throw Exception('json decode error: expected array but got ${encode()}');
     }
     return IList(jsonArray.map(decoder));
   }
@@ -263,7 +263,7 @@ final class JsonObject extends JsonValue {
     final objectValue = getValueByKeyOrNull(key);
     if (objectValue == null) {
       throw Exception(
-        'json error: expected { "$key": ??, ... } but got ' + encode(),
+        'json error: expected { "$key": ??, ... } but got ${encode()}',
       );
     }
     return objectValue;
