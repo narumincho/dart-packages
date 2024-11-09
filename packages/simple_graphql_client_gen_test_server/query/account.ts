@@ -15,6 +15,7 @@ export const account: g.GraphQLFieldConfig<
   type: Account,
   resolve: (_, { id }): Account => {
     return {
+      __typename: "Account",
       id,
       name: "sample account name",
     };

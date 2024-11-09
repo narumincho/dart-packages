@@ -1,3 +1,7 @@
+## 0.9.3
+
+- fix inner query variable output #83
+
 ## 0.9.2
 
 - same type name error output structure in error message

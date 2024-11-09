@@ -32,7 +32,7 @@ extension NaruminchoUtilIterable<T> on Iterable<T> {
   @useResult
   Iterable<Output> flatMapAndRemoveNull<Output>(
       Iterable<Output?> Function(T) func) {
-    return this.expand((item) {
+    return expand((item) {
       final List<Output> result = [];
       final itemOutput = func(item);
       for (final innerItem in itemOutput) {
@@ -46,8 +46,8 @@ extension NaruminchoUtilIterable<T> on Iterable<T> {
 
   @useResult
   Iterable<T> addSeparator(T separator) {
-    return this.expandIndexed((index, item) {
-      if (this.length - 1 == index) {
+    return expandIndexed((index, item) {
+      if (length - 1 == index) {
         return [item];
       }
       return [item, separator];
@@ -56,18 +56,18 @@ extension NaruminchoUtilIterable<T> on Iterable<T> {
 
   @useResult
   Iterable<T> setMinLength(int minLength, T fillValue) {
-    if (this.length >= minLength) {
+    if (length >= minLength) {
       return this;
     }
-    return [...this, ...List.filled(minLength - this.length, fillValue)];
+    return [...this, ...List.filled(minLength - length, fillValue)];
   }
 
   @useResult
   Iterable<T> setLength(int length, T fillValue) {
     if (this.length >= length) {
-      return this.take(length);
+      return take(length);
     }
-    return this.followedBy(List.filled(length - this.length, fillValue));
+    return followedBy(List.filled(length - this.length, fillValue));
   }
 }
 

@@ -3,7 +3,7 @@ description: narumincho_json
 repository: https://github.com/narumincho/dart-packages/tree/main/packages/narumincho_json
 version: "0.2.0"
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: ">=3.5.0 <4.0.0"
 dependencies:
   fast_immutable_collections: ">=10.0.0 <11.0.0"
   meta: ">=1.9.1 <2.0.0"

@@ -21,6 +21,7 @@ export const union: g.GraphQLFieldConfig<
   type: new g.GraphQLNonNull(AccountOrNote),
   resolve: (_, { id }): Account => {
     return {
+      __typename: "Account",
       id,
       name: "sample account name from union",
     };
