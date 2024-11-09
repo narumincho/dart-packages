@@ -3,7 +3,7 @@ description: simple_dart_code_gen
 repository: https://github.com/narumincho/dart-packages/tree/main/packages/simple_dart_code_gen
 version: "0.7.0"
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: ">=3.5.0 <4.0.0"
 dependencies:
   dart_style: ">=2.3.1 <3.0.0"
   fast_immutable_collections: ">=10.0.0 <11.0.0"
