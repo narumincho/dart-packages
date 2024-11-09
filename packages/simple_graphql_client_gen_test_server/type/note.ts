@@ -17,5 +17,16 @@ export const Note: g.GraphQLObjectType = new g.GraphQLObjectType({
       description: "子ノート",
       type: new g.GraphQLNonNull(new g.GraphQLList(new g.GraphQLNonNull(Note))),
     },
+    isLiked: {
+      description: "指定したアカウントからいいねされているか",
+      args: {
+        accountId: {
+          description: "アカウントID",
+          type: new g.GraphQLNonNull(g.GraphQLID),
+        },
+      },
+      type: g.GraphQLBoolean,
+      resolve: () => true,
+    },
   }),
 });

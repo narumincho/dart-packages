@@ -65,6 +65,38 @@ const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
       ),
     ),
   ),
+  // なぜか生成がうまくいっている? Mutation にしてみる
+  'innerParameter': query.Mutation(
+    'MutationInnerParameter',
+    union: query.Mutation_union(
+      id: Variable('id'),
+      query.AccountOrNote(
+        'AccountOrNoteInInnerParameter',
+        account: query.Account(
+          'AccountInUnionA',
+          id: query.Account_id(),
+          name: query.Account_name(),
+        ),
+        note: query.Note(
+          'NoteInInnerParameter',
+          description: query.Note_description(),
+          subNotes: query.Note_subNotes(
+            query.Note(
+              'NoteInInnerParameterInner',
+              description: query.Note_description(),
+              subNotes: query.Note_subNotes(
+                query.Note('Note2', description: query.Note_description()),
+              ),
+              isLiked: query.Note_isLiked(
+                accountId: Variable('accountIdInner'),
+              ),
+            ),
+          ),
+          isLiked: query.Note_isLiked(accountId: Variable('accountId')),
+        ),
+      ),
+    ),
+  ),
 });
 
 /// GraphQL からコード生成します

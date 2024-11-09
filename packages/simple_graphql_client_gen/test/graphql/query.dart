@@ -784,6 +784,7 @@ final class Note implements query_string.GraphQLObjectType {
     this.typeName__, {
     this.description,
     this.subNotes,
+    this.isLiked,
     this.extra__ = const IMapConst({}),
   });
 
@@ -796,6 +797,9 @@ final class Note implements query_string.GraphQLObjectType {
   /// 子ノート
   final Note_subNotes? subNotes;
 
+  /// いいねされているか
+  final Note_isLiked? isLiked;
+
   /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, Note_Field> extra__;
 
@@ -805,12 +809,14 @@ final class Note implements query_string.GraphQLObjectType {
     String? typeName__,
     (Note_description?,)? description,
     (Note_subNotes?,)? subNotes,
+    (Note_isLiked?,)? isLiked,
     IMap<String, Note_Field>? extra__,
   }) {
     return Note(
       (typeName__ ?? this.typeName__),
       description: ((description == null) ? this.description : description.$1),
       subNotes: ((subNotes == null) ? this.subNotes : subNotes.$1),
+      isLiked: ((isLiked == null) ? this.isLiked : isLiked.$1),
       extra__: (extra__ ?? this.extra__),
     );
   }
@@ -821,6 +827,7 @@ final class Note implements query_string.GraphQLObjectType {
     String Function(String prevTypeName__)? typeName__,
     Note_description? Function(Note_description? prevDescription)? description,
     Note_subNotes? Function(Note_subNotes? prevSubNotes)? subNotes,
+    Note_isLiked? Function(Note_isLiked? prevIsLiked)? isLiked,
     IMap<String, Note_Field> Function(IMap<String, Note_Field> prevExtra__)?
         extra__,
   }) {
@@ -830,6 +837,7 @@ final class Note implements query_string.GraphQLObjectType {
           ? this.description
           : description(this.description)),
       subNotes: ((subNotes == null) ? this.subNotes : subNotes(this.subNotes)),
+      isLiked: ((isLiked == null) ? this.isLiked : isLiked(this.isLiked)),
       extra__: ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
     );
   }
@@ -841,6 +849,7 @@ final class Note implements query_string.GraphQLObjectType {
       typeName__,
       description,
       subNotes,
+      isLiked,
       extra__,
     );
   }
@@ -850,16 +859,17 @@ final class Note implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return (((((other is Note) && (typeName__ == other.typeName__)) &&
-                (description == other.description)) &&
-            (subNotes == other.subNotes)) &&
+    return ((((((other is Note) && (typeName__ == other.typeName__)) &&
+                    (description == other.description)) &&
+                (subNotes == other.subNotes)) &&
+            (isLiked == other.isLiked)) &&
         (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'Note(${typeName__}, description: ${description}, subNotes: ${subNotes}, extra__: ${extra__}, )';
+    return 'Note(${typeName__}, description: ${description}, subNotes: ${subNotes}, isLiked: ${isLiked}, extra__: ${extra__}, )';
   }
 
   @override
@@ -871,6 +881,10 @@ final class Note implements query_string.GraphQLObjectType {
         final field => [field.toField()],
       }),
       ...(switch (subNotes) {
+        null => const [],
+        final field => [field.toField()],
+      }),
+      ...(switch (isLiked) {
         null => const [],
         final field => [field.toField()],
       }),
@@ -1009,6 +1023,96 @@ final class Note_subNotes implements Note_Field {
   }
 }
 
+/// いいねされているか
+///
+/// type: `bool?`
+@immutable
+final class Note_isLiked implements Note_Field {
+  /// いいねされているか
+  ///
+  /// type: `bool?`
+  const Note_isLiked({
+    required this.accountId,
+  });
+
+  /// アカウントID
+  final query_string.VariableOrStaticValue<type.ID> accountId;
+
+  /// `Note_isLiked` を複製する
+  @useResult
+  Note_isLiked copyWith({
+    query_string.VariableOrStaticValue<type.ID>? accountId,
+  }) {
+    return Note_isLiked(accountId: (accountId ?? this.accountId));
+  }
+
+  /// `Note_isLiked` のフィールドを変更したものを新しく返す
+  @useResult
+  Note_isLiked updateFields({
+    query_string.VariableOrStaticValue<type.ID> Function(
+            query_string.VariableOrStaticValue<type.ID> prevAccountId)?
+        accountId,
+  }) {
+    return Note_isLiked(
+        accountId:
+            ((accountId == null) ? this.accountId : accountId(this.accountId)));
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return accountId.hashCode;
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return ((other is Note_isLiked) && (accountId == other.accountId));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Note_isLiked(accountId: ${accountId}, )';
+  }
+
+  @override
+  @useResult
+  query_string.QueryFieldField toField() {
+    return query_string.QueryFieldField(
+      'isLiked',
+      args: IList([
+        query_string.QueryFieldArg(
+          name: 'accountId',
+          input: accountIdToQueryInput(),
+        )
+      ]),
+      description: 'いいねされているか',
+      return_: const query_string.GraphQLOutputTypeConsiderListNull(
+        query_string.GraphQLOutputTypeBoolean(),
+        graphql_type.ListType.notList,
+        true,
+      ),
+    );
+  }
+
+  @useResult
+  query_string.QueryInput accountIdToQueryInput() {
+    return accountId.toQueryInput(
+      type: const graphql_type.GraphQLType(
+        name: 'ID',
+        isNullable: false,
+        listType: graphql_type.ListType.notList,
+      ),
+      staticValueToQueryInputFunc: (staticValue) {
+        return staticValue.toQueryInput();
+      },
+    );
+  }
+}
+
 /// データを作成、更新ができる
 @immutable
 final class Mutation implements query_string.GraphQLRootObject {
@@ -1016,6 +1120,7 @@ final class Mutation implements query_string.GraphQLRootObject {
   const Mutation(
     this.typeName__, {
     this.now,
+    this.union,
     this.extra__ = const IMapConst({}),
   });
 
@@ -1025,6 +1130,9 @@ final class Mutation implements query_string.GraphQLRootObject {
   /// サーバーでの現在時刻を取得する
   final Mutation_now? now;
 
+  /// IDからアカウントもしくはノートを取得
+  final Mutation_union? union;
+
   /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, Mutation_Field> extra__;
 
@@ -1033,11 +1141,13 @@ final class Mutation implements query_string.GraphQLRootObject {
   Mutation copyWith({
     String? typeName__,
     (Mutation_now?,)? now,
+    (Mutation_union?,)? union,
     IMap<String, Mutation_Field>? extra__,
   }) {
     return Mutation(
       (typeName__ ?? this.typeName__),
       now: ((now == null) ? this.now : now.$1),
+      union: ((union == null) ? this.union : union.$1),
       extra__: (extra__ ?? this.extra__),
     );
   }
@@ -1047,6 +1157,7 @@ final class Mutation implements query_string.GraphQLRootObject {
   Mutation updateFields({
     String Function(String prevTypeName__)? typeName__,
     Mutation_now? Function(Mutation_now? prevNow)? now,
+    Mutation_union? Function(Mutation_union? prevUnion)? union,
     IMap<String, Mutation_Field> Function(
             IMap<String, Mutation_Field> prevExtra__)?
         extra__,
@@ -1054,6 +1165,7 @@ final class Mutation implements query_string.GraphQLRootObject {
     return Mutation(
       ((typeName__ == null) ? this.typeName__ : typeName__(this.typeName__)),
       now: ((now == null) ? this.now : now(this.now)),
+      union: ((union == null) ? this.union : union(this.union)),
       extra__: ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
     );
   }
@@ -1064,6 +1176,7 @@ final class Mutation implements query_string.GraphQLRootObject {
     return Object.hash(
       typeName__,
       now,
+      union,
       extra__,
     );
   }
@@ -1073,15 +1186,16 @@ final class Mutation implements query_string.GraphQLRootObject {
   bool operator ==(
     Object other,
   ) {
-    return ((((other is Mutation) && (typeName__ == other.typeName__)) &&
-            (now == other.now)) &&
+    return (((((other is Mutation) && (typeName__ == other.typeName__)) &&
+                (now == other.now)) &&
+            (union == other.union)) &&
         (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'Mutation(${typeName__}, now: ${now}, extra__: ${extra__}, )';
+    return 'Mutation(${typeName__}, now: ${now}, union: ${union}, extra__: ${extra__}, )';
   }
 
   @override
@@ -1089,6 +1203,10 @@ final class Mutation implements query_string.GraphQLRootObject {
   IList<query_string.QueryField> toFieldList() {
     return IList([
       ...(switch (now) {
+        null => const [],
+        final field => [field.toField()],
+      }),
+      ...(switch (union) {
         null => const [],
         final field => [field.toField()],
       }),
@@ -1164,6 +1282,109 @@ final class Mutation_now implements Mutation_Field {
         graphql_type.ListType.notList,
         false,
       ),
+    );
+  }
+}
+
+/// IDからアカウントもしくはノートを取得
+///
+/// type: `type.AccountOrNote`
+@immutable
+final class Mutation_union implements Mutation_Field {
+  /// IDからアカウントもしくはノートを取得
+  ///
+  /// type: `type.AccountOrNote`
+  const Mutation_union(
+    this.return_, {
+    required this.id,
+  });
+
+  /// 取得するアカウントのID
+  final query_string.VariableOrStaticValue<type.ID> id;
+
+  final AccountOrNote return_;
+
+  /// `Mutation_union` を複製する
+  @useResult
+  Mutation_union copyWith({
+    query_string.VariableOrStaticValue<type.ID>? id,
+    AccountOrNote? return_,
+  }) {
+    return Mutation_union(
+      (return_ ?? this.return_),
+      id: (id ?? this.id),
+    );
+  }
+
+  /// `Mutation_union` のフィールドを変更したものを新しく返す
+  @useResult
+  Mutation_union updateFields({
+    query_string.VariableOrStaticValue<type.ID> Function(
+            query_string.VariableOrStaticValue<type.ID> prevId)?
+        id,
+    AccountOrNote Function(AccountOrNote prevReturn_)? return_,
+  }) {
+    return Mutation_union(
+      ((return_ == null) ? this.return_ : return_(this.return_)),
+      id: ((id == null) ? this.id : id(this.id)),
+    );
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(
+      id,
+      return_,
+    );
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (((other is Mutation_union) && (id == other.id)) &&
+        (return_ == other.return_));
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'Mutation_union(${return_}, id: ${id}, )';
+  }
+
+  @override
+  @useResult
+  query_string.QueryFieldField toField() {
+    return query_string.QueryFieldField(
+      'union',
+      args: IList([
+        query_string.QueryFieldArg(
+          name: 'id',
+          input: idToQueryInput(),
+        )
+      ]),
+      description: 'IDからアカウントもしくはノートを取得',
+      return_: query_string.GraphQLOutputTypeConsiderListNull(
+        query_string.GraphQLOutputTypeObject(return_),
+        graphql_type.ListType.notList,
+        false,
+      ),
+    );
+  }
+
+  @useResult
+  query_string.QueryInput idToQueryInput() {
+    return id.toQueryInput(
+      type: const graphql_type.GraphQLType(
+        name: 'ID',
+        isNullable: false,
+        listType: graphql_type.ListType.notList,
+      ),
+      staticValueToQueryInputFunc: (staticValue) {
+        return staticValue.toQueryInput();
+      },
     );
   }
 }
@@ -1763,6 +1984,7 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
     this.enumValues,
     this.inputFields,
     this.ofType,
+    this.isOneOf,
     this.extra__ = const IMapConst({}),
   });
 
@@ -1789,6 +2011,8 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
 
   final GraphQL__Type_ofType? ofType;
 
+  final GraphQL__Type_isOneOf? isOneOf;
+
   /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
   final IMap<String, GraphQL__Type_Field> extra__;
 
@@ -1806,6 +2030,7 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
     (GraphQL__Type_enumValues?,)? enumValues,
     (GraphQL__Type_inputFields?,)? inputFields,
     (GraphQL__Type_ofType?,)? ofType,
+    (GraphQL__Type_isOneOf?,)? isOneOf,
     IMap<String, GraphQL__Type_Field>? extra__,
   }) {
     return GraphQL__Type(
@@ -1822,6 +2047,7 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
       enumValues: ((enumValues == null) ? this.enumValues : enumValues.$1),
       inputFields: ((inputFields == null) ? this.inputFields : inputFields.$1),
       ofType: ((ofType == null) ? this.ofType : ofType.$1),
+      isOneOf: ((isOneOf == null) ? this.isOneOf : isOneOf.$1),
       extra__: (extra__ ?? this.extra__),
     );
   }
@@ -1852,6 +2078,8 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
             GraphQL__Type_inputFields? prevInputFields)?
         inputFields,
     GraphQL__Type_ofType? Function(GraphQL__Type_ofType? prevOfType)? ofType,
+    GraphQL__Type_isOneOf? Function(GraphQL__Type_isOneOf? prevIsOneOf)?
+        isOneOf,
     IMap<String, GraphQL__Type_Field> Function(
             IMap<String, GraphQL__Type_Field> prevExtra__)?
         extra__,
@@ -1880,6 +2108,7 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
           ? this.inputFields
           : inputFields(this.inputFields)),
       ofType: ((ofType == null) ? this.ofType : ofType(this.ofType)),
+      isOneOf: ((isOneOf == null) ? this.isOneOf : isOneOf(this.isOneOf)),
       extra__: ((extra__ == null) ? this.extra__ : extra__(this.extra__)),
     );
   }
@@ -1899,6 +2128,7 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
       enumValues,
       inputFields,
       ofType,
+      isOneOf,
       extra__,
     );
   }
@@ -1908,26 +2138,30 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
   bool operator ==(
     Object other,
   ) {
-    return (((((((((((((other is GraphQL__Type) &&
-                                                    (typeName__ ==
-                                                        other.typeName__)) &&
-                                                (kind == other.kind)) &&
-                                            (name == other.name)) &&
-                                        (description == other.description)) &&
-                                    (specifiedByURL == other.specifiedByURL)) &&
-                                (fields == other.fields)) &&
-                            (interfaces == other.interfaces)) &&
-                        (possibleTypes == other.possibleTypes)) &&
-                    (enumValues == other.enumValues)) &&
-                (inputFields == other.inputFields)) &&
-            (ofType == other.ofType)) &&
+    return ((((((((((((((other is GraphQL__Type) &&
+                                                        (typeName__ ==
+                                                            other
+                                                                .typeName__)) &&
+                                                    (kind == other.kind)) &&
+                                                (name == other.name)) &&
+                                            (description ==
+                                                other.description)) &&
+                                        (specifiedByURL ==
+                                            other.specifiedByURL)) &&
+                                    (fields == other.fields)) &&
+                                (interfaces == other.interfaces)) &&
+                            (possibleTypes == other.possibleTypes)) &&
+                        (enumValues == other.enumValues)) &&
+                    (inputFields == other.inputFields)) &&
+                (ofType == other.ofType)) &&
+            (isOneOf == other.isOneOf)) &&
         (extra__ == other.extra__));
   }
 
   @override
   @useResult
   String toString() {
-    return 'GraphQL__Type(${typeName__}, kind: ${kind}, name: ${name}, description: ${description}, specifiedByURL: ${specifiedByURL}, fields: ${fields}, interfaces: ${interfaces}, possibleTypes: ${possibleTypes}, enumValues: ${enumValues}, inputFields: ${inputFields}, ofType: ${ofType}, extra__: ${extra__}, )';
+    return 'GraphQL__Type(${typeName__}, kind: ${kind}, name: ${name}, description: ${description}, specifiedByURL: ${specifiedByURL}, fields: ${fields}, interfaces: ${interfaces}, possibleTypes: ${possibleTypes}, enumValues: ${enumValues}, inputFields: ${inputFields}, ofType: ${ofType}, isOneOf: ${isOneOf}, extra__: ${extra__}, )';
   }
 
   @override
@@ -1971,6 +2205,10 @@ final class GraphQL__Type implements query_string.GraphQLObjectType {
         final field => [field.toField()],
       }),
       ...(switch (ofType) {
+        null => const [],
+        final field => [field.toField()],
+      }),
+      ...(switch (isOneOf) {
         null => const [],
         final field => [field.toField()],
       }),
@@ -2690,6 +2928,50 @@ final class GraphQL__Type_ofType implements GraphQL__Type_Field {
       description: '',
       return_: query_string.GraphQLOutputTypeConsiderListNull(
         query_string.GraphQLOutputTypeObject(return_),
+        graphql_type.ListType.notList,
+        true,
+      ),
+    );
+  }
+}
+
+///
+///
+/// type: `bool?`
+@immutable
+final class GraphQL__Type_isOneOf implements GraphQL__Type_Field {
+  ///
+  ///
+  /// type: `bool?`
+  const GraphQL__Type_isOneOf();
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hashAll([]);
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (other is GraphQL__Type_isOneOf);
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'GraphQL__Type_isOneOf()';
+  }
+
+  @override
+  @useResult
+  query_string.QueryFieldField toField() {
+    return const query_string.QueryFieldField(
+      'isOneOf',
+      description: '',
+      return_: query_string.GraphQLOutputTypeConsiderListNull(
+        query_string.GraphQLOutputTypeBoolean(),
         graphql_type.ListType.notList,
         true,
       ),

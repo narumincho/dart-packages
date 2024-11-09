@@ -38,4 +38,19 @@ void main() {
       const AccountOnlyName(name: 'sample account name'),
     );
   });
+
+  test('innerParameter', () async {
+    final response = await Api.innerParameter(
+      id: const ID('a'),
+      accountId: const ID('b'),
+      accountIdInner: const ID('c'),
+      uri,
+      null,
+    );
+
+    expect(
+      response.union,
+      const AccountInUnionA(id: ID('a'), name: 'sample account name'),
+    );
+  });
 }

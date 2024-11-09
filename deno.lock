@@ -1,32 +1,28 @@
 {
-  "version": "3",
-  "packages": {
-    "specifiers": {
-      "jsr:@narumincho/simple-graphql-server": "jsr:@narumincho/simple-graphql-server@1.0.0",
-      "npm:graphql": "npm:graphql@16.8.1",
-      "npm:graphql-http": "npm:graphql-http@1.22.1_graphql@16.8.1",
-      "npm:graphql@16": "npm:graphql@16.8.1"
-    },
-    "jsr": {
-      "@narumincho/simple-graphql-server@1.0.0": {
-        "integrity": "388429fcb1adf8d1045f39c248f2c7bac8a1d4880ba197d068b481b65feff641",
-        "dependencies": [
-          "npm:graphql@16"
-        ]
-      }
-    },
-    "npm": {
-      "graphql-http@1.22.1_graphql@16.8.1": {
-        "integrity": "sha512-4Jor+LRbA7SfSaw7dfDUs2UBzvWg3cKrykfHRgKsOIvQaLuf+QOcG2t3Mx5N9GzSNJcuqMqJWz0ta5+BryEmXg==",
-        "dependencies": {
-          "graphql": "graphql@16.8.1"
-        }
-      },
-      "graphql@16.8.1": {
-        "integrity": "sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==",
-        "dependencies": {}
-      }
+  "version": "4",
+  "specifiers": {
+    "jsr:@narumincho/simple-graphql-server@*": "1.0.0",
+    "npm:graphql-http@*": "1.22.1_graphql@16.9.0",
+    "npm:graphql@*": "16.9.0",
+    "npm:graphql@16": "16.9.0"
+  },
+  "jsr": {
+    "@narumincho/simple-graphql-server@1.0.0": {
+      "integrity": "388429fcb1adf8d1045f39c248f2c7bac8a1d4880ba197d068b481b65feff641",
+      "dependencies": [
+        "npm:graphql@16"
+      ]
     }
   },
-  "remote": {}
+  "npm": {
+    "graphql-http@1.22.1_graphql@16.9.0": {
+      "integrity": "sha512-4Jor+LRbA7SfSaw7dfDUs2UBzvWg3cKrykfHRgKsOIvQaLuf+QOcG2t3Mx5N9GzSNJcuqMqJWz0ta5+BryEmXg==",
+      "dependencies": [
+        "graphql"
+      ]
+    },
+    "graphql@16.9.0": {
+      "integrity": "sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw=="
+    }
+  }
 }
