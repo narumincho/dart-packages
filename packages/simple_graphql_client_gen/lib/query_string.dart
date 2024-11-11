@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings
 
+import 'package:collection/collection.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 import 'package:narumincho_json/narumincho_json.dart';
@@ -104,7 +105,7 @@ String queryFieldListToString(
   GraphQLObjectType objectType,
   GraphQLRootObjectType rootObjectType,
 ) {
-  final queryInputVariableList = collectVariableInQueryFieldList(objectType);
+  final queryInputVariableList = collectVariableInQueryFieldMap(objectType);
   return (rootObjectType == GraphQLRootObjectType.mutation
           ? 'mutation'
           : 'query') +
@@ -112,9 +113,8 @@ String queryFieldListToString(
           ? ''
           : ' (' +
               queryInputVariableList
-                  .map(
-                    (variable) =>
-                        r'$' + variable.name + ': ' + variable.type.toString(),
+                  .mapTo(
+                    (name, type) => r'$' + name + ': ' + type.toString(),
                   )
                   .safeJoin(', ') +
               ')') +
@@ -181,7 +181,68 @@ String _queryFieldToString(
       });
 }
 
-IList<QueryInputVariable> collectVariableInQueryFieldList(
+IMap<String, GraphQLType> collectVariableInQueryFieldMap(
+  GraphQLObjectType objectType,
+) {
+  return IMap(_collectVariableInQueryFieldList(objectType).groupFoldBy(
+      (variable) => variable.name,
+      (a, bVariable) =>
+          a == null ? bVariable.type : intersectionType(a, bVariable.type)));
+}
+
+/// |       | T!  | T   | [T!]! | [T!]  | [T]!  | [T]   |
+/// | ----- | --- | --- | ----- | ----- | ----- | ----- |
+/// | T!    | T!  | T!  | x     | x     | x     | x     |
+/// | T     | T!  | T   | x     | x     | x     | x     |
+/// | [T!]! | x   | x   | [T!]! | [T!]! | [T!]! | [T!]! |
+/// | [T!]  | x   | x   | [T!]! | [T!]  | [T!]! | [T!]  |
+/// | [T]!  | x   | x   | [T!]! | [T!]! | [T]!  | [T]!  |
+/// | [T]   | x   | x   | [T!]! | [T!]  | [T]!  | [T]   |
+GraphQLType intersectionType(GraphQLType a, GraphQLType b) {
+  if (a == b) {
+    return a;
+  }
+  if (a.name != b.name) {
+    throw Exception('型の互換性がありません $a $b');
+  }
+  return switch ((a, b)) {
+    (
+      GraphQLType(listType: ListType.notList),
+      GraphQLType(listType: ListType.notList)
+    ) =>
+      GraphQLType(name: a.name, isNullable: false, listType: ListType.notList),
+    (
+      GraphQLType(listType: ListType.list),
+      GraphQLType(listType: ListType.list)
+    ) =>
+      GraphQLType(name: a.name, isNullable: false, listType: ListType.list),
+    (
+      GraphQLType(listType: ListType.listItemNullable),
+      GraphQLType(listType: ListType.listItemNullable)
+    ) =>
+      GraphQLType(
+          name: a.name, isNullable: false, listType: ListType.listItemNullable),
+    (
+      GraphQLType(
+        isNullable: true,
+        listType: ListType.list || ListType.listItemNullable
+      ),
+      GraphQLType(
+        isNullable: true,
+        listType: ListType.list || ListType.listItemNullable
+      )
+    ) =>
+      GraphQLType(name: a.name, isNullable: true, listType: ListType.list),
+    (
+      GraphQLType(listType: ListType.list || ListType.listItemNullable),
+      GraphQLType(listType: ListType.list || ListType.listItemNullable)
+    ) =>
+      GraphQLType(name: a.name, isNullable: false, listType: ListType.list),
+    (_, _) => throw Exception('型の互換性がありません $a $b')
+  };
+}
+
+IList<QueryInputVariable> _collectVariableInQueryFieldList(
   GraphQLObjectType objectType,
 ) {
   return IList(
@@ -198,12 +259,12 @@ IList<QueryInputVariable> _collectVariableInQueryField(
     QueryFieldField(:final args, :final return_) => IList([
         ...switch (return_.type) {
           GraphQLOutputTypeObject(:final objectType) =>
-            collectVariableInQueryFieldList(objectType),
+            _collectVariableInQueryFieldList(objectType),
           _ => [],
         },
         ...args.expand((arg) => _collectVariableInQueryInput(arg.input)),
       ]),
-    QueryFieldOn(:final return_) => collectVariableInQueryFieldList(return_),
+    QueryFieldOn(:final return_) => _collectVariableInQueryFieldList(return_),
   };
 }
 
@@ -380,6 +441,22 @@ final class QueryInputVariable extends QueryInput {
   @override
   String toString() {
     return 'QueryInputVariable(name: $name, type: $type, )';
+  }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(name, type);
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return other is QueryInputVariable &&
+        other.name == name &&
+        other.type == type;
   }
 }
 
