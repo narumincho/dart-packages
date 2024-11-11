@@ -1,3 +1,7 @@
+## 0.9.4
+
+- fix variable parameter duplicate output
+
 ## 0.9.3
 
 - fix inner query variable output #83
