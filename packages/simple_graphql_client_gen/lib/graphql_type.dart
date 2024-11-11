@@ -147,6 +147,23 @@ final class GraphQLType {
       ]),
     );
   }
+
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hash(name, isNullable, listType);
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return other is GraphQLType &&
+        other.name == name &&
+        other.isNullable == isNullable &&
+        other.listType == listType;
+  }
 }
 
 Type _dartTypeNormal(String name, bool useNamespaceType) {

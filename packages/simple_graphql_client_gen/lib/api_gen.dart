@@ -85,7 +85,7 @@ Method _createApiCallMethod(
   String apiName,
   GraphQLRootObject objectType,
 ) {
-  final variableList = collectVariableInQueryFieldList(objectType);
+  final variableList = collectVariableInQueryFieldMap(objectType);
   final queryCode = queryFieldListToString(
     objectType,
     objectType.getRootObjectType(),
@@ -111,10 +111,10 @@ Method _createApiCallMethod(
           type: wellknown_type.String.setIsNullable(true),
           parameterPattern: const ParameterPatternPositional(),
         ),
-        ...variableList.map(
-          (variable) => Parameter(
-            name: variable.name,
-            type: variable.type.toDartType(true),
+        ...variableList.mapTo(
+          (name, type) => Parameter(
+            name: name,
+            type: type.toDartType(true),
             parameterPattern: const ParameterPatternNamed(),
           ),
         )
@@ -139,13 +139,12 @@ Method _createApiCallMethod(
                 name: 'variables',
                 argument: wellknown_expr.IMap(
                   ExprMapLiteral(
-                    IList(variableList.map(
-                      (variable) => (
+                    IList(variableList.mapTo(
+                      (name, type) => (
                         key: ExprStringLiteral(
-                          IList([StringLiteralItemNormal(variable.name)]),
+                          IList([StringLiteralItemNormal(name)]),
                         ),
-                        value: toJsonValueExpr(
-                            variable.type, ExprVariable(variable.name)),
+                        value: toJsonValueExpr(type, ExprVariable(name)),
                       ),
                     )),
                   ),
