@@ -797,7 +797,7 @@ final class Note implements query_string.GraphQLObjectType {
   /// 子ノート
   final Note_subNotes? subNotes;
 
-  /// いいねされているか
+  /// 指定したアカウントからいいねされているか
   final Note_isLiked? isLiked;
 
   /// フィールド名を変更する場合などに使う https://graphql.org/learn/queries/#aliases
@@ -1023,12 +1023,12 @@ final class Note_subNotes implements Note_Field {
   }
 }
 
-/// いいねされているか
+/// 指定したアカウントからいいねされているか
 ///
 /// type: `bool?`
 @immutable
 final class Note_isLiked implements Note_Field {
-  /// いいねされているか
+  /// 指定したアカウントからいいねされているか
   ///
   /// type: `bool?`
   const Note_isLiked({
@@ -1089,7 +1089,7 @@ final class Note_isLiked implements Note_Field {
           input: accountIdToQueryInput(),
         )
       ]),
-      description: 'いいねされているか',
+      description: '指定したアカウントからいいねされているか',
       return_: const query_string.GraphQLOutputTypeConsiderListNull(
         query_string.GraphQLOutputTypeBoolean(),
         graphql_type.ListType.notList,
