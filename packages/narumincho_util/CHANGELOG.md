@@ -1,3 +1,7 @@
+## 0.3.0
+
+- allow fast_immutable_collections v11. ">=10.0.0 <11.0.0" → ">=10.0.0 <12.0.0"
+
 ## 0.2.1
 
 - add setLength method
