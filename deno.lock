@@ -2,7 +2,7 @@
   "version": "4",
   "specifiers": {
     "jsr:@narumincho/simple-graphql-server@*": "1.0.0",
-    "npm:graphql-http@*": "1.22.1_graphql@16.9.0",
+    "npm:graphql-http@*": "1.22.3_graphql@16.9.0",
     "npm:graphql@*": "16.9.0",
     "npm:graphql@16": "16.9.0"
   },
@@ -15,8 +15,8 @@
     }
   },
   "npm": {
-    "graphql-http@1.22.1_graphql@16.9.0": {
-      "integrity": "sha512-4Jor+LRbA7SfSaw7dfDUs2UBzvWg3cKrykfHRgKsOIvQaLuf+QOcG2t3Mx5N9GzSNJcuqMqJWz0ta5+BryEmXg==",
+    "graphql-http@1.22.3_graphql@16.9.0": {
+      "integrity": "sha512-sgUz/2DZt+QvY6WrpAsAXUvhnIkp2eX9jN78V8DAtFcpZi/nfDrzDt2byYjyoJzRcWuqhE0K63g1QMewt73U6A==",
       "dependencies": [
         "graphql"
       ]

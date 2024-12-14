@@ -126,9 +126,21 @@ String queryFieldListToStringLoop(
   GraphQLObjectType objectType,
   int indent,
 ) {
+  final fieldList = objectType.toFieldList();
   return ' {\n' +
-      objectType
-          .toFieldList()
+      (fieldList.isEmpty
+              ? const IListConst<QueryField>([
+                  QueryFieldField(
+                    '__typename',
+                    description: '',
+                    return_: GraphQLOutputTypeConsiderListNull(
+                      GraphQLOutputTypeString(),
+                      ListType.notList,
+                      false,
+                    ),
+                  )
+                ])
+              : fieldList)
           .map(
             (queryField) => _queryFieldToString(
               queryField,

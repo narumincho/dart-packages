@@ -13,6 +13,13 @@ void main() {
     );
   });
 
+  test('empty', () async {
+    expect(
+      await Api.empty(uri, null),
+      const QueryEmpty(),
+    );
+  });
+
   test('account', () async {
     expect(
       (await Api.account(id: const ID('sampleId'), uri, null)).account,

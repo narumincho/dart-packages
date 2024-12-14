@@ -1,3 +1,8 @@
+## 1.0.0
+
+- Automatically include `__typename` in field selections to prevent GraphQL
+  query syntax errors when no other fields are specified.
+
 ## 0.9.4
 
 - fix variable parameter duplicate output

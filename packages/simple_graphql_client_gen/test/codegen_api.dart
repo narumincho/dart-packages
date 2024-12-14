@@ -13,6 +13,7 @@ const IMap<String, GraphQLRootObject> _apiMap = IMapConst({
     'QueryHello',
     hello: query.Query_hello(),
   ),
+  'empty': query.Query('QueryEmpty'),
   'account': query.Query(
     'QueryAccount',
     account: query.Query_account(

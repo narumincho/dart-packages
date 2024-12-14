@@ -39,6 +39,31 @@ abstract class Api {
   }
 
   /// ```
+  /// query {
+  ///   __typename
+  /// }
+  /// ```
+  static Future<QueryEmpty> empty(
+    Uri url,
+    String? auth,
+  ) async {
+    final response = await graphql_post.graphQLPost(
+      uri: url,
+      auth: auth,
+      query: 'query {\n  __typename\n}\n',
+    );
+    final errors = response.errors;
+    if ((errors != null)) {
+      throw errors;
+    }
+    final data = response.data;
+    if ((data == null)) {
+      throw Exception('empty response data empty');
+    }
+    return QueryEmpty.fromJsonValue(data);
+  }
+
+  /// ```
   /// query ($id: ID!) {
   ///   account(id: $id) {
   ///     id
@@ -253,6 +278,39 @@ final class QueryHello {
   ) {
     return QueryHello(
         hello: value.getObjectValueOrThrow('hello').asStringOrThrow());
+  }
+}
+
+/// データを取得できる. データを取得するのみで, データを変更しない
+@immutable
+final class QueryEmpty {
+  /// データを取得できる. データを取得するのみで, データを変更しない
+  const QueryEmpty();
+  @override
+  @useResult
+  int get hashCode {
+    return Object.hashAll([]);
+  }
+
+  @override
+  @useResult
+  bool operator ==(
+    Object other,
+  ) {
+    return (other is QueryEmpty);
+  }
+
+  @override
+  @useResult
+  String toString() {
+    return 'QueryEmpty()';
+  }
+
+  /// JsonValue から QueryEmptyを生成する. 失敗した場合はエラーが発生する
+  static QueryEmpty fromJsonValue(
+    narumincho_json.JsonValue value,
+  ) {
+    return const QueryEmpty();
   }
 }
 
@@ -853,7 +911,7 @@ final class NoteInInnerParameterInner {
   /// 子ノート
   final IList<Note2> subNotes;
 
-  /// いいねされているか
+  /// 指定したアカウントからいいねされているか
   final bool? isLiked;
 
   /// `NoteInInnerParameterInner` を複製する
@@ -947,7 +1005,7 @@ final class NoteInInnerParameter implements AccountOrNoteInInnerParameter {
   /// 子ノート
   final IList<NoteInInnerParameterInner> subNotes;
 
-  /// いいねされているか
+  /// 指定したアカウントからいいねされているか
   final bool? isLiked;
 
   /// `NoteInInnerParameter` を複製する
