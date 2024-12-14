@@ -78,14 +78,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
-  dart_style:
-    dependency: "direct main"
-    description:
-      name: dart_style
-      sha256: "64b717484993e85315d0c04081b6fca9ef8bac8c2cb794b2e15810250b335913"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   fast_immutable_collections:
     dependency: "direct main"
     description:
@@ -231,7 +223,7 @@ packages:
     source: hosted
     version: "1.5.1"
   pub_semver:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pub_semver
       sha256: "7b3cfbf654f3edd0c6298ecd5be782ce997ddf0e00531b9464b55245185bbbbd"

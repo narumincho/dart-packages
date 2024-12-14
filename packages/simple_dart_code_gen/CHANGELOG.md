@@ -1,3 +1,7 @@
+## 0.8.1
+
+- In this simple_dart_code_gen, do not use dart_style code formatting.
+
 ## 0.8.0
 
 - allow fast_immutable_collections v11. ">=10.0.0 <11.0.0" → ">=10.0.0 <12.0.0"
