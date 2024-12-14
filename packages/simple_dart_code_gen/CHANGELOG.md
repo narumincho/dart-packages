@@ -1,3 +1,8 @@
+## 0.8.0
+
+- allow fast_immutable_collections v11. ">=10.0.0 <11.0.0" → ">=10.0.0 <12.0.0"
+- update dart_style v3
+
 ## 0.7.0
 
 - update fast_immutable_collections v9 → v10
