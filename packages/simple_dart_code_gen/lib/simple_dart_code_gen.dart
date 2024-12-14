@@ -4,6 +4,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 import 'package:narumincho_util/narumincho_util.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:simple_dart_code_gen/wellknown_type.dart' as wellknown_type;
 
 @immutable
@@ -55,7 +56,9 @@ $importStatementRelative
 $declarationListCode
 ''';
 
-    return format ? DartFormatter().format(code) : code;
+    return format
+        ? DartFormatter(languageVersion: Version(3, 5, 4)).format(code)
+        : code;
   }
 }
 
