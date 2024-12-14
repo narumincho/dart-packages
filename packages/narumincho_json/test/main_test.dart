@@ -9,10 +9,11 @@ void main() {
 
   test('encode array', () {
     expect(
-        const JsonArray(
-          IListConst([JsonString('a'), JsonString('b'), JsonString('c')]),
-        ).encode(),
-        '''["a","b","c"]''');
+      const JsonArray(
+        IListConst([JsonString('a'), JsonString('b'), JsonString('c')]),
+      ).encode(),
+      '''["a","b","c"]''',
+    );
   });
 
   test('encode object', () {
